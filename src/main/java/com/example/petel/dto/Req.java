@@ -21,6 +21,7 @@ public class Req<T> implements Serializable {
      * MWHEADER for request
      */
     @JsonProperty("MWHEADER")
+    @Valid
     private ReqMwHeader mwHeader;
 
     /**

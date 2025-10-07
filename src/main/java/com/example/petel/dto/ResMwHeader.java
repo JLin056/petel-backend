@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MwHeader implements Serializable {
+public class ResMwHeader implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class MwHeader implements Serializable {
      *
      * @param returnCode
      */
-    public MwHeader(ReturnCodeAndDescEnum returnCode) {
+    public ResMwHeader(ReturnCodeAndDescEnum returnCode) {
         this.returnCode = returnCode.getCode();
         this.returnDesc = returnCode.getDesc();
     }

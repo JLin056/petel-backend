@@ -17,10 +17,10 @@ public class Res<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * MWHEADER
+     * MWHEADER for response
      */
     @JsonProperty("MWHEADER")
-    private MwHeader mwHeader;
+    private ResMwHeader mwHeader;
 
     /**
      * TRANRS

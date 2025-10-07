@@ -18,13 +18,6 @@ public class Req<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * MWHEADER
-     */
-    @JsonProperty("MWHEADER")
-    @Valid
-    private MwHeader mwHeader;
-
-    /**
      * TRANRQ
      */
     @JsonProperty("TRANRQ")

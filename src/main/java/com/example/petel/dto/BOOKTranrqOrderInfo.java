@@ -1,6 +1,7 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -35,17 +36,17 @@ public class BOOKTranrqOrderInfo implements Serializable {
     private Double hotelCharges;
 
     @JsonProperty("check_in")
-    @NotNull(message = "check_in不得為空")
+    @NotBlank(message = "check_in不得為空")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "日期格式錯誤，須為 yyyy-MM-dd")
     private String checkIn;
 
     @JsonProperty("check_out")
-    @NotNull(message = "check_out不得為空")
+    @NotBlank(message = "check_out不得為空")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "日期格式錯誤，須為 yyyy-MM-dd")
     private String checkOut;
 
     @JsonProperty("status")
-    @NotNull(message = "status不得為空")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "日期格式錯誤，須為 yyyy-MM-dd")
+    @NotBlank(message = "status不得為空")
     private String status;
 
     @JsonProperty("note")

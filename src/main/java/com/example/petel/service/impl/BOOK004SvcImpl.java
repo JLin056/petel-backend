@@ -15,8 +15,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BOOK004SvcImpl implements BOOK004Svc {
 
+    /** PetelOrdersRepository */
     private final PetelOrdersRepository petelOrdersRepository;
-
+    /** PetelOrderItemsRepository */
     private final PetelOrderItemsRepository petelOrderItemsRepository;
 
     @Override
@@ -30,7 +31,7 @@ public class BOOK004SvcImpl implements BOOK004Svc {
         petelOrdersRepository.save(petelOrdersEntity);
 
         try {
-            petelOrderItemsRepository.deleteById(orderId);
+            petelOrderItemsRepository.deleteByOrderId(orderId);
         } catch (Exception e) {
             throw new DeleteFailException();
         }

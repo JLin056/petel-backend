@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PetelOrderItemsRepository extends JpaRepository<PetelOrderItemsEntity, Long> {
-    List<PetelOrderItemsEntity> findByOrderId(Long orderId);
+    List<PetelOrderItemsEntity> deleteByOrderId(Long orderId);
 }

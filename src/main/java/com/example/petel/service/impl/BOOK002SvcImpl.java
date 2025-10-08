@@ -19,10 +19,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BOOK002SvcImpl implements BOOK002Svc {
 
+    /** sqlFile */
     private static final String sqlFile = "BOOK_QUERY.sql";
-
+    /** sqlAction */
     private final SqlAction sqlAction;
-
+    /** sqlUtils */
     private final SqlUtils sqlUtils;
 
     @Override

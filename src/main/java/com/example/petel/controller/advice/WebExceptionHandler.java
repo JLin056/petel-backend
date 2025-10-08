@@ -18,9 +18,16 @@ public class WebExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(InvalidInputException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     public Res<Object> handleInvalidInputException(InvalidInputException ex) {
-        return new Res<Object>(new ResMwHeader(ReturnCodeAndDescEnum.ERROR_INPUT), new Object());
+        ResMwHeader resMwHeader = new ResMwHeader();
+        String message = ex.getMessage();
+        if (message.isBlank()) {
+            message = "輸入值不得為空";
+        }
+        resMwHeader.setReturnCode(ReturnCodeAndDescEnum.ERROR_INPUT.getCode());
+        resMwHeader.setReturnDesc(message);
+        return new Res<>(resMwHeader, null);
     }
 
     /**
@@ -30,7 +37,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(ErrorInputException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Res<Object> handleErrorInputException(ErrorInputException ex) {
-        return new Res<Object>(new ResMwHeader(ReturnCodeAndDescEnum.ERROR_INPUT), new Object());
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.ERROR_INPUT), null);
     }
 
     /**
@@ -40,7 +47,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     @ResponseStatus(HttpStatus.OK)
     public Res<Object> handleDataNotFoundException(DataNotFoundException ex) {
-        return new Res<Object>(new ResMwHeader(ReturnCodeAndDescEnum.DATA_NOT_FOUND), new Object());
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.DATA_NOT_FOUND), null);
     }
 
     /**
@@ -50,7 +57,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(InsertFailException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Res<Object> handleInsertFailException(InsertFailException ex) {
-        return new Res<Object>(new ResMwHeader(ReturnCodeAndDescEnum.INSERT_FAIL), new Object());
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.INSERT_FAIL), null);
     }
 
     /**
@@ -60,7 +67,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(UpdateFailException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Res<Object> handleUpdateFailException(UpdateFailException ex) {
-        return new Res<Object>(new ResMwHeader(ReturnCodeAndDescEnum.UPDATE_FAIL), new Object());
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.UPDATE_FAIL), null);
     }
 
     /**
@@ -70,7 +77,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(DeleteFailException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Res<Object> handleDeleteFailException(DeleteFailException ex) {
-        return new Res<Object>(new ResMwHeader(ReturnCodeAndDescEnum.DELETE_FAIL), new Object());
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.DELETE_FAIL), null);
     }
 
     /**
@@ -80,7 +87,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Res<Object> handleException(Exception ex) {
-        return new Res<Object>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), new Object());
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
     }
 }
 

@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * BOOK-002 取得該筆訂單 SvcImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class BOOK002SvcImpl implements BOOK002Svc {
@@ -26,6 +29,11 @@ public class BOOK002SvcImpl implements BOOK002Svc {
     /** sqlUtils */
     private final SqlUtils sqlUtils;
 
+    /**
+     * 取得該筆訂單
+     * @param requestBody Req<BOOK002Tranrq>
+     * @return Res<BOOKTranrs>
+     */
     @Override
     public Res<BOOKTranrs> book002(Req<BOOK002Tranrq> requestBody) throws Exception {
 

@@ -1,0 +1,44 @@
+<configuration scan="true">
+    <!-- 變數 -->
+    <property name="APP_NAME" value="petel-backend"/>
+    <property name="LOG_PATH" value="logs"/>
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- Console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 檔案：每日切檔、保留 7 天 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 非同步寫檔，減少 I/O 影響 -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>8192</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <!-- 全域層級：預設 INFO；同時輸出到 Console 與檔案 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- 只存自己寫的 log 進檔案   -->
+    <logger name="com.example.petel" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/><appender-ref ref="ASYNC_FILE"/>
+    </logger>
+    <logger name="com.example.petel.PetelApplication" level="OFF"/>
+</configuration>

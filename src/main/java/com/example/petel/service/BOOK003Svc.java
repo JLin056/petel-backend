@@ -1,0 +1,10 @@
+package com.example.petel.service;
+
+import com.example.petel.dto.BOOK003Tranrq;
+import com.example.petel.dto.BOOKTranrs;
+import com.example.petel.dto.Req;
+import com.example.petel.dto.Res;
+
+public interface BOOK003Svc {
+    Res<BOOKTranrs> book003(Req<BOOK003Tranrq> requestBody) throws Exception;
+}

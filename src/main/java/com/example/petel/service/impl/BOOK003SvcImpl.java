@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BOOK003SvcImpl implements BOOK003Svc {
 
+    /** PetelOrdersRepository */
     private final PetelOrdersRepository petelOrdersRepository;
 
     @Override

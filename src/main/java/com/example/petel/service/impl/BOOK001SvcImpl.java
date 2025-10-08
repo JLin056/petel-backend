@@ -20,8 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BOOK001SvcImpl implements BOOK001Svc {
 
+    /** PetelOrdersRepository */
     private final PetelOrdersRepository petelOrdersRepository;
-
+    /** PetelOrderItemsRepository */
     private final PetelOrderItemsRepository petelOrderItemsRepository;
 
     @Override

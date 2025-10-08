@@ -2,12 +2,16 @@ package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BOOK002Tranrq implements Serializable {
 
     @Serial

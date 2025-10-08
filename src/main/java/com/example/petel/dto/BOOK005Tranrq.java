@@ -1,13 +1,17 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BOOK005Tranrq implements Serializable {
 
     @Serial

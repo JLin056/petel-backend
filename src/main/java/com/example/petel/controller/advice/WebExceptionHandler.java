@@ -89,6 +89,16 @@ public class WebExceptionHandler {
     public Res<Object> handleException(Exception ex) {
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
     }
+
+    /**
+     * JWT 異常
+     */
+    @ResponseBody
+    @ExceptionHandler(JwtProcessingException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handleJwtProcessingException(JwtProcessingException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
 }
 
 

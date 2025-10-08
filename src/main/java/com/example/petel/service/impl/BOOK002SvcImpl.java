@@ -7,6 +7,7 @@ import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
 import com.example.petel.service.BOOK002Svc;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,24 +19,34 @@ import java.util.Map;
 /**
  * BOOK-002 取得該筆訂單 SvcImpl
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BOOK002SvcImpl implements BOOK002Svc {
 
-    /** sqlFile */
+    /**
+     * sqlFile
+     */
     private static final String sqlFile = "BOOK_QUERY.sql";
-    /** sqlAction */
+    /**
+     * sqlAction
+     */
     private final SqlAction sqlAction;
-    /** sqlUtils */
+    /**
+     * sqlUtils
+     */
     private final SqlUtils sqlUtils;
 
     /**
      * 取得該筆訂單
+     *
      * @param requestBody Req<BOOK002Tranrq>
      * @return Res<BOOKTranrs>
      */
     @Override
     public Res<BOOKTranrs> book002(Req<BOOK002Tranrq> requestBody) throws Exception {
+
+        log.info("-------- [BOOK-002] 取得該筆訂單 --------");
 
         Long orderId = requestBody.getTranrq().getOrderId();
 
@@ -45,6 +56,7 @@ public class BOOK002SvcImpl implements BOOK002Svc {
         List<Map<String, Object>> mapList = sqlAction.queryForList(sql, paramMap);
 
         if (mapList.isEmpty()) {
+            log.error("[BOOK-002] 無此筆訂單");
             throw new DataNotFoundException();
         }
 
@@ -71,6 +83,8 @@ public class BOOK002SvcImpl implements BOOK002Svc {
         orderInfo.setCheckOut(MapUtils.getString(zeroIndexMap, "CHECK_OUT"));
         orderInfo.setStatus(MapUtils.getString(zeroIndexMap, "STATUS"));
         orderInfo.setNote(MapUtils.getString(zeroIndexMap, "NOTE"));
+
+        log.info("[BOOK-002] 取得該筆訂單成功");
 
         Res<BOOKTranrs> responseBody = new Res<>();
         responseBody.setMwHeader(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS));

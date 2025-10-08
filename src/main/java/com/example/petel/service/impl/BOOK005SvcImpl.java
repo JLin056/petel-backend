@@ -6,11 +6,13 @@ import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.service.BOOK005Svc;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
  * BOOK-005 付款 SvcImpl
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BOOK005SvcImpl implements BOOK005Svc {

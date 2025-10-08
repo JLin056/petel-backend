@@ -10,6 +10,7 @@ import com.example.petel.repository.PetelOrdersRepository;
 import com.example.petel.service.BOOK001Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -19,17 +20,23 @@ import java.util.List;
 /**
  * BOOK-001 建立訂單 SvcImpl
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BOOK001SvcImpl implements BOOK001Svc {
 
-    /** PetelOrdersRepository */
+    /**
+     * PetelOrdersRepository
+     */
     private final PetelOrdersRepository petelOrdersRepository;
-    /** PetelOrderItemsRepository */
+    /**
+     * PetelOrderItemsRepository
+     */
     private final PetelOrderItemsRepository petelOrderItemsRepository;
 
     /**
      * 建立訂單
+     *
      * @param requestBody Req<BOOK001Tranrq>
      * @return Res<BOOKTranrs>
      */
@@ -37,25 +44,33 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     @Transactional(rollbackOn = Exception.class)
     public Res<BOOKTranrs> book001(Req<BOOK001Tranrq> requestBody) throws Exception {
 
+        log.info("-------- [BOOK-001] 建立訂單 --------");
+
+        BOOKTranrqOrderInfo orderInfo = requestBody.getTranrq().getOrderInfo();
+
+        PetelOrdersEntity petelOrdersEntity = new PetelOrdersEntity();
+        petelOrdersEntity.setUserId(orderInfo.getUserId());
+        petelOrdersEntity.setPropertyId(orderInfo.getPropertyId());
+        petelOrdersEntity.setPaymentId(orderInfo.getPaymentId());
+        petelOrdersEntity.setHotelCharges(orderInfo.getHotelCharges());
+        petelOrdersEntity.setCheckIn(orderInfo.getCheckIn());
+        petelOrdersEntity.setCheckOut(orderInfo.getCheckOut());
+        petelOrdersEntity.setStatus(orderInfo.getStatus());
+        petelOrdersEntity.setNote(orderInfo.getNote());
+        petelOrdersEntity.setCreatedAt(Timestamp.from(Instant.now()));
+
+        PetelOrdersEntity savedEntity;
+
         try {
+            savedEntity = petelOrdersRepository.save(petelOrdersEntity);
+        } catch (Exception e) {
+            log.error("[BOOK-001] 建立訂單失敗 on PETEL_ORDERS");
+            throw new InsertFailException();
+        }
 
-            BOOKTranrqOrderInfo orderInfo = requestBody.getTranrq().getOrderInfo();
+        List<BOOKTranrqOrderDetail> orderDetail = requestBody.getTranrq().getOrderDetail();
 
-            PetelOrdersEntity petelOrdersEntity = new PetelOrdersEntity();
-            petelOrdersEntity.setUserId(orderInfo.getUserId());
-            petelOrdersEntity.setPropertyId(orderInfo.getPropertyId());
-            petelOrdersEntity.setPaymentId(orderInfo.getPaymentId());
-            petelOrdersEntity.setHotelCharges(orderInfo.getHotelCharges());
-            petelOrdersEntity.setCheckIn(orderInfo.getCheckIn());
-            petelOrdersEntity.setCheckOut(orderInfo.getCheckOut());
-            petelOrdersEntity.setStatus(orderInfo.getStatus());
-            petelOrdersEntity.setNote(orderInfo.getNote());
-            petelOrdersEntity.setCreatedAt(Timestamp.from(Instant.now()));
-
-            PetelOrdersEntity savedEntity = petelOrdersRepository.save(petelOrdersEntity);
-
-            List<BOOKTranrqOrderDetail> orderDetail = requestBody.getTranrq().getOrderDetail();
-
+        try {
             for (int i = 0; i < orderDetail.size(); i++) {
                 PetelOrderItemsEntity petelOrderItemsEntity = new PetelOrderItemsEntity();
                 petelOrderItemsEntity.setOrderId(savedEntity.getId());
@@ -65,14 +80,16 @@ public class BOOK001SvcImpl implements BOOK001Svc {
                 petelOrderItemsEntity.setPrice(orderDetail.get(i).getProductPrice());
                 petelOrderItemsRepository.save(petelOrderItemsEntity);
             }
-
-            Res<BOOKTranrs> responseBody = new Res<>();
-            responseBody.setMwHeader(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS));
-            responseBody.setTranrs(new BOOKTranrs(savedEntity.getId()));
-            return responseBody;
-
         } catch (Exception e) {
+            log.error("[BOOK-001] 建立訂單失敗 on PETEL_ORDER_ITEMS");
             throw new InsertFailException();
         }
+
+        log.info("[BOOK-001] 建立訂單成功");
+
+        Res<BOOKTranrs> responseBody = new Res<>();
+        responseBody.setMwHeader(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS));
+        responseBody.setTranrs(new BOOKTranrs(savedEntity.getId()));
+        return responseBody;
     }
 }

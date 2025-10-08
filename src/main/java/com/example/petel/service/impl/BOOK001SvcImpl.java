@@ -16,6 +16,9 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * BOOK-001 建立訂單 SvcImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class BOOK001SvcImpl implements BOOK001Svc {
@@ -25,6 +28,11 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     /** PetelOrderItemsRepository */
     private final PetelOrderItemsRepository petelOrderItemsRepository;
 
+    /**
+     * 建立訂單
+     * @param requestBody Req<BOOK001Tranrq>
+     * @return Res<BOOKTranrs>
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public Res<BOOKTranrs> book001(Req<BOOK001Tranrq> requestBody) throws Exception {

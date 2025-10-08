@@ -10,6 +10,9 @@ import com.example.petel.service.BOOK003Svc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * BOOK-003 修改該筆訂單 SvcImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class BOOK003SvcImpl implements BOOK003Svc {
@@ -17,6 +20,11 @@ public class BOOK003SvcImpl implements BOOK003Svc {
     /** PetelOrdersRepository */
     private final PetelOrdersRepository petelOrdersRepository;
 
+    /**
+     * 修改該筆訂單
+     * @param requestBody Req<BOOK003Tranrq>
+     * @return Res<BOOKTranrs>
+     */
     @Override
     public Res<BOOKTranrs> book003(Req<BOOK003Tranrq> requestBody) throws Exception {
 

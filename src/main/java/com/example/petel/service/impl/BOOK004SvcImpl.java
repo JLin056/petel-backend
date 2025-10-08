@@ -11,6 +11,9 @@ import com.example.petel.service.BOOK004Svc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * BOOK-004 取消該筆訂單 SvcImpl
+ */
 @Service
 @RequiredArgsConstructor
 public class BOOK004SvcImpl implements BOOK004Svc {
@@ -20,6 +23,11 @@ public class BOOK004SvcImpl implements BOOK004Svc {
     /** PetelOrderItemsRepository */
     private final PetelOrderItemsRepository petelOrderItemsRepository;
 
+    /**
+     * 取消該筆訂單
+     * @param requestBody Req<BOOK004Tranrq>
+     * @return Res<BOOKTranrs>
+     */
     @Override
     public Res<BOOKTranrs> book004(Req<BOOK004Tranrq> requestBody) throws Exception {
 

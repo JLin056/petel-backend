@@ -1,7 +1,9 @@
 package com.example.petel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
@@ -9,6 +11,8 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "PETEL_ORDERS")
 public class PetelOrdersEntity {
 

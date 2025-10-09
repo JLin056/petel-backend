@@ -68,7 +68,7 @@ public class BOOK002SvcImpl implements BOOK002Svc {
             orderDetail.setProductId(MapUtils.getLong(map, "PRODUCT_ID"));
             orderDetail.setArrivalDate(MapUtils.getString(map, "ARRIVAL_DATE"));
             orderDetail.setProductQuantity(MapUtils.getInteger(map, "QUANTITY"));
-            orderDetail.setProductPrice(MapUtils.getDouble(map, "PRICE"));
+            orderDetail.setProductPrice(MapUtils.getInteger(map, "PRICE"));
             orderDetails.add(orderDetail);
         }
 
@@ -78,7 +78,7 @@ public class BOOK002SvcImpl implements BOOK002Svc {
         orderInfo.setUserId(MapUtils.getLong(zeroIndexMap, "USER_ID"));
         orderInfo.setPropertyId(MapUtils.getLong(zeroIndexMap, "PROPERTY_ID"));
         orderInfo.setPaymentId(MapUtils.getInteger(zeroIndexMap, "PAYMENT_ID"));
-        orderInfo.setHotelCharges(MapUtils.getDouble(zeroIndexMap, "HOTEL_CHARGES"));
+        orderInfo.setHotelCharges(MapUtils.getInteger(zeroIndexMap, "HOTEL_CHARGES"));
         orderInfo.setCheckIn(MapUtils.getString(zeroIndexMap, "CHECK_IN"));
         orderInfo.setCheckOut(MapUtils.getString(zeroIndexMap, "CHECK_OUT"));
         orderInfo.setStatus(MapUtils.getString(zeroIndexMap, "STATUS"));

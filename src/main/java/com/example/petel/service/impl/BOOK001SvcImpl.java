@@ -3,10 +3,12 @@ package com.example.petel.service.impl;
 import com.example.petel.dto.*;
 import com.example.petel.entity.PetelOrderItemsEntity;
 import com.example.petel.entity.PetelOrdersEntity;
+import com.example.petel.entity.PetelRoomInventoriesEntity;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.PetelOrderItemsRepository;
 import com.example.petel.repository.PetelOrdersRepository;
+import com.example.petel.repository.PetelRoomInventoriesRepository;
 import com.example.petel.service.BOOK001Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +36,10 @@ public class BOOK001SvcImpl implements BOOK001Svc {
      * PetelOrderItemsRepository
      */
     private final PetelOrderItemsRepository petelOrderItemsRepository;
+    /**
+     * PetelRoomInventoriesRepository
+     */
+    private final PetelRoomInventoriesRepository petelRoomInventoriesRepository;
 
     /**
      * 建立訂單
@@ -68,20 +75,37 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             throw new InsertFailException();
         }
 
-        List<BOOKTranrqOrderDetail> orderDetail = requestBody.getTranrq().getOrderDetail();
+        List<BOOKTranrqOrderDetail> orderDetails = requestBody.getTranrq().getOrderDetail();
+
+        List<PetelOrderItemsEntity> petelOrderItemsEntities = new ArrayList<>();
+        List<PetelRoomInventoriesEntity> petelRoomInventoriesEntities = new ArrayList<>();
+
+        for (int i = 0; i < orderDetails.size(); i++) {
+            BOOKTranrqOrderDetail orderDetail = orderDetails.get(i);
+            PetelOrderItemsEntity petelOrderItemsEntity = new PetelOrderItemsEntity();
+            petelOrderItemsEntity.setOrderId(savedEntity.getId());
+            petelOrderItemsEntity.setArrivalDate(orderDetail.getArrivalDate());
+            petelOrderItemsEntity.setProductId(orderDetail.getProductId());
+            petelOrderItemsEntity.setQuantity(orderDetail.getProductQuantity());
+            petelOrderItemsEntity.setPrice(orderDetail.getProductPrice());
+            petelOrderItemsEntities.add(petelOrderItemsEntity);
+
+            PetelRoomInventoriesEntity petelRoomInventoriesEntity = petelRoomInventoriesRepository.findByProductIdAndStayDate(orderDetail.getProductId(), orderDetail.getArrivalDate()).get(0);
+            petelRoomInventoriesEntity.setAvailableQuantity(petelRoomInventoriesEntity.getAvailableQuantity() - orderDetail.getProductQuantity());
+            petelRoomInventoriesEntities.add(petelRoomInventoriesEntity);
+        }
 
         try {
-            for (int i = 0; i < orderDetail.size(); i++) {
-                PetelOrderItemsEntity petelOrderItemsEntity = new PetelOrderItemsEntity();
-                petelOrderItemsEntity.setOrderId(savedEntity.getId());
-                petelOrderItemsEntity.setArrivalDate(orderDetail.get(i).getArrivalDate());
-                petelOrderItemsEntity.setProductId(orderDetail.get(i).getProductId());
-                petelOrderItemsEntity.setQuantity(orderDetail.get(i).getProductQuantity());
-                petelOrderItemsEntity.setPrice(orderDetail.get(i).getProductPrice());
-                petelOrderItemsRepository.save(petelOrderItemsEntity);
-            }
+            petelOrderItemsRepository.saveAll(petelOrderItemsEntities);
         } catch (Exception e) {
             log.error("[BOOK-001] 建立訂單失敗 on PETEL_ORDER_ITEMS");
+            throw new InsertFailException();
+        }
+
+        try {
+            petelRoomInventoriesRepository.saveAll(petelRoomInventoriesEntities);
+        } catch (Exception e) {
+            log.error("[BOOK-001] 建立訂單失敗 on PETEL_ROOM_INVENTORIES");
             throw new InsertFailException();
         }
 

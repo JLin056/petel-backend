@@ -43,10 +43,9 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
             throw new DataNotFoundException("依據ID查無資料");
         }
 
-        PropertyEntity property = propertyOptional.get();
         HOTEL005Tranrs hotel005Tranrs = new HOTEL005Tranrs();
-        hotel005Tranrs.setNotice(property.getNotice());
-        log.info("[HOTEL-005] 查詢成功，id={}, notice={}", id, property.getNotice());
+        hotel005Tranrs.setNotice(propertyOptional.get().getNotice());
+        log.info("[HOTEL-005] 查詢成功，id={}, notice={}", id, propertyOptional.get().getNotice());
 
         return new Res<>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),

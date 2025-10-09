@@ -5,6 +5,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Slf4j
+@Getter
 @Component
 public class JwtUtil {
 
@@ -75,6 +78,7 @@ public class JwtUtil {
             throw new JwtProcessingException("RefreshToken 建立失敗");
         }
     }
+
     /**
      * 驗證 Token 是否有效
      * @param token Token

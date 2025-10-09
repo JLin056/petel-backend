@@ -48,13 +48,9 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
         hotel005Tranrs.setNotice(property.getNotice());
         log.info("[HOTEL-005] 查詢成功，id={}, notice={}", id, property.getNotice());
 
-        ResMwHeader resMwHeader = new ResMwHeader();
-        Res<HOTEL005Tranrs> response = new Res<>();
-        resMwHeader.setReturnCode(ReturnCodeAndDescEnum.SUCCESS.getCode());
-        resMwHeader.setReturnDesc(ReturnCodeAndDescEnum.SUCCESS.getDesc());
-
-        response.setMwHeader(resMwHeader);
-        response.setTranrs(hotel005Tranrs);
-        return response;
+        return new Res<>(
+                new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
+                hotel005Tranrs
+        );
     }
 }

@@ -38,8 +38,8 @@ public class PetelOrderItemsEntity {
     /**
      * 房型編號
      */
-    @Column(name = "PRODUCT_ID", nullable = false)
-    private Long productId;
+    @Column(name = "ROOM_ID", nullable = false)
+    private Long roomId;
 
     /**
      * 訂單對應到該房型編號的數量

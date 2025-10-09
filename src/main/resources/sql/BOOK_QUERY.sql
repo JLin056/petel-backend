@@ -10,7 +10,7 @@ select
     O.CREATED_AT,
     O.UPDATED_AT,
     I.ID as item_id,
-    I.ARRIVAL_DATE
+    I.ARRIVAL_DATE,
     I.PRODUCT_ID,
     I.QUANTITY,
     I.PRICE

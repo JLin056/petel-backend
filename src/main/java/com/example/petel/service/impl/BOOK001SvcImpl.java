@@ -80,6 +80,8 @@ public class BOOK001SvcImpl implements BOOK001Svc {
         List<PetelOrderItemsEntity> petelOrderItemsEntities = new ArrayList<>();
         List<PetelRoomInventoriesEntity> petelRoomInventoriesEntities = new ArrayList<>();
 
+        // TODO 前後邏輯待修改
+
         for (int i = 0; i < orderDetails.size(); i++) {
             BOOKTranrqOrderDetail orderDetail = orderDetails.get(i);
             PetelOrderItemsEntity petelOrderItemsEntity = new PetelOrderItemsEntity();

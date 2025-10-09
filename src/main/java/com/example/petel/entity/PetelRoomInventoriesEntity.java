@@ -25,20 +25,14 @@ public class PetelRoomInventoriesEntity {
     /**
      * 房型編號
      */
-    @Column(name = "PRODUCT_ID")
-    private Long productId;
+    @Column(name = "ROOM_ID")
+    private Long roomId;
 
     /**
      * 入住日期
      */
     @Column(name = "STAY_DATE")
     private String stayDate;
-
-    /**
-     * 該房型數量
-     */
-    @Column(name = "TOTAL_UNITS")
-    private Integer totalUnits;
 
     /**
      * 該房型可供販賣的數量

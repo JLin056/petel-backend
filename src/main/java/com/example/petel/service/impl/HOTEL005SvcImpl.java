@@ -26,7 +26,7 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
     /**
      * 查詢單筆旅館注意事項
      *
-     * @param hotel005Tranrq Req<HOTEL005Tranrq> （sellerId)
+     * @param hotel005Tranrq Req<HOTEL005Tranrq> （id)
      * @return Res<HOTEL005Tranrs>
      * @throws DataNotFoundException
      */
@@ -34,19 +34,19 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
     @Transactional(rollbackOn = Exception.class)
     public Res<HOTEL005Tranrs> policies(Req<HOTEL005Tranrq> hotel005Tranrq) throws DataNotFoundException {
         log.info("-------- [HOTEL-005] 查詢單旅館注意事項 ---------");
-        Long sellerId = hotel005Tranrq.getTranrq().getSellerId();
-        log.info("[HOTEL-005] 查詢 sellerId = {}", sellerId);
+        Long id = hotel005Tranrq.getTranrq().getId();
+        log.info("[HOTEL-005] 查詢 id = {}", id);
 
-        Optional<PropertyEntity> propertyOptional = propertyRepository.findBySellerId(sellerId);
+        Optional<PropertyEntity> propertyOptional = propertyRepository.findById(id);
         if (propertyOptional.isEmpty()) {
-            log.warn("[HOTEL-005] 依據 sellerId 查無資料");
-            throw new DataNotFoundException("依據旅館業者ID查無資料");
+            log.warn("[HOTEL-005] 依據 id 查無資料");
+            throw new DataNotFoundException("依據ID查無資料");
         }
 
         PropertyEntity property = propertyOptional.get();
         HOTEL005Tranrs hotel005Tranrs = new HOTEL005Tranrs();
         hotel005Tranrs.setNotice(property.getNotice());
-        log.info("[HOTEL-005] 查詢成功，sellerId={}, notice={}", sellerId, property.getNotice());
+        log.info("[HOTEL-005] 查詢成功，id={}, notice={}", id, property.getNotice());
 
         ResMwHeader resMwHeader = new ResMwHeader();
         Res<HOTEL005Tranrs> response = new Res<>();

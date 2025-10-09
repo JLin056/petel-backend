@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PETEL_ORDERS")
+@Table(name = "PETEL_ROOM_INVENTORIES")
 public class PetelRoomInventoriesEntity {
 
     /**

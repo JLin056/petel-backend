@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface PetelRoomInventoriesRepository extends JpaRepository<PetelRoomInventoriesEntity, Long> {
     List<PetelRoomInventoriesEntity> findByProductIdAndStayDate(Long productId, String stayDate);
+    List<PetelRoomInventoriesEntity> findByProductId(Long productId);
 }

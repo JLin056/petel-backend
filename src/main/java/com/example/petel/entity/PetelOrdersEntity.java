@@ -45,7 +45,7 @@ public class PetelOrdersEntity {
      * 訂單費用
      */
     @Column(name = "HOTEL_CHARGES", nullable = false)
-    private Double hotelCharges;
+    private Integer hotelCharges;
 
     /**
      * 入住日期：'yyyy-MM-dd'

@@ -50,5 +50,5 @@ public class PetelOrderItemsEntity {
      * 該房型價格
      */
     @Column(name = "PRICE", nullable = false)
-    private Double price;
+    private Integer price;
 }

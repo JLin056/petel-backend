@@ -33,10 +33,10 @@ public class BOOK005Tranrq implements Serializable {
     private String idempotencyKey;
 
     @JsonProperty("hotel_charges")
-    private Double hotelCharges;
+    private Integer hotelCharges;
 
     @JsonProperty("txn_fee")
-    private Double transactionFee;
+    private Integer transactionFee;
 
     @JsonProperty("pay_time")
     private Timestamp payTime;

@@ -93,12 +93,13 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             List<PetelRoomInventoriesEntity> petelRoomInventoriesEntity = petelRoomInventoriesRepository.findByProductIdAndStayDate(orderDetail.getProductId(), orderDetail.getArrivalDate());
 
             if (petelRoomInventoriesEntity.isEmpty()) {
-                log.error("[BOOK-001] 查無房庫 productId={} arrivalDate='{}'(len={})", orderDetail.getProductId(), orderDetail.getArrivalDate().trim(), orderDetail.getArrivalDate().trim().length());
+                log.error("[BOOK-001] 查無房庫 productId={} arrivalDate='{}'", orderDetail.getProductId(), orderDetail.getArrivalDate());
                 throw new InsertFailException();
             }
 
-            petelRoomInventoriesEntity.get(0).setAvailableQuantity(petelRoomInventoriesEntity.get(0).getAvailableQuantity() - orderDetail.getProductQuantity());
-            petelRoomInventoriesEntities.add(petelRoomInventoriesEntity.get(0));
+            PetelRoomInventoriesEntity firstPetelRoomInventoriesEntity = petelRoomInventoriesEntity.get(0);
+            firstPetelRoomInventoriesEntity.setAvailableQuantity(firstPetelRoomInventoriesEntity.getAvailableQuantity() - orderDetail.getProductQuantity());
+            petelRoomInventoriesEntities.add(firstPetelRoomInventoriesEntity);
         }
 
         try {

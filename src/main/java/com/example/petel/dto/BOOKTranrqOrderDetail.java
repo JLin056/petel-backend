@@ -34,6 +34,6 @@ public class BOOKTranrqOrderDetail implements Serializable {
 
     @JsonProperty("product_price")
     @NotNull(message = "product_price不得為空")
-    private Double productPrice;
+    private Integer productPrice;
 }
 

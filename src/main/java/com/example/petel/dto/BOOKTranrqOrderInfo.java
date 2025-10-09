@@ -33,7 +33,7 @@ public class BOOKTranrqOrderInfo implements Serializable {
 
     @JsonProperty("hotel_charges")
     @NotNull(message = "hotel_charges不得為空")
-    private Double hotelCharges;
+    private Integer hotelCharges;
 
     @JsonProperty("check_in")
     @NotBlank(message = "check_in不得為空")

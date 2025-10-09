@@ -31,7 +31,6 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
      * @throws DataNotFoundException
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
     public Res<HOTEL005Tranrs> policies(Req<HOTEL005Tranrq> hotel005Tranrq) throws DataNotFoundException {
         log.info("-------- [HOTEL-005] 查詢單旅館注意事項 ---------");
         Long id = hotel005Tranrq.getTranrq().getId();

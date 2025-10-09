@@ -20,6 +20,7 @@ public class PetelOrdersEntity {
      * 訂單編號
      */
     @Id
+    @Column(name = "ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

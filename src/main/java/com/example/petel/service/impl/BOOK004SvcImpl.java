@@ -67,7 +67,7 @@ public class BOOK004SvcImpl implements BOOK004Svc {
                 return new DataNotFoundException();
             });
 
-            RoomEntity roomEntity = roomRepository.findByRoomId(roomId).orElseThrow(() -> {
+            RoomEntity roomEntity = roomRepository.findById(roomId).orElseThrow(() -> {
                 log.error("[BOOK-004] 查無房型編號 {} 資料，取消訂單失敗", roomId);
                 return new DataNotFoundException();
             });

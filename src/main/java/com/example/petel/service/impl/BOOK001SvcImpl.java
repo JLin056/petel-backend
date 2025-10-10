@@ -65,7 +65,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             Optional<RoomInventoriesEntity> orderedResult = roomInventoriesRepository.findByRoomIdAndStayDate(roomId, arrivalDate);
 
             if (orderedResult.isEmpty()) {
-                Optional<RoomEntity> roomEntity = roomRepository.findByRoomId(roomId);
+                Optional<RoomEntity> roomEntity = roomRepository.findById(roomId);
                 if (roomEntity.isEmpty()) {
                     log.error("[BOOK-001] 查無房型編號 {}，訂單建立失敗", roomId);
                     throw new InsertFailException();

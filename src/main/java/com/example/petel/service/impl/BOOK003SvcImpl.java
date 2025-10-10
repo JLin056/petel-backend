@@ -7,6 +7,7 @@ import com.example.petel.exception.UpdateFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.OrdersRepository;
 import com.example.petel.service.BOOK003Svc;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class BOOK003SvcImpl implements BOOK003Svc {
      * @throws UpdateFailException   修改失敗
      */
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public Res<BOOKTranrs> book003(Req<BOOK003Tranrq> requestBody) throws DataNotFoundException, UpdateFailException {
 
         log.info("-------- [BOOK-003] 修改該筆訂單 API 啟動 --------");

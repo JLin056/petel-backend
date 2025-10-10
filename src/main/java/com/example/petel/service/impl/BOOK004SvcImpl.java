@@ -13,6 +13,7 @@ import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.RoomInventoriesRepository;
 import com.example.petel.repository.RoomRepository;
 import com.example.petel.service.BOOK004Svc;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,7 @@ public class BOOK004SvcImpl implements BOOK004Svc {
      * @throws DeleteFailException   刪除失敗
      */
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public Res<BOOKTranrs> book004(Req<BOOK004Tranrq> requestBody) throws DataNotFoundException, DeleteFailException {
 
         log.info("-------- [BOOK-004] 取消該筆訂單 API 啟動 --------");

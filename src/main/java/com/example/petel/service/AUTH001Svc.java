@@ -7,5 +7,5 @@ import com.example.petel.dto.Res;
 import com.example.petel.exception.InsertFailException;
 
 public interface AUTH001Svc {
-    public Res<AUTH001Tranrs> register(Req<AUTH001Tranrq> req) throws InsertFailException;
+    Res<AUTH001Tranrs> register(Req<AUTH001Tranrq> req) throws InsertFailException;
 }

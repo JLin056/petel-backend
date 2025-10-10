@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface AUTH002Svc {
 
-    public Res<AUTH002Tranrs> login(Req<AUTH002Tranrq> req, HttpServletResponse resp)
+    Res<AUTH002Tranrs> login(Req<AUTH002Tranrq> req, HttpServletResponse resp)
             throws InvalidInputException, JwtProcessingException;
 
 }

@@ -17,30 +17,57 @@ public class BOOK005Tranrq implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * orderId
+     */
     @JsonProperty("order_id")
     private Long orderId;
 
+    /**
+     * paymentId
+     */
     @JsonProperty("payment_id")
     private Integer paymentId;
 
+    /**
+     * transactionId
+     */
     @JsonProperty("txn_id")
     private String transactionId;
 
+    /**
+     * status
+     */
     @JsonProperty("status")
     private String status;
 
+    /**
+     * idempotencyKey
+     */
     @JsonProperty("idempotency_key")
     private String idempotencyKey;
 
+    /**
+     * hotelCharges
+     */
     @JsonProperty("hotel_charges")
     private Integer hotelCharges;
 
+    /**
+     * transactionFee
+     */
     @JsonProperty("txn_fee")
     private Integer transactionFee;
 
+    /**
+     * payTime
+     */
     @JsonProperty("pay_time")
     private Timestamp payTime;
 
+    /**
+     * createdAt
+     */
     @JsonProperty("created_at")
     private Timestamp createdAt;
 }

@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PETEL_ORDERS")
-public class PetelOrdersEntity {
+public class OrdersEntity {
 
     /**
      * 訂單編號

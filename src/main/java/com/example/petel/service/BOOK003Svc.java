@@ -4,7 +4,9 @@ import com.example.petel.dto.BOOK003Tranrq;
 import com.example.petel.dto.BOOKTranrs;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
+import com.example.petel.exception.DataNotFoundException;
+import com.example.petel.exception.UpdateFailException;
 
 public interface BOOK003Svc {
-    Res<BOOKTranrs> book003(Req<BOOK003Tranrq> requestBody) throws Exception;
+    Res<BOOKTranrs> book003(Req<BOOK003Tranrq> requestBody) throws DataNotFoundException, UpdateFailException;
 }

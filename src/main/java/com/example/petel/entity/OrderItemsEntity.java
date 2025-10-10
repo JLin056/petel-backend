@@ -13,10 +13,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PETEL_ORDER_ITEMS")
-public class PetelOrderItemsEntity {
+public class OrderItemsEntity {
 
     /**
-     * id
+     * Table ID
      */
     @Id
     @Column(name = "ID", nullable = false)

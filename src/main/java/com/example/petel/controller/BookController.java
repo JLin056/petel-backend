@@ -2,11 +2,14 @@ package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
+import com.example.petel.exception.*;
 import com.example.petel.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,25 +36,25 @@ public class BookController extends BaseController {
     private final BOOK006Svc book006Svc;
 
     @PostMapping(value = "/create")
-    public Res<BOOKTranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws Exception {
+    public Res<BOOKTranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
         return book001Svc.book001(requestBody);
     }
 
     @PostMapping(value = "/detail")
-    public Res<BOOKTranrs> book002(@Valid @RequestBody Req<BOOK002Tranrq> requestBody, Errors errors) throws Exception {
+    public Res<BOOKTranrs> book002(@Valid @RequestBody Req<BOOK002Tranrq> requestBody, Errors errors) throws DataNotFoundException, IOException, InvalidInputException {
         handleValidForDto(errors);
         return book002Svc.book002(requestBody);
     }
 
     @PostMapping(value = "/update")
-    public Res<BOOKTranrs> book003(@Valid @RequestBody Req<BOOK003Tranrq> requestBody, Errors errors) throws Exception {
+    public Res<BOOKTranrs> book003(@Valid @RequestBody Req<BOOK003Tranrq> requestBody, Errors errors) throws DataNotFoundException, UpdateFailException, InvalidInputException {
         handleValidForDto(errors);
         return book003Svc.book003(requestBody);
     }
 
     @PostMapping(value = "/cancel")
-    public Res<BOOKTranrs> book004(@Valid @RequestBody Req<BOOK004Tranrq> requestBody, Errors errors) throws Exception {
+    public Res<BOOKTranrs> book004(@Valid @RequestBody Req<BOOK004Tranrq> requestBody, Errors errors) throws DataNotFoundException, DeleteFailException, InvalidInputException {
         handleValidForDto(errors);
         return book004Svc.book004(requestBody);
     }

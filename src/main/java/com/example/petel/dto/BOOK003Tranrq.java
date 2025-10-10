@@ -19,10 +19,16 @@ public class BOOK003Tranrq implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * orderId
+     */
     @JsonProperty("order_id")
     @NotNull(message = "order_id不得為空")
     private Long orderId;
 
+    /**
+     * note
+     */
     @JsonProperty("note")
     private String note;
 }

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,17 +25,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BOOK002SvcImpl implements BOOK002Svc {
 
-    /**
-     * sqlFile
-     */
+    /** sqlFile */
     private static final String sqlFile = "BOOK_QUERY.sql";
-    /**
-     * sqlAction
-     */
+    /** sqlAction */
     private final SqlAction sqlAction;
-    /**
-     * sqlUtils
-     */
+    /** sqlUtils */
     private final SqlUtils sqlUtils;
 
     /**
@@ -42,11 +37,13 @@ public class BOOK002SvcImpl implements BOOK002Svc {
      *
      * @param requestBody Req<BOOK002Tranrq>
      * @return Res<BOOKTranrs>
+     * @throws DataNotFoundException 查無資料
+     * @throws IOException           檔案讀寫異常
      */
     @Override
-    public Res<BOOKTranrs> book002(Req<BOOK002Tranrq> requestBody) throws Exception {
+    public Res<BOOKTranrs> book002(Req<BOOK002Tranrq> requestBody) throws DataNotFoundException, IOException {
 
-        log.info("-------- [BOOK-002] 取得該筆訂單 --------");
+        log.info("-------- [BOOK-002] 取得該筆訂單 API 啟動 --------");
 
         Long orderId = requestBody.getTranrq().getOrderId();
 
@@ -56,39 +53,34 @@ public class BOOK002SvcImpl implements BOOK002Svc {
         List<Map<String, Object>> mapList = sqlAction.queryForList(sql, paramMap);
 
         if (mapList.isEmpty()) {
-            log.error("[BOOK-002] 無此筆訂單");
+            log.error("[BOOK-002] 查無資料，訂單查詢失敗");
             throw new DataNotFoundException();
         }
 
         List<BOOKTranrqOrderDetail> orderDetails = new ArrayList<>();
 
-        for (int i = 0; i < mapList.size(); i++) {
-            Map<String, Object> map = mapList.get(i);
+        for (Map<String, Object> queryResult : mapList) {
             BOOKTranrqOrderDetail orderDetail = new BOOKTranrqOrderDetail();
-            orderDetail.setProductId(MapUtils.getLong(map, "PRODUCT_ID"));
-            orderDetail.setArrivalDate(MapUtils.getString(map, "ARRIVAL_DATE"));
-            orderDetail.setProductQuantity(MapUtils.getInteger(map, "QUANTITY"));
-            orderDetail.setProductPrice(MapUtils.getInteger(map, "PRICE"));
+            orderDetail.setRoomId(MapUtils.getLong(queryResult, "ROOM_ID"));
+            orderDetail.setArrivalDate(MapUtils.getString(queryResult, "ARRIVAL_DATE"));
+            orderDetail.setRoomQuantity(MapUtils.getInteger(queryResult, "QUANTITY"));
+            orderDetail.setRoomPrice(MapUtils.getInteger(queryResult, "PRICE"));
             orderDetails.add(orderDetail);
         }
 
-        Map<String, Object> zeroIndexMap = mapList.get(0);
+        Map<String, Object> orderInfoMap = mapList.get(0);
 
         BOOKTranrqOrderInfo orderInfo = new BOOKTranrqOrderInfo();
-        orderInfo.setUserId(MapUtils.getLong(zeroIndexMap, "USER_ID"));
-        orderInfo.setPropertyId(MapUtils.getLong(zeroIndexMap, "PROPERTY_ID"));
-        orderInfo.setPaymentId(MapUtils.getInteger(zeroIndexMap, "PAYMENT_ID"));
-        orderInfo.setHotelCharges(MapUtils.getInteger(zeroIndexMap, "HOTEL_CHARGES"));
-        orderInfo.setCheckIn(MapUtils.getString(zeroIndexMap, "CHECK_IN"));
-        orderInfo.setCheckOut(MapUtils.getString(zeroIndexMap, "CHECK_OUT"));
-        orderInfo.setStatus(MapUtils.getString(zeroIndexMap, "STATUS"));
-        orderInfo.setNote(MapUtils.getString(zeroIndexMap, "NOTE"));
+        orderInfo.setUserId(MapUtils.getLong(orderInfoMap, "USER_ID"));
+        orderInfo.setPropertyId(MapUtils.getLong(orderInfoMap, "PROPERTY_ID"));
+        orderInfo.setPaymentId(MapUtils.getInteger(orderInfoMap, "PAYMENT_ID"));
+        orderInfo.setHotelCharges(MapUtils.getInteger(orderInfoMap, "HOTEL_CHARGES"));
+        orderInfo.setCheckIn(MapUtils.getString(orderInfoMap, "CHECK_IN"));
+        orderInfo.setCheckOut(MapUtils.getString(orderInfoMap, "CHECK_OUT"));
+        orderInfo.setStatus(MapUtils.getString(orderInfoMap, "STATUS"));
+        orderInfo.setNote(MapUtils.getString(orderInfoMap, "NOTE"));
 
         log.info("[BOOK-002] 取得該筆訂單成功");
-
-        Res<BOOKTranrs> responseBody = new Res<>();
-        responseBody.setMwHeader(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS));
-        responseBody.setTranrs(new BOOKTranrs(orderId, orderInfo, orderDetails));
-        return responseBody;
+        return new Res<BOOKTranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOKTranrs(orderId, orderInfo, orderDetails));
     }
 }

@@ -1,5 +1,5 @@
 select
-    O.ID as order_id,
+    O.ID as ORDER_ID,
     O.USER_ID,
     O.PROPERTY_ID,
     O.PAYMENT_ID,
@@ -9,9 +9,8 @@ select
     O.STATUS,
     O.CREATED_AT,
     O.UPDATED_AT,
-    I.ID as item_id,
     I.ARRIVAL_DATE,
-    I.PRODUCT_ID,
+    I.ROOM_ID,
     I.QUANTITY,
     I.PRICE
 from

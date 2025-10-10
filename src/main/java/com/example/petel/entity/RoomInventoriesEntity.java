@@ -12,10 +12,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PETEL_ROOM_INVENTORIES")
-public class PetelRoomInventoriesEntity {
+public class RoomInventoriesEntity {
 
     /**
-     * id
+     * Table ID
      */
     @Id
     @Column(name = "ID", nullable = false)
@@ -45,4 +45,14 @@ public class PetelRoomInventoriesEntity {
      */
     @Column(name = "PRICE")
     private Integer price;
+
+    /**
+     * 不含設定Table ID的建構子
+     */
+    public RoomInventoriesEntity (Long roomId, String stayDate, Integer availableQuantity, Integer price) {
+        this.roomId = roomId;
+        this.stayDate = stayDate;
+        this.availableQuantity = availableQuantity;
+        this.price = price;
+    }
 }

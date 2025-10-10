@@ -6,6 +6,7 @@ import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
 import com.example.petel.service.BOOK002Svc;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -41,6 +42,7 @@ public class BOOK002SvcImpl implements BOOK002Svc {
      * @throws IOException           檔案讀寫異常
      */
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public Res<BOOKTranrs> book002(Req<BOOK002Tranrq> requestBody) throws DataNotFoundException, IOException {
 
         log.info("-------- [BOOK-002] 取得該筆訂單 API 啟動 --------");

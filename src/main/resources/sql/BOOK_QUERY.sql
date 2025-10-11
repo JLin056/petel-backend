@@ -1,5 +1,4 @@
 select
-    O.ID as ORDER_ID,
     O.USER_ID,
     O.PROPERTY_ID,
     O.PAYMENT_ID,
@@ -7,6 +6,7 @@ select
     O.CHECK_IN,
     O.CHECK_OUT,
     O.STATUS,
+    O.NOTE,
     O.CREATED_AT,
     O.UPDATED_AT,
     I.ARRIVAL_DATE,

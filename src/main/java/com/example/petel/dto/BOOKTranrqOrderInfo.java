@@ -31,10 +31,6 @@ public class BOOKTranrqOrderInfo implements Serializable {
     @NotNull(message = "payment_id不得為空")
     private Integer paymentId;
 
-    @JsonProperty("hotel_charges")
-    @NotNull(message = "hotel_charges不得為空")
-    private Integer hotelCharges;
-
     @JsonProperty("check_in")
     @NotBlank(message = "check_in不得為空")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "日期格式錯誤，須為 yyyy-MM-dd")

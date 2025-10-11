@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -20,15 +21,36 @@ public class BOOKTranrs implements Serializable {
     @JsonProperty("order_id")
     private Long orderId;
 
-    @JsonProperty("order_info")
-    private BOOKTranrqOrderInfo orderInfo;
+    @JsonProperty("user_id")
+    private Long userId;
+
+    @JsonProperty("property_id")
+    private Long propertyId;
+
+    @JsonProperty("payment_id")
+    private Integer paymentId;
+
+    @JsonProperty("hotel_charges")
+    private Integer hotelCharges;
+
+    @JsonProperty("check_in")
+    private String checkIn;
+
+    @JsonProperty("check_out")
+    private String checkOut;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("note")
+    private String note;
+
+    @JsonProperty("created_at")
+    private Timestamp createdAt;
+
+    @JsonProperty("updated_at")
+    private Timestamp updatedAt;
 
     @JsonProperty("order_detail")
     private List<BOOKTranrqOrderDetail> orderDetail;
-
-    public BOOKTranrs(Long orderId) {
-        this.orderId = orderId;
-        this.orderInfo = null;
-        this.orderDetail = null;
-    }
 }

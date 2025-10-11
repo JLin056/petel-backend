@@ -17,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,16 +45,17 @@ public class BOOK001SvcImpl implements BOOK001Svc {
      * 建立訂單
      *
      * @param requestBody Req<BOOK001Tranrq>
-     * @return Res<Object>
+     * @return Res<BOOK001Tranrs>
      * @throws InsertFailException 新增失敗
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<Object> book001(Req<BOOK001Tranrq> requestBody) throws InsertFailException {
+    public Res<BOOK001Tranrs> book001(Req<BOOK001Tranrq> requestBody) throws InsertFailException {
 
         log.info("-------- [BOOK-001] 建立訂單 API 啟動 --------");
         List<BOOKTranrqOrderDetail> orderDetails = requestBody.getTranrq().getOrderDetail();
         List<OrderItemsEntity> orderItemsEntities = new ArrayList<>();
+        BigDecimal orderPrice = new BigDecimal(0);
 
         for (BOOKTranrqOrderDetail orderDetail : orderDetails) {
 
@@ -94,6 +95,8 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             orderItemsEntity.setQuantity(roomQuantity);
             orderItemsEntity.setPrice(roomPrice);
             orderItemsEntities.add(orderItemsEntity);
+
+            orderPrice = orderPrice.add(BigDecimal.valueOf(roomPrice));
         }
 
         BOOKTranrqOrderInfo orderInfo = requestBody.getTranrq().getOrderInfo();
@@ -102,7 +105,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
         ordersEntity.setUserId(orderInfo.getUserId());
         ordersEntity.setPropertyId(orderInfo.getPropertyId());
         ordersEntity.setPaymentId(orderInfo.getPaymentId());
-        ordersEntity.setHotelCharges(orderInfo.getHotelCharges());
+        ordersEntity.setHotelCharges(orderPrice.intValue());
         ordersEntity.setCheckIn(orderInfo.getCheckIn());
         ordersEntity.setCheckOut(orderInfo.getCheckOut());
         ordersEntity.setStatus(orderInfo.getStatus());
@@ -110,17 +113,19 @@ public class BOOK001SvcImpl implements BOOK001Svc {
         ordersEntity.setCreatedAt(Timestamp.from(Instant.now()));
 
         OrdersEntity savedEntity;
+        long orderId;
 
         try {
             savedEntity = ordersRepository.save(ordersEntity);
-            orderItemsEntities.forEach((entity) -> entity.setOrderId(savedEntity.getId()));
+            orderId = savedEntity.getId();
+            orderItemsEntities.forEach((entity) -> entity.setOrderId(orderId));
             orderItemsRepository.saveAll(orderItemsEntities);
         } catch (Exception e) {
             log.error("[BOOK-001] 資料新增至資料庫發生異常，訂單建立失敗");
             throw new InsertFailException();
         }
 
-        log.info("[BOOK-001] 建立訂單成功");
-        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new HashMap<>());
+        log.info("[BOOK-001] 建立訂單成功，訂單ID：{}", orderId);
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK001Tranrs(orderId));
     }
 }

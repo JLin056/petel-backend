@@ -36,7 +36,7 @@ public class BookController extends BaseController {
     private final BOOK006Svc book006Svc;
 
     @PostMapping(value = "/create")
-    public Res<Object> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
+    public Res<BOOK001Tranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
         return book001Svc.book001(requestBody);
     }

@@ -13,6 +13,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,17 +73,21 @@ public class BOOK002SvcImpl implements BOOK002Svc {
 
         Map<String, Object> orderInfoMap = mapList.get(0);
 
-        BOOKTranrqOrderInfo orderInfo = new BOOKTranrqOrderInfo();
-        orderInfo.setUserId(MapUtils.getLong(orderInfoMap, "USER_ID"));
-        orderInfo.setPropertyId(MapUtils.getLong(orderInfoMap, "PROPERTY_ID"));
-        orderInfo.setPaymentId(MapUtils.getInteger(orderInfoMap, "PAYMENT_ID"));
-        orderInfo.setHotelCharges(MapUtils.getInteger(orderInfoMap, "HOTEL_CHARGES"));
-        orderInfo.setCheckIn(MapUtils.getString(orderInfoMap, "CHECK_IN"));
-        orderInfo.setCheckOut(MapUtils.getString(orderInfoMap, "CHECK_OUT"));
-        orderInfo.setStatus(MapUtils.getString(orderInfoMap, "STATUS"));
-        orderInfo.setNote(MapUtils.getString(orderInfoMap, "NOTE"));
+        BOOKTranrs bookTranrs = new BOOKTranrs();
+        bookTranrs.setOrderId(orderId);
+        bookTranrs.setUserId(MapUtils.getLong(orderInfoMap, "USER_ID"));
+        bookTranrs.setPropertyId(MapUtils.getLong(orderInfoMap, "PROPERTY_ID"));
+        bookTranrs.setPaymentId(MapUtils.getInteger(orderInfoMap, "PAYMENT_ID"));
+        bookTranrs.setHotelCharges(MapUtils.getInteger(orderInfoMap, "HOTEL_CHARGES"));
+        bookTranrs.setCheckIn(MapUtils.getString(orderInfoMap, "CHECK_IN"));
+        bookTranrs.setCheckOut(MapUtils.getString(orderInfoMap, "CHECK_OUT"));
+        bookTranrs.setStatus(MapUtils.getString(orderInfoMap, "STATUS"));
+        bookTranrs.setNote(MapUtils.getString(orderInfoMap, "NOTE"));
+        bookTranrs.setCreatedAt((Timestamp) MapUtils.getObject(orderInfoMap, "CREATED_AT"));
+        bookTranrs.setUpdatedAt((Timestamp) MapUtils.getObject(orderInfoMap, "UPDATED_AT"));
+        bookTranrs.setOrderDetail(orderDetails);
 
         log.info("[BOOK-002] 取得該筆訂單成功");
-        return new Res<BOOKTranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOKTranrs(orderId, orderInfo, orderDetails));
+        return new Res<BOOKTranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), bookTranrs);
     }
 }

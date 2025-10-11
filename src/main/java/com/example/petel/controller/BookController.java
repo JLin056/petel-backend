@@ -36,7 +36,7 @@ public class BookController extends BaseController {
     private final BOOK006Svc book006Svc;
 
     @PostMapping(value = "/create")
-    public Res<BOOKTranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
+    public Res<Object> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
         return book001Svc.book001(requestBody);
     }
@@ -48,13 +48,13 @@ public class BookController extends BaseController {
     }
 
     @PostMapping(value = "/update")
-    public Res<BOOKTranrs> book003(@Valid @RequestBody Req<BOOK003Tranrq> requestBody, Errors errors) throws DataNotFoundException, UpdateFailException, InvalidInputException {
+    public Res<Object> book003(@Valid @RequestBody Req<BOOK003Tranrq> requestBody, Errors errors) throws DataNotFoundException, UpdateFailException, InvalidInputException {
         handleValidForDto(errors);
         return book003Svc.book003(requestBody);
     }
 
     @PostMapping(value = "/cancel")
-    public Res<BOOKTranrs> book004(@Valid @RequestBody Req<BOOK004Tranrq> requestBody, Errors errors) throws DataNotFoundException, DeleteFailException, InvalidInputException {
+    public Res<Object> book004(@Valid @RequestBody Req<BOOK004Tranrq> requestBody, Errors errors) throws DataNotFoundException, DeleteFailException, InvalidInputException {
         handleValidForDto(errors);
         return book004Svc.book004(requestBody);
     }

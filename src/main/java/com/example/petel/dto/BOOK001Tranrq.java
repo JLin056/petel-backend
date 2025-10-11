@@ -32,4 +32,3 @@ public class BOOK001Tranrq implements Serializable {
     @JsonProperty("order_detail")
     private List<BOOKTranrqOrderDetail> orderDetail;
 }
-

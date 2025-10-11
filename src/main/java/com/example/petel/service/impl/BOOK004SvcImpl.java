@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -41,13 +42,13 @@ public class BOOK004SvcImpl implements BOOK004Svc {
      * 取消該筆訂單
      *
      * @param requestBody Req<BOOK004Tranrq>
-     * @return Res<BOOKTranrs>
+     * @return Res<Object>
      * @throws DataNotFoundException 查無資料
      * @throws DeleteFailException   刪除失敗
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<BOOKTranrs> book004(Req<BOOK004Tranrq> requestBody) throws DataNotFoundException, DeleteFailException {
+    public Res<Object> book004(Req<BOOK004Tranrq> requestBody) throws DataNotFoundException, DeleteFailException {
 
         log.info("-------- [BOOK-004] 取消該筆訂單 API 啟動 --------");
 
@@ -96,6 +97,6 @@ public class BOOK004SvcImpl implements BOOK004Svc {
         ordersRepository.save(ordersEntity);
 
         log.info("[BOOK-004] 取消訂單成功");
-        return new Res<BOOKTranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOKTranrs(orderId));
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new HashMap<>());
     }
 }

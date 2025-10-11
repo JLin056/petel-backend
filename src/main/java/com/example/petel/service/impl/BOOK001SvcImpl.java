@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,12 +45,12 @@ public class BOOK001SvcImpl implements BOOK001Svc {
      * 建立訂單
      *
      * @param requestBody Req<BOOK001Tranrq>
-     * @return Res<BOOKTranrs>
+     * @return Res<Object>
      * @throws InsertFailException 新增失敗
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<BOOKTranrs> book001(Req<BOOK001Tranrq> requestBody) throws InsertFailException {
+    public Res<Object> book001(Req<BOOK001Tranrq> requestBody) throws InsertFailException {
 
         log.info("-------- [BOOK-001] 建立訂單 API 啟動 --------");
         List<BOOKTranrqOrderDetail> orderDetails = requestBody.getTranrq().getOrderDetail();
@@ -120,6 +121,6 @@ public class BOOK001SvcImpl implements BOOK001Svc {
         }
 
         log.info("[BOOK-001] 建立訂單成功");
-        return new Res<BOOKTranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOKTranrs(savedEntity.getId()));
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new HashMap<>());
     }
 }

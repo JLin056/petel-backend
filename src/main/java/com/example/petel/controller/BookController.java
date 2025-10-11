@@ -42,7 +42,7 @@ public class BookController extends BaseController {
     }
 
     @PostMapping(value = "/detail")
-    public Res<BOOKTranrs> book002(@Valid @RequestBody Req<BOOK002Tranrq> requestBody, Errors errors) throws DataNotFoundException, IOException, InvalidInputException {
+    public Res<BOOK002Tranrs> book002(@Valid @RequestBody Req<BOOK002Tranrq> requestBody, Errors errors) throws DataNotFoundException, IOException, InvalidInputException {
         handleValidForDto(errors);
         return book002Svc.book002(requestBody);
     }
@@ -60,13 +60,13 @@ public class BookController extends BaseController {
     }
 
     @PostMapping(value = "/payments")
-    public Res<BOOKTranrs> book005(@Valid @RequestBody Req<BOOK005Tranrq> requestBody, Errors errors) throws Exception {
+    public Res<Object> book005(@Valid @RequestBody Req<BOOK005Tranrq> requestBody, Errors errors) throws Exception {
         handleValidForDto(errors);
         return book005Svc.book005(requestBody);
     }
 
     @PostMapping(value = "/refunds")
-    public Res<BOOKTranrs> book006(@Valid @RequestBody Req<BOOK006Tranrq> requestBody, Errors errors) throws Exception {
+    public Res<Object> book006(@Valid @RequestBody Req<BOOK006Tranrq> requestBody, Errors errors) throws Exception {
         handleValidForDto(errors);
         return book006Svc.book006(requestBody);
     }

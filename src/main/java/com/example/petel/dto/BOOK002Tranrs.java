@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BOOKTranrs implements Serializable {
+public class BOOK002Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

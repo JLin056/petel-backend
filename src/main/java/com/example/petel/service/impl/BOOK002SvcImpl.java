@@ -38,13 +38,13 @@ public class BOOK002SvcImpl implements BOOK002Svc {
      * 取得該筆訂單
      *
      * @param requestBody Req<BOOK002Tranrq>
-     * @return Res<BOOKTranrs>
+     * @return Res<BOOK002Tranrs>
      * @throws DataNotFoundException 查無資料
      * @throws IOException           檔案讀寫異常
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<BOOKTranrs> book002(Req<BOOK002Tranrq> requestBody) throws DataNotFoundException, IOException {
+    public Res<BOOK002Tranrs> book002(Req<BOOK002Tranrq> requestBody) throws DataNotFoundException, IOException {
 
         log.info("-------- [BOOK-002] 取得該筆訂單 API 啟動 --------");
 
@@ -73,21 +73,21 @@ public class BOOK002SvcImpl implements BOOK002Svc {
 
         Map<String, Object> orderInfoMap = mapList.get(0);
 
-        BOOKTranrs bookTranrs = new BOOKTranrs();
-        bookTranrs.setOrderId(orderId);
-        bookTranrs.setUserId(MapUtils.getLong(orderInfoMap, "USER_ID"));
-        bookTranrs.setPropertyId(MapUtils.getLong(orderInfoMap, "PROPERTY_ID"));
-        bookTranrs.setPaymentId(MapUtils.getInteger(orderInfoMap, "PAYMENT_ID"));
-        bookTranrs.setHotelCharges(MapUtils.getInteger(orderInfoMap, "HOTEL_CHARGES"));
-        bookTranrs.setCheckIn(MapUtils.getString(orderInfoMap, "CHECK_IN"));
-        bookTranrs.setCheckOut(MapUtils.getString(orderInfoMap, "CHECK_OUT"));
-        bookTranrs.setStatus(MapUtils.getString(orderInfoMap, "STATUS"));
-        bookTranrs.setNote(MapUtils.getString(orderInfoMap, "NOTE"));
-        bookTranrs.setCreatedAt((Timestamp) MapUtils.getObject(orderInfoMap, "CREATED_AT"));
-        bookTranrs.setUpdatedAt((Timestamp) MapUtils.getObject(orderInfoMap, "UPDATED_AT"));
-        bookTranrs.setOrderDetail(orderDetails);
+        BOOK002Tranrs book002Tranrs = new BOOK002Tranrs();
+        book002Tranrs.setOrderId(orderId);
+        book002Tranrs.setUserId(MapUtils.getLong(orderInfoMap, "USER_ID"));
+        book002Tranrs.setPropertyId(MapUtils.getLong(orderInfoMap, "PROPERTY_ID"));
+        book002Tranrs.setPaymentId(MapUtils.getInteger(orderInfoMap, "PAYMENT_ID"));
+        book002Tranrs.setHotelCharges(MapUtils.getInteger(orderInfoMap, "HOTEL_CHARGES"));
+        book002Tranrs.setCheckIn(MapUtils.getString(orderInfoMap, "CHECK_IN"));
+        book002Tranrs.setCheckOut(MapUtils.getString(orderInfoMap, "CHECK_OUT"));
+        book002Tranrs.setStatus(MapUtils.getString(orderInfoMap, "STATUS"));
+        book002Tranrs.setNote(MapUtils.getString(orderInfoMap, "NOTE"));
+        book002Tranrs.setCreatedAt((Timestamp) MapUtils.getObject(orderInfoMap, "CREATED_AT"));
+        book002Tranrs.setUpdatedAt((Timestamp) MapUtils.getObject(orderInfoMap, "UPDATED_AT"));
+        book002Tranrs.setOrderDetail(orderDetails);
 
         log.info("[BOOK-002] 取得該筆訂單成功");
-        return new Res<BOOKTranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), bookTranrs);
+        return new Res<BOOK002Tranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), book002Tranrs);
     }
 }

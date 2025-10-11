@@ -99,6 +99,16 @@ public class WebExceptionHandler {
     public Res<Object> handleJwtProcessingException(JwtProcessingException ex) {
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
     }
+
+    /**
+     * 退款異常
+     */
+    @ResponseBody
+    @ExceptionHandler(RefundFailException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handleRefundFailException(JwtProcessingException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
 }
 
 

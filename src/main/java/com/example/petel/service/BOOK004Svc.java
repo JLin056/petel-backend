@@ -8,6 +8,6 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.DeleteFailException;
 
 public interface BOOK004Svc {
-    Res<BOOKTranrs> book004(Req<BOOK004Tranrq> requestBody) throws DataNotFoundException, DeleteFailException;
+    Res<Object> book004(Req<BOOK004Tranrq> requestBody) throws DataNotFoundException, DeleteFailException;
 }
 

@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 /**
  * BOOK-003 修改該筆訂單 SvcImpl
  */
@@ -27,13 +29,13 @@ public class BOOK003SvcImpl implements BOOK003Svc {
      * 修改該筆訂單
      *
      * @param requestBody Req<BOOK003Tranrq>
-     * @return Res<BOOKTranrs>
+     * @return Res<Object>
      * @throws DataNotFoundException 查無資料
      * @throws UpdateFailException   修改失敗
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<BOOKTranrs> book003(Req<BOOK003Tranrq> requestBody) throws DataNotFoundException, UpdateFailException {
+    public Res<Object> book003(Req<BOOK003Tranrq> requestBody) throws DataNotFoundException, UpdateFailException {
 
         log.info("-------- [BOOK-003] 修改該筆訂單 API 啟動 --------");
 
@@ -54,6 +56,6 @@ public class BOOK003SvcImpl implements BOOK003Svc {
         }
 
         log.info("[BOOK-003] 修改該筆訂單成功");
-        return new Res<BOOKTranrs>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOKTranrs(orderId));
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new HashMap<>());
     }
 }

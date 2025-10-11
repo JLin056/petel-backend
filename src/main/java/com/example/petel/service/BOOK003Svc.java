@@ -8,5 +8,5 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.UpdateFailException;
 
 public interface BOOK003Svc {
-    Res<BOOKTranrs> book003(Req<BOOK003Tranrq> requestBody) throws DataNotFoundException, UpdateFailException;
+    Res<Object> book003(Req<BOOK003Tranrq> requestBody) throws DataNotFoundException, UpdateFailException;
 }

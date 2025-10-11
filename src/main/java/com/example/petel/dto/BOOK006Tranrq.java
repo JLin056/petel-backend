@@ -1,6 +1,7 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,29 +21,13 @@ public class BOOK006Tranrq implements Serializable {
      * orderId
      */
     @JsonProperty("order_id")
+    @NotNull(message = "order_id不得為空")
     private Long orderId;
-
-    /**
-     * paymentId
-     */
-    @JsonProperty("payment_id")
-    private Integer paymentId;
-
-    /**
-     * transactionId
-     */
-    @JsonProperty("txn_id")
-    private String transactionId;
-
-    /**
-     * status
-     */
-    @JsonProperty("status")
-    private String status;
 
     /**
      * refundRatio
      */
     @JsonProperty("refund_ratio")
+    @NotNull(message = "refund_ratio不得為空")
     private Double refundRatio;
 }

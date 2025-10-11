@@ -1,7 +1,6 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.BOOK005Tranrq;
-import com.example.petel.dto.BOOK002Tranrs;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.service.BOOK005Svc;
@@ -19,6 +18,7 @@ public class BOOK005SvcImpl implements BOOK005Svc {
 
     /**
      * 付款
+     *
      * @param requestBody Req<BOOK005Tranrq>
      * @return Res<Object>
      */

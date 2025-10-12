@@ -23,11 +23,4 @@ public class BOOK006Tranrq implements Serializable {
     @JsonProperty("order_id")
     @NotNull(message = "order_id不得為空")
     private Long orderId;
-
-    /**
-     * refundRatio
-     */
-    @JsonProperty("refund_ratio")
-    @NotNull(message = "refund_ratio不得為空")
-    private Double refundRatio;
 }

@@ -4,11 +4,12 @@ import com.example.petel.dto.BOOK006Tranrq;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.dto.ResMwHeader;
+import com.example.petel.entity.OrdersEntity;
 import com.example.petel.entity.TransactionsEntity;
 import com.example.petel.exception.DataNotFoundException;
-import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.RefundFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
+import com.example.petel.model.TimeUtil;
 import com.example.petel.repository.*;
 import com.example.petel.service.BOOK006Svc;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
 
 /**
@@ -30,16 +33,16 @@ public class BOOK006SvcImpl implements BOOK006Svc {
 
     /** OrdersRepository */
     private final OrdersRepository ordersRepository;
-    /** OrderItemsRepository */
-    private final OrderItemsRepository orderItemsRepository;
-    /** RoomInventoriesRepository */
-    private final RoomInventoriesRepository roomInventoriesRepository;
-    /** RoomRepository */
-    private final RoomRepository roomRepository;
     /** TransactionsRepository */
     private final TransactionsRepository transactionsRepository;
-    /** VirtualAccountsRepository */
-    private final VirtualAccountsRepository virtualAccountsRepository;
+    /** MIN_DAYS_FULL_REFUND */
+    private static final int MIN_DAYS_FULL_REFUND = 10;
+    /** MIN_DAYS_HALF_REFUND */
+    private static final int MIN_DAYS_HALF_REFUND = 5;
+    /** ATM_REFUND_FEE */
+    private static final int ATM_REFUND_FEE = 15;
+    /** PAYMENT_ID_ATM */
+    private static final int PAYMENT_ID_ATM = 3;
 
     /**
      * 退款
@@ -52,25 +55,53 @@ public class BOOK006SvcImpl implements BOOK006Svc {
 
         long orderId = requestBody.getTranrq().getOrderId();
 
+        OrdersEntity ordersEntity = ordersRepository.findById(orderId).orElseThrow(() -> {
+            log.error("[BOOK-006] 查無訂單編號為 {} 的訂單資料，請求退款失敗", orderId);
+            return new DataNotFoundException();
+        });
+
+        if (!("已付款".equals(ordersEntity.getStatus()))) {
+            log.error("[BOOK-006] 訂單編號為 {} 的訂單資料並非已付款狀態，請求退款失敗", orderId);
+            throw new RefundFailException();
+        }
+
         TransactionsEntity transactionsEntity = transactionsRepository.findByOrderId(orderId).orElseThrow(() -> {
             log.error("[BOOK-006] 查無訂單編號為 {} 的交易資料，請求退款失敗", orderId);
             return new DataNotFoundException();
         });
 
-        transactionsEntity.setFlowType("refund");
-
         if ("付款失敗".equals(transactionsEntity.getStatus())) {
+            log.error("[BOOK-006] 交易編號為 {} 的交易資料狀態為付款失敗，無法請求退款", orderId);
             throw new RefundFailException();
         }
 
+        long differenceOfDays = TimeUtil.getDifferenceOfDays(LocalDate.now().toString(), ordersEntity.getCheckIn());
+        double ratio;
+
+        if (differenceOfDays >= MIN_DAYS_FULL_REFUND) {
+            ratio = 1;
+        } else if (differenceOfDays >= MIN_DAYS_HALF_REFUND) {
+            ratio = 0.5;
+        } else {
+            log.info("[BOOK-006] 請注意，退款比例為 0");
+            ratio = 0;
+        }
+
         BigDecimal transactionPrice = new BigDecimal(transactionsEntity.getHotelCharges());
-        BigDecimal refundRatio = new BigDecimal(requestBody.getTranrq().getRefundRatio());
-        transactionsEntity.setRefundAmount(transactionPrice.multiply(refundRatio).intValue());
+        BigDecimal refundRatio = BigDecimal.valueOf(ratio);
+        transactionsEntity.setFlowType("refund");
+        log.info("[BOOK-006] 退款金額 = 交易金額 * 退款比例，有小數點無條件捨去至整數位");
+        transactionsEntity.setRefundAmount(transactionPrice.multiply(refundRatio).setScale(0, RoundingMode.FLOOR).intValue());
+
+        if (transactionsEntity.getPaymentId() == PAYMENT_ID_ATM && ratio != 0) {
+            log.info("[BOOK-006] 請注意，綠界不支援信用卡以外的退款，在這裡使用預設的ATM退款手續費");
+            transactionsEntity.setTransactionFee(ATM_REFUND_FEE);
+        }
+
         transactionsEntity.setUpdatedAt(Timestamp.from(Instant.now()));
+        transactionsRepository.save(transactionsEntity);
 
-        // TODO 利用時間差取得退款比例，不須放在上行
-
-        log.info("[BOOK-006] 請求退款成功");
+        log.info("[BOOK-006] 訂單編號為 {} 的訂單，請求退款成功", orderId);
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new HashMap<>());
     }
 }

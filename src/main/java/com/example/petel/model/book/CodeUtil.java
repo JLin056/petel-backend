@@ -3,6 +3,7 @@ package com.example.petel.model.book;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -52,8 +53,6 @@ public class CodeUtil {
         return hexString.toString().toUpperCase();
     }
 
-    // TODO check this method
-
     /**
      * AES 128 位元 CBC PKCS7 加密 (Java預設PKCS5Padding與PKCS7Padding行為相同) Ref: <a href="https://developers.ecpay.com.tw/?p=45948"> 方法邏輯參考 </a>
      * @param data      Json 字串 (前端實作：JSON.stringify())
@@ -61,7 +60,7 @@ public class CodeUtil {
      * @param hashIV    初始向量 (16字元)
      * @return          Base64編碼的加密字串
      */
-    public static String dataEncrypt(String data, String hashKey, String hashIV) throws Exception {
+    public static String dataEncrypt(String data, String hashKey, String hashIV) throws Exception { // TODO check this method
 
         String urlEncodedData = URLEncoder.encode(data, StandardCharsets.UTF_8);
 
@@ -73,5 +72,26 @@ public class CodeUtil {
         byte[] encrypted = cipher.doFinal(urlEncodedData.getBytes(StandardCharsets.UTF_8));
 
         return Base64.getEncoder().encodeToString(encrypted);
+    }
+
+    /**
+     * Inverse function of dataEncrypt. Ref: <a href="https://developers.ecpay.com.tw/?p=45948"> 方法邏輯參考 </a>
+     * @param encryptedData 加密過的data
+     * @param hashKey   AES密鑰 (16字元)
+     * @param hashIV    初始向量 (16字元)
+     * @return          Json 字串
+     */
+    public static String dataDecrypt(String encryptedData, String hashKey, String hashIV) throws Exception { // TODO check this method
+
+        byte[] decodedBytes = Base64.getDecoder().decode(encryptedData);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(hashKey.getBytes(StandardCharsets.UTF_8), "AES");
+        IvParameterSpec ivSpec = new IvParameterSpec(hashIV.getBytes(StandardCharsets.UTF_8));
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+
+        byte[] decrypted = cipher.doFinal(decodedBytes);
+
+        return URLDecoder.decode(new String(decrypted, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
     }
 }

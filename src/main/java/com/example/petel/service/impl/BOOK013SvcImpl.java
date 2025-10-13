@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
- * BOOK-013 通知接受取號回應綠界 (轉帳) SvcImpl
+ * BOOK-013 綠界通知取號回應接受 (轉帳) SvcImpl
  */
 @Slf4j
 @Service

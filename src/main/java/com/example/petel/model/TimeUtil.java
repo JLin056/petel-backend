@@ -3,6 +3,7 @@ package com.example.petel.model;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -41,6 +42,16 @@ public class TimeUtil {
      * @return "yyyy/MM/dd hh:mm:ss"
      */
     public static String getMerchantTradeDate(Timestamp timestamp) {
-        return DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss").format(timestamp.toLocalDateTime());
+        return DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(timestamp.toLocalDateTime());
+    }
+
+    /**
+     * Inverse function of getMerchantTradeDate.
+     *
+     * @param date The String Object: "yyyy/MM/dd HH:mm:ss".
+     * @return The Timestamp Object.
+     */
+    public static Timestamp parseMerchantTradeDate(String date) {
+        return Timestamp.valueOf(LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
     }
 }

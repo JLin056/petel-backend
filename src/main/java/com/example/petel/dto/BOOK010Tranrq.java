@@ -16,18 +16,33 @@ public class BOOK010Tranrq implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * merchantId
+     */
     @JsonProperty("MerchantID")
     private Long merchantId;
 
+    /**
+     * rpHeader
+     */
     @JsonProperty("RpHeader")
     private BOOK010TranrqRpHeader rpHeader;
 
+    /**
+     * transCode
+     */
     @JsonProperty("TransCode")
     private Integer transCode;
 
+    /**
+     * transMsg
+     */
     @JsonProperty("TransMsg")
     private String transMsg;
 
+    /**
+     * data
+     */
     @JsonProperty("Data")
     private String data;
 }

@@ -117,12 +117,12 @@ public class BookController extends BaseController {
     }
 
     @PostMapping(value = "/credit/notify")
-    public String book011(@RequestParam Map<String, String> requestParam) throws Exception {
+    public String book011(@RequestParam Map<String, Object> requestParam) throws Exception {
         return book011Svc.book011(requestParam);
     }
 
     @PostMapping(value = "/atm/notify")
-    public String book012(@RequestParam Map<String, String> requestParam) throws Exception {
+    public String book012(@RequestParam Map<String, Object> requestParam) throws Exception {
         return book012Svc.book012(requestParam);
     }
 

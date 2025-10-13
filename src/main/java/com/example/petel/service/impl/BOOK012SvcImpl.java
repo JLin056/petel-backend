@@ -1,27 +1,71 @@
 package com.example.petel.service.impl;
 
+import com.example.petel.entity.TransactionsEntity;
+import com.example.petel.exception.PaymentFailedException;
+import com.example.petel.model.TimeUtil;
+import com.example.petel.model.book.CodeUtil;
+import com.example.petel.repository.TransactionsRepository;
 import com.example.petel.service.BOOK012Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 /**
- * BOOK-012 通知付款回應綠界 (轉帳) SvcImpl
+ * BOOK-012 綠界通知付款回應 (轉帳) SvcImpl
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BOOK012SvcImpl implements BOOK012Svc {
 
-    @Override
-    public String book012(Map<String, String> requestParam) throws Exception {
+    /** TransactionsRepository */
+    private final TransactionsRepository transactionsRepository;
+    /** PAYMENT_ID */
+    private final long PAYMENT_ID = 3L;
+    /** SUCCESS_RTN_CODE */
+    private final int SUCCESS_RTN_CODE = 1;
+    /** HASH_KEY */
+    @Value("${ecpay.hashKey}")
+    private String HASH_KEY;
+    /** HASH_IV */
+    @Value("${ecpay.hashIv}")
+    private String HASH_IV;
 
-        // 先以最低標準實作：只有接收綠界參數，並直接回傳OK
-        // TODO 驗證參數（檢查 CheckMacValue 安全碼）
-        // TODO 記錄付款結果到系統訂單
-        // TODO 依 RtnCode == 1 判斷付款完成，其他代碼為失敗
+    @Override
+    public String book012(Map<String, Object> requestParam) throws Exception {
+
+        long orderId = Long.parseLong(requestParam.get("MerchantTradeNo").toString().replaceFirst("^PETEL0+", ""));
+
+        TransactionsEntity transactionsEntity = new TransactionsEntity();
+        transactionsEntity.setOrderId(orderId);
+        transactionsEntity.setPaymentId(PAYMENT_ID);
+        transactionsEntity.setTxnId(requestParam.get("TradeNo").toString());
+        transactionsEntity.setFlowType("Pay");
+        transactionsEntity.setHotelCharges((Integer) requestParam.get("TradeAmt"));
+        transactionsEntity.setCreatedAt(Timestamp.from(Instant.now()));
+
+        if ((Integer) requestParam.get("RtnCode") != SUCCESS_RTN_CODE) {
+            transactionsEntity.setStatus("付款失敗");
+            log.error("[BOOK-012] 付款失敗");
+            throw new PaymentFailedException();
+        }
+
+        if (!CodeUtil.generateCheckMacValue(requestParam, HASH_KEY, HASH_IV).equals(requestParam.get("CheckMacValue").toString())) {
+            transactionsEntity.setStatus("付款異常");
+            log.error("[BOOK-012] 檢查碼相異");
+            throw new PaymentFailedException();
+        }
+
+        transactionsEntity.setStatus("付款成功");
+        transactionsEntity.setIdempotencyKey(UUID.randomUUID().toString());
+        transactionsEntity.setTransactionFee((Integer) requestParam.get("PaymentTypeChargeFee"));
+        transactionsEntity.setPayTime(TimeUtil.parseMerchantTradeDate(requestParam.get("MerchantTradeDate").toString()));
 
         return "1|OK";
     }

@@ -11,17 +11,11 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BOOK007Tranrs implements Serializable {
+public class BOOK007TranrsRqHeader implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("MerchantID")
-    private String merchantId;
-
-    @JsonProperty("RqHeader")
-    private BOOK007TranrsRqHeader rqHeader;
-
-    @JsonProperty("Data")
-    private String data;
+    @JsonProperty("Timestamp")
+    private long timestamp;
 }

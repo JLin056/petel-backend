@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+/**
+ * BOOK-011 通知付款回應綠界 (線上刷卡) SvcImpl
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

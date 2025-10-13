@@ -51,7 +51,7 @@ public class BOOK006SvcImpl implements BOOK006Svc {
      * @return Res<Object>
      */
     @Override
-    public Res<Object> book006(Req<BOOK006Tranrq> requestBody) throws Exception {
+    public Res<Object> book006(Req<BOOK006Tranrq> requestBody) throws DataNotFoundException, RefundFailException {
 
         long orderId = requestBody.getTranrq().getOrderId();
 
@@ -90,12 +90,22 @@ public class BOOK006SvcImpl implements BOOK006Svc {
         BigDecimal transactionPrice = new BigDecimal(transactionsEntity.getHotelCharges());
         BigDecimal refundRatio = BigDecimal.valueOf(ratio);
         transactionsEntity.setFlowType("refund");
-        log.info("[BOOK-006] 退款金額 = 交易金額 * 退款比例，有小數點無條件捨去至整數位");
-        transactionsEntity.setRefundAmount(transactionPrice.multiply(refundRatio).setScale(0, RoundingMode.FLOOR).intValue());
 
-        if (transactionsEntity.getPaymentId() == PAYMENT_ID_ATM && ratio != 0) {
-            log.info("[BOOK-006] 請注意，綠界不支援信用卡以外的退款，在這裡使用預設的ATM退款手續費");
-            transactionsEntity.setTransactionFee(ATM_REFUND_FEE);
+        int refundAmount = transactionPrice.multiply(refundRatio).setScale(0, RoundingMode.FLOOR).intValue();
+
+        if (transactionsEntity.getPaymentId() == PAYMENT_ID_ATM) {
+            if (refundAmount >= 15) {
+                log.info("[BOOK-006] 使用虛擬 ATM 帳號且退款金額 >= 15：請注意，綠界不支援信用卡以外的退款，在這裡使用預設的ATM退款手續費");
+                transactionsEntity.setTransactionFee(BigDecimal.valueOf(transactionsEntity.getTransactionFee()).add(BigDecimal.valueOf(ATM_REFUND_FEE)).intValue());
+                log.info("[BOOK-006] 使用虛擬 ATM 帳號且退款金額 >= 15：退款金額 = 交易金額 * 退款比例 - 交易手續費，有小數點無條件捨去至整數位");
+                transactionsEntity.setRefundAmount(BigDecimal.valueOf(refundAmount).subtract(BigDecimal.valueOf(ATM_REFUND_FEE)).intValue());
+            } else {
+                log.info("[BOOK-006] 使用虛擬 ATM 帳號且退款金額 < 15：不退款也不收退款手續費");
+                transactionsEntity.setRefundAmount(0);
+            }
+        } else {
+            log.info("[BOOK-006] 退款金額 = 交易金額 * 退款比例，有小數點無條件捨去至整數位");
+            transactionsEntity.setRefundAmount(refundAmount);
         }
 
         transactionsEntity.setUpdatedAt(Timestamp.from(Instant.now()));

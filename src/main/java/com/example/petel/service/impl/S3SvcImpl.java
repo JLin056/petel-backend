@@ -27,19 +27,19 @@ public class S3SvcImpl implements S3Svc {
     @Override
     public S3SignatureRes generatePresignedUrl(S3SignUploadReq s3SignUploadReq) {
         // 1. 構造 Object Key (S3 檔案路徑)
-        String objectKey = "lodgings/" + s3SignUploadReq.getLodgingId() + "/" + System.currentTimeMillis() + "-" + s3SignUploadReq.getFilename();
+        String objectKey = "lodgings/" + s3SignUploadReq.getLodgingId() + "/" + System.currentTimeMillis() + "-" + s3SignUploadReq.getFileName();
 
-        // 2. 構造 PutObject 請求，設定 ACL 為 public-read
+        // 2. 構造 PutObject 請求
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)
                 .contentType(s3SignUploadReq.getFileType())
-                .acl("public-read") // 確保上傳後檔案是公開可讀取
+                // 移除 ACL 設定，使用 bucket 預設權限
                 .build();
 
-        // 3. 創建預簽名請求，設定有效期限（例如 2 分鐘）
+        // 3. 創建預簽名請求，設定有效期限（15 分鐘，方便測試）
         software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest presignedRequest =
-                s3Presigner.presignPutObject(r -> r.signatureDuration(Duration.ofMinutes(2)).putObjectRequest(objectRequest));
+                s3Presigner.presignPutObject(r -> r.signatureDuration(Duration.ofMinutes(15)).putObjectRequest(objectRequest));
 
         // 4. 構造最終的公開 Object URL
         String publicUrl = String.format("https://%s.s3.%s.amazonaws.com/%s",

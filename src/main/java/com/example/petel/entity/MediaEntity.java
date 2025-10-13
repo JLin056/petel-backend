@@ -1,9 +1,7 @@
 package com.example.petel.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,14 +13,12 @@ import java.time.LocalDateTime;
  * 媒體檔案實體 - PETEL_MEDIA 表
  */
 @Entity
-@Table(name = "PETEL_MEDIA")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MediaEntity implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+@Table(name = "PETEL_MEDIA")
+public class MediaEntity{
 
     /**
      * 媒體ID (主鍵，自動生成)

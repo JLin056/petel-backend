@@ -14,12 +14,18 @@ public class S3SignUploadReq implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**  */
-    private String filename;
+    /**
+     * 檔案名稱
+     */
+    private String fileName;
 
-    /**  */
+    /**
+     * 檔案類型 (MIME type)
+     */
     private String fileType;
 
-    /**   */
+    /**
+     * 住宿ID
+     */
     private String lodgingId;
 }

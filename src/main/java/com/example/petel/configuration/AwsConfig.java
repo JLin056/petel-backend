@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Configuration
@@ -33,6 +34,20 @@ public class AwsConfig {
         return S3Presigner.builder()
                 .region(Region.of(awsRegion)) // 確保 Region 已設定
                 .credentialsProvider(credentialsProvider) // 顯式傳入密鑰
+                .build();
+    }
+
+    @Bean
+    public S3Client s3Client() {
+
+        // 1. 建立靜態憑證提供者 (StaticCredentialsProvider)
+        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+        StaticCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(credentials);
+
+        // 2. 使用憑證和 Region 建立 S3Client
+        return S3Client.builder()
+                .region(Region.of(awsRegion))
+                .credentialsProvider(credentialsProvider)
                 .build();
     }
 }

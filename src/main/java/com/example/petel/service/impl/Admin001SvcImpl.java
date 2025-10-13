@@ -54,12 +54,23 @@ public class Admin001SvcImpl implements Admin001Svc {
             paramMap.put("sellerName", "%" + tranrq.getSellerName() + "%");
         }
 
-        // 取得動態 SQL
+        // 計算分頁參數
+        Admin001TranrqPage page = tranrq.getPage();
+        int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
+        int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 10;
+        int offset = (pageNumber - 1) * pageSize;
+
+        // 加入分頁參數
+        paramMap.put("offset", offset);
+        paramMap.put("pageSize", pageSize);
+
+        // 取得動態 SQL (已包含分頁)
         String sql = sqlUtils.getDynamicQuerySQL("ADMIN001_QUERY.sql", paramMap);
         log.info("[ADMIN-001] 執行 SQL: {}", sql);
 
-        // 查詢總筆數
-        String countSql = "SELECT COUNT(*) FROM (" + sql + ") temp_table";
+        // 查詢總筆數 (移除 ORDER BY 和 OFFSET/FETCH)
+        String sqlForCount = sql.replaceAll("ORDER BY.*?OFFSET.*?ROWS FETCH NEXT.*?ROWS ONLY", "");
+        String countSql = "SELECT COUNT(*) FROM (" + sqlForCount + ") temp_table";
         Integer totalCount = namedParameterJdbcTemplate.queryForObject(
                 countSql,
                 new MapSqlParameterSource(paramMap),
@@ -72,21 +83,12 @@ public class Admin001SvcImpl implements Admin001Svc {
             throw new DataNotFoundException("查無旅館資料");
         }
 
-        // 計算分頁
-        Admin001TranrqPage page = tranrq.getPage();
-        int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
-        int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 10;
-        int offset = (pageNumber - 1) * pageSize;
-        int totalPages = (totalCount != null && totalCount > 0) ? (int) Math.ceil((double) totalCount / pageSize) : 0;
+        // 計算總頁數
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
-        // 加入排序和分頁查詢
-        String pagedSql = sql + " ORDER BY p.PROPERTY_ID OFFSET :offset ROWS FETCH NEXT :pageSize ROWS ONLY";
-        paramMap.put("offset", offset);
-        paramMap.put("pageSize", pageSize);
-
-        // 執行查詢
+        // 執行查詢 (使用包含分頁的 SQL)
         List<Admin001TranrsTranrs> hotels = namedParameterJdbcTemplate.query(
-                pagedSql,
+                sql,
                 new MapSqlParameterSource(paramMap),
                 (rs, rowNum) -> new Admin001TranrsTranrs(
                         rs.getInt("PROPERTY_ID"),

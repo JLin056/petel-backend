@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * S3 �ԔH�� - PETEL_MEDIA_S3 h
+ * S3 媒體檔案實體 - PETEL_MEDIA_S3 表
  */
 @Entity
 @Getter
@@ -15,20 +15,20 @@ import lombok.*;
 public class MediaS3Entity {
 
     /**
-     * ��ID (;u�o0 PETEL_MEDIA � ID)
+     * 媒體ID (主鍵，關聯到 PETEL_MEDIA 的 ID)
      */
     @Id
     @Column(name = "MEDIA_ID")
     private Long mediaId;
 
     /**
-     * S3 Bucket 1
+     * S3 Bucket
      */
     @Column(name = "BUCKET", length = 255)
     private String bucket;
 
     /**
-     * S3 Object Key (�H�)
+     * S3 Object Key (檔案路徑)
      */
     @Column(name = "OBJECT_KEY", length = 1500)
     private String objectKey;

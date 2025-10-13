@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/s3")
+@RequestMapping("/images")
 @CrossOrigin("http://localhost:4200")
 public class S3Controller extends BaseController {
 

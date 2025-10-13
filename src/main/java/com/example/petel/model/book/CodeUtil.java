@@ -9,7 +9,7 @@ import java.util.TreeMap;
 public class CodeUtil {
 
     /**
-     * Generate CheckMacValue. Ref: <a href="https://developers.ecpay.com.tw/?p=2902"> Logic </a>
+     * Generate CheckMacValue. Ref: <a href="https://developers.ecpay.com.tw/?p=2902"> 方法邏輯參考 </a>
      *
      * @param params  Map<String, Object>
      * @param hashKey String
@@ -38,7 +38,7 @@ public class CodeUtil {
                 .replace("%29", ")")
                 .replace("%20", "+");
 
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        MessageDigest md = MessageDigest.getInstance("SHA-256"); // TODO check this part
         md.update(encodedString.toLowerCase().getBytes());
         byte[] digest = md.digest();
         StringBuilder hexString = new StringBuilder();

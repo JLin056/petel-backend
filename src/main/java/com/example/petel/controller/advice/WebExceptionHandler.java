@@ -106,7 +106,17 @@ public class WebExceptionHandler {
     @ResponseBody
     @ExceptionHandler(RefundFailException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Res<Object> handleRefundFailException(JwtProcessingException ex) {
+    public Res<Object> handleRefundFailException(RefundFailException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
+
+    /**
+     * 付款方式異常
+     */
+    @ResponseBody
+    @ExceptionHandler(InvalidPaymentMethodException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handleInvalidPaymentMethodException(InvalidPaymentMethodException ex) {
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
     }
 }

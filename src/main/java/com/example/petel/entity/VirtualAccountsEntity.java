@@ -25,7 +25,7 @@ public class VirtualAccountsEntity {
     private Long orderId;
 
     /**
-     * 虛擬帳號到期日
+     * 虛擬帳號到期日 // FIXME check whether date or more details
      */
     @Column(name = "EXPIRED_AT", nullable = false)
     private String expiredAt;

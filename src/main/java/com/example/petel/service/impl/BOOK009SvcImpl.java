@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * BOOK-009 組合付款參數 (轉帳) SvcImpl
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,8 +36,8 @@ public class BOOK009SvcImpl implements BOOK009Svc {
     /** HASH_IV */
     @Value("${ecpay.hashIv}")
     private String HASH_IV;
-    /** RETURN_URL */
-    private static final String RETURN_URL = "http://localhost:8080/bookings/credit/notify"; // TODO 外界可以進入的URL
+    /** RETURN_URL */ // TODO 修改成外界可以進入的URL
+    private static final String RETURN_URL = "http://localhost:8080/bookings/atm/notify";
     /** ITEM_NAME */
     private static final String ITEM_NAME = "PETEL room(s)";
 

@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * BOOK-010 通知付款回應綠界 (現場付款) SvcImpl
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

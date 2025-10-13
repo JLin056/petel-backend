@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+/**
+ * BOOK-013 通知接受取號回應綠界 (轉帳) SvcImpl
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

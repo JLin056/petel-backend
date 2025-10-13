@@ -14,9 +14,9 @@ public class HOTEL005Tranrq implements Serializable {
     private static final long SerialVersionUID = 1L;
 
     /**
-     * id
+     * propertyId
      */
-    @JsonProperty("id")
-    @NotNull(message = "id不得為空")
-    private Long id;
+    @JsonProperty("propertyId")
+    @NotNull(message = "propertyId不得為空")
+    private Long propertyId;
 }

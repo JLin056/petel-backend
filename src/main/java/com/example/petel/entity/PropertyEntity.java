@@ -14,27 +14,27 @@ import lombok.Setter;
 public class PropertyEntity {
 
     @Id
-    @Column(name = "ID")
-    private Long id;
+    @Column(name = "PROPERTY_ID")
+    private Long propertyId;
 
     @Column(name = "SELLER_ID")
     private Long sellerId;
 
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "PROPERTY_NAME")
+    private String propertyName;
 
-    @Column(name = "TEL")
-    private String tel;
+    @Column(name = "PROPERTY_TEL")
+    private String propertyTel;
 
-    @Column(name = "POSTAL_CODE")
-    private String postalCode;
+    @Column(name = "PROPERTY_POSTAL_CODE")
+    private String propertyPostalCode;
 
-    @Column(name = "ADDRESS")
-    private String address;
+    @Column(name = "PROPERTY_ADDRESS")
+    private String propertyAddress;
 
-    @Column(name = "BANK_ACCOUNT")
-    private String bankAccount;
+    @Column(name = "PROPERTY_BANK_ACCOUNT")
+    private String propertyBankAccount;
 
-    @Column(name = "NOTICE")
-    private String notice;
+    @Column(name = "PROPERTY_NOTICE")
+    private String propertyNotice;
 }

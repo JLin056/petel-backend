@@ -11,6 +11,6 @@ public class HOTEL005Tranrs implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("notice")
-    private String notice;
+    @JsonProperty("propertyNotice")
+    private String propertyNotice;
 }

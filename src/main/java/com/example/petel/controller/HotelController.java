@@ -1,10 +1,7 @@
 package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
-import com.example.petel.dto.HOTEL005Tranrq;
-import com.example.petel.dto.HOTEL005Tranrs;
-import com.example.petel.dto.Req;
-import com.example.petel.dto.Res;
+import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.service.HOTEL005Svc;

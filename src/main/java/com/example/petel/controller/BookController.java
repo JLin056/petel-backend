@@ -66,7 +66,7 @@ public class BookController extends BaseController {
     }
 
     @PostMapping(value = "/refunds")
-    public Res<Object> book006(@Valid @RequestBody Req<BOOK006Tranrq> requestBody, Errors errors) throws Exception {
+    public Res<Object> book006(@Valid @RequestBody Req<BOOK006Tranrq> requestBody, Errors errors) throws DataNotFoundException, RefundFailException, InvalidInputException {
         handleValidForDto(errors);
         return book006Svc.book006(requestBody);
     }

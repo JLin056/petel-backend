@@ -2,13 +2,12 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.model.ReturnCodeAndDescEnum;
+import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
 import com.example.petel.service.Admin007Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.Map;
 public class Admin007SvcImpl implements Admin007Svc {
 
     private final SqlUtils sqlUtils;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SqlAction sqlAction;
 
     /**
      * 查詢會員列表
@@ -38,8 +37,8 @@ public class Admin007SvcImpl implements Admin007Svc {
         Map<String, Object> paramMap = new HashMap<>();
 
         // 動態組裝 SQL 參數
-        if (StringUtils.isNotBlank(tranrq.getAccountsId())) {
-            paramMap.put("accountsId", tranrq.getAccountsId());
+        if (StringUtils.isNotBlank(tranrq.getAccountId())) {
+            paramMap.put("accountId", tranrq.getAccountId());
         }
         if (StringUtils.isNotBlank(tranrq.getEmail())) {
             paramMap.put("email", tranrq.getEmail());
@@ -52,17 +51,44 @@ public class Admin007SvcImpl implements Admin007Svc {
             paramMap.put("phone", tranrq.getPhone());
         }
 
-        // 取得動態 SQL
-        String sql = sqlUtils.getDynamicQuerySQL("ADMIN007_QUERY.sql", paramMap);
+        // 計算分頁參數
+        Admin007TranrqPage page = tranrq.getPage();
+        int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
+        int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 5;
+        int offset = (pageNumber - 1) * pageSize;
+
+        // 加入分頁參數
+        paramMap.put("offset", offset);
+        paramMap.put("pageSize", pageSize);
+
+        System.out.println("paramMap: " + paramMap);
+
+        // 取得動態 SQL (已包含分頁)
+        String sql = sqlUtils.getDynamicQuerySQL("Admin007_Query.sql", paramMap);
+        System.out.println("處理後的 SQL: " + sql);
         log.info("[ADMIN-007] 執行 SQL: {}", sql);
 
-        // 查詢總筆數
-        String countSql = "SELECT COUNT(*) FROM (" + sql + ") temp_table";
-        Integer totalCount = namedParameterJdbcTemplate.queryForObject(
-                countSql,
-                new MapSqlParameterSource(paramMap),
-                Integer.class
-        );
+        // 查詢總筆數 (使用獨立的 COUNT SQL - 不需要分頁參數)
+        Map<String, Object> countParamMap = new HashMap<>();
+        if (StringUtils.isNotBlank(tranrq.getAccountId())) {
+            countParamMap.put("accountId", tranrq.getAccountId());
+        }
+        if (StringUtils.isNotBlank(tranrq.getEmail())) {
+            countParamMap.put("email", tranrq.getEmail());
+        }
+        if (StringUtils.isNotBlank(tranrq.getName())) {
+            countParamMap.put("name", "%" + tranrq.getName() + "%");
+        }
+        if (StringUtils.isNotBlank(tranrq.getPhone())) {
+            countParamMap.put("phone", tranrq.getPhone());
+        }
+        String countSql = sqlUtils.getDynamicQuerySQL("Admin007_Count.sql", countParamMap);
+        List<Map<String, Object>> countResult = sqlAction.queryForList(countSql, countParamMap);
+        Integer totalCount = 0;
+        if (countResult != null && !countResult.isEmpty()) {
+            Object countObj = countResult.get(0).get("TOTAL_COUNT");
+            totalCount = countObj != null ? ((Number) countObj).intValue() : 0;
+        }
 
         // 檢查是否有資料
         if (totalCount == null || totalCount == 0) {
@@ -70,33 +96,20 @@ public class Admin007SvcImpl implements Admin007Svc {
             throw new com.example.petel.exception.DataNotFoundException("查無會員資料");
         }
 
-        // 計算分頁
-        Admin007TranrqPage page = tranrq.getPage();
-        int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
-        int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 10;
-        int offset = (pageNumber - 1) * pageSize;
-        int totalPages = (totalCount != null && totalCount > 0) ? (int) Math.ceil((double) totalCount / pageSize) : 0;
+        // 計算總頁數
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
-        // 加入排序和分頁查詢
-        String pagedSql = sql + " ORDER BY a.ACCOUNTS_ID OFFSET :offset ROWS FETCH NEXT :pageSize ROWS ONLY";
-        paramMap.put("offset", offset);
-        paramMap.put("pageSize", pageSize);
-
-        // 執行查詢
-        List<Admin007TranrsTranrs> members = namedParameterJdbcTemplate.query(
-                pagedSql,
-                new MapSqlParameterSource(paramMap),
-                (rs, rowNum) -> new Admin007TranrsTranrs(
-                        rs.getInt("ACCOUNTS_ID"),
-                        rs.getString("EMAIL"),
-                        rs.getString("USERS_NAME"),
-                        rs.getString("USERS_PHONE"),
-                        rs.getString("ROLE"),
-                        rs.getString("STATUS")
-                )
+        // 執行查詢 (使用包含分頁的 SQL)
+        System.out.println("執行查詢前的 paramMap: " + paramMap);
+        List<Admin007TranrsTranrs> members = sqlAction.queryForListVO(
+                sql,
+                paramMap,
+                Admin007TranrsTranrs.class,
+                true
         );
 
         log.info("[ADMIN-007] 查詢成功，共 {} 筆，當前頁 {}/{}", totalCount, pageNumber, totalPages);
+        System.out.println(members);
 
         // 組裝回應
         Admin007Tranrs tranrs = new Admin007Tranrs();

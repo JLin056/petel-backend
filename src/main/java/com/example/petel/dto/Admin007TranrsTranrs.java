@@ -17,38 +17,38 @@ public class Admin007TranrsTranrs implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 帳號 ID
+     * 會員 ID
      */
-    @JsonProperty("accountId")
-    private Integer accountId;
+    @JsonProperty("ACCOUNT_ID")
+    private String accountID;
 
     /**
      * Email
      */
-    @JsonProperty("email")
+    @JsonProperty("EMAIL")
     private String email;
 
     /**
      * 姓名
      */
-    @JsonProperty("name")
+    @JsonProperty("NAME")
     private String name;
 
     /**
      * 電話
      */
-    @JsonProperty("phone")
+    @JsonProperty("PHONE")
     private String phone;
 
     /**
      * 角色
      */
-    @JsonProperty("role")
+    @JsonProperty("ROLE")
     private String role;
 
     /**
      * 帳號狀態
      */
-    @JsonProperty("status")
+    @JsonProperty("STATUS")
     private String status;
 }

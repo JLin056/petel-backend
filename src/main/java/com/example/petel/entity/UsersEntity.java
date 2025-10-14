@@ -1,17 +1,14 @@
 package com.example.petel.entity;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PETEL_USERS")
@@ -21,36 +18,35 @@ public class UsersEntity {
      * 使用者 ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USERS_ID")
-    @JsonAlias("usersId")
-    private Integer usersId;
+    @Column(name = "ID")
+    @JsonProperty("id")
+    private String id;
 
     /**
      * 帳號 ID (外鍵)
      */
-    @Column(name = "ACCOUNTS_ID")
-    @JsonAlias("accountsId")
-    private Integer accountsId;
+    @Column(name = "ACCOUNT_ID")
+    @JsonProperty("accountId")
+    private String accountId;
 
     /**
      * 姓名
      */
-    @Column(name = "USERS_NAME")
-    @JsonAlias("usersName")
-    private String usersName;
+    @Column(name = "NAME")
+    @JsonProperty("name")
+    private String name;
 
     /**
      * 電話
      */
-    @Column(name = "USERS_PHONE")
-    @JsonAlias("usersPhone")
-    private String usersPhone;
+    @Column(name = "PHONE")
+    @JsonProperty("phone")
+    private String phone;
 
     /**
      * 頭像媒體 ID
      */
     @Column(name = "AVATAR_MEDIA_ID")
-    @JsonAlias("avatarMediaId")
+    @JsonProperty("avatarMediaId")
     private String avatarMediaId;
 }

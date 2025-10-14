@@ -18,10 +18,10 @@ Admin007Tranrq implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 帳號 ID
+     * 會員 ID
      */
-    @JsonProperty("Accounts_Id")
-    private String accountsId;
+    @JsonProperty("Account_Id")
+    private String accountId;
 
     /**
      * Email

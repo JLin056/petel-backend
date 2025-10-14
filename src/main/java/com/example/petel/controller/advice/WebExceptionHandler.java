@@ -129,6 +129,16 @@ public class WebExceptionHandler {
     public Res<Object> handlePaymentFailedException(PaymentFailedException ex) {
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
     }
+
+    /**
+     * 參數異常
+     */
+    @ResponseBody
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
 }
 
 

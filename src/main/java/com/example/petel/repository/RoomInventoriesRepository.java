@@ -4,6 +4,7 @@ import com.example.petel.entity.RoomInventoriesEntity;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -20,4 +21,12 @@ public interface RoomInventoriesRepository extends JpaRepository<RoomInventories
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE) // 悲觀鎖定：防止超賣
     Optional<RoomInventoriesEntity> findByRoomIdAndStayDate(String roomId, String stayDate);
+
+    /**
+     * 查目前最大的表格 ID
+     * @return ID
+     */
+    @Query("select max(e.id) from RoomInventoriesEntity e")
+    String findMaxId();
+
 }

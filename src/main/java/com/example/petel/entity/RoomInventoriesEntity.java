@@ -44,14 +44,4 @@ public class RoomInventoriesEntity {
      */
     @Column(name = "PRICE")
     private Integer price;
-
-    /**
-     * 不含設定Table ID的建構子
-     */
-    public RoomInventoriesEntity (String roomId, String stayDate, Integer availableQuantity, Integer price) {
-        this.roomId = roomId;
-        this.stayDate = stayDate;
-        this.availableQuantity = availableQuantity;
-        this.price = price;
-    }
 }

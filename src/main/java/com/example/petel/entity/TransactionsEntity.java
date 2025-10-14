@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -81,18 +81,18 @@ public class TransactionsEntity {
      * 支付時間
      */
     @Column(name = "PAY_TIME")
-    private Timestamp payTime;
+    private LocalDateTime payTime;
 
     /**
      * 交易成立時間
      */
     @Column(name = "CREATED_AT", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     /**
      * 交易更新時間
      */
     @Column(name = "UPDATED_AT")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 }
 

@@ -53,7 +53,7 @@ public class AUTH002SvcImpl implements AUTH002Svc {
                 });
 
         log.debug("[AUTH-002] 查得帳號資訊 accountId={}, status={}, role={}",
-                accountsEntity.getAccountId(), accountsEntity.getStatus(), accountsEntity.getRole());
+                accountsEntity.getId(), accountsEntity.getStatus(), accountsEntity.getRole());
 
         // 信箱驗證
         if (!"active".equalsIgnoreCase(accountsEntity.getStatus())) {
@@ -67,21 +67,25 @@ public class AUTH002SvcImpl implements AUTH002Svc {
             throw new InvalidInputException("帳號或密碼錯誤");
         }
 
-        log.info("[AUTH-002] 帳號驗證成功 accountId={}", accountsEntity.getAccountId());
+        log.info("[AUTH-002] 帳號驗證成功 accountId={}", accountsEntity.getId());
 
         // 產 accessToken
         log.debug("[AUTH-002] 開始產生 AccessToken...");
         String accessToken = jwtUtil.generateAccessToken(
-                accountsEntity.getAccountId(),
+                accountsEntity.getId(),
                 accountsEntity.getEmail(),
-                accountsEntity.getRole()
+                accountsEntity.getRole(),
+                accountsEntity.getTokenVersion()
         );
-        log.info("[AUTH-002] AccessToken 產生成功 accountId={}", accountsEntity.getAccountId());
+        log.info("[AUTH-002] AccessToken 產生成功 accountId={}", accountsEntity.getId());
 
         // 產 refreshToken
         log.debug("[AUTH-002] 開始產生 RefreshToken...");
-        String refreshToken = jwtUtil.generateRefreshToken(accountsEntity.getAccountId());
-        log.info("[AUTH-002] RefreshToken 產生成功 accountId={}", accountsEntity.getAccountId());
+        String refreshToken = jwtUtil.generateRefreshToken(
+                accountsEntity.getId(),
+                accountsEntity.getTokenVersion()
+        );
+        log.info("[AUTH-002] RefreshToken 產生成功 accountId={}", accountsEntity.getId());
 
 
         log.debug("[AUTH-002] 設定 HttpOnly Cookie...");
@@ -106,11 +110,11 @@ public class AUTH002SvcImpl implements AUTH002Svc {
         log.info("[AUTH-002] Cookie 寫入完成");
 
         log.info("[AUTH-002] 登入成功 accountId={}, role={}, email={}",
-                accountsEntity.getAccountId(), accountsEntity.getRole(), accountsEntity.getEmail());
+                accountsEntity.getId(), accountsEntity.getRole(), accountsEntity.getEmail());
 
         return new Res<AUTH002Tranrs>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                new AUTH002Tranrs(accountsEntity.getAccountId(), accountsEntity.getEmail(), accountsEntity.getRole())
+                new AUTH002Tranrs(accountsEntity.getId(), accountsEntity.getEmail(), accountsEntity.getRole())
         );
     }
 }

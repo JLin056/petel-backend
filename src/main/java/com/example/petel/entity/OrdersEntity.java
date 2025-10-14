@@ -21,26 +21,25 @@ public class OrdersEntity {
      */
     @Id
     @Column(name = "ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 用戶編號
      */
     @Column(name = "USER_ID", nullable = false)
-    private Long userId;
+    private String userId;
 
     /**
      * 旅館編號
      */
     @Column(name = "PROPERTY_ID", nullable = false)
-    private Long propertyId;
+    private String propertyId;
 
     /**
      * 支付方式（編號）
      */
     @Column(name = "PAYMENT_ID", nullable = false)
-    private Integer paymentId;
+    private String paymentId;
 
     /**
      * 訂單費用

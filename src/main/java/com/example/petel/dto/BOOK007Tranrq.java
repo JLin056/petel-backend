@@ -22,7 +22,7 @@ public class BOOK007Tranrq implements Serializable {
      */
     @JsonProperty("order_id")
     @NotNull(message = "order_id不得為空")
-    private Long orderId;
+    private String orderId;
 
     /**
      * data

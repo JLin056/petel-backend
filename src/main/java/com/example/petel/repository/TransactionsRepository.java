@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TransactionsRepository extends JpaRepository<TransactionsEntity, Long> {
-    Optional<TransactionsEntity> findByOrderId(Long orderId);
+public interface TransactionsRepository extends JpaRepository<TransactionsEntity, String> {
+    Optional<TransactionsEntity> findByOrderId(String orderId);
 }

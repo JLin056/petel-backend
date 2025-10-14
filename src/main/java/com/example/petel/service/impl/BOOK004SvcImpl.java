@@ -3,15 +3,15 @@ package com.example.petel.service.impl;
 import com.example.petel.dto.*;
 import com.example.petel.entity.OrderItemsEntity;
 import com.example.petel.entity.OrdersEntity;
-import com.example.petel.entity.RoomEntity;
 import com.example.petel.entity.RoomInventoriesEntity;
+import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.DeleteFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.OrderItemsRepository;
 import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.RoomInventoriesRepository;
-import com.example.petel.repository.RoomRepository;
+import com.example.petel.repository.RoomsRepository;
 import com.example.petel.service.BOOK004Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +35,8 @@ public class BOOK004SvcImpl implements BOOK004Svc {
     private final OrderItemsRepository orderItemsRepository;
     /** RoomInventoriesRepository */
     private final RoomInventoriesRepository roomInventoriesRepository;
-    /** RoomRepository */
-    private final RoomRepository roomRepository;
+    /** RoomsRepository */
+    private final RoomsRepository roomsRepository;
 
     /**
      * 取消該筆訂單
@@ -70,16 +70,16 @@ public class BOOK004SvcImpl implements BOOK004Svc {
                 return new DataNotFoundException();
             });
 
-            RoomEntity roomEntity = roomRepository.findById(roomId).orElseThrow(() -> {
+            RoomsEntity roomsEntity = roomsRepository.findById(roomId).orElseThrow(() -> {
                 log.error("[BOOK-004] 查無房型編號 {} 資料，取消訂單失敗", roomId);
                 return new DataNotFoundException();
             });
 
             int newAvailableQuantity = roomInventoriesEntity.getAvailableQuantity() + orderDetail.getQuantity();
 
-            if (newAvailableQuantity > roomEntity.getTotalUnits()) {
+            if (newAvailableQuantity > roomsEntity.getTotalUnits()) {
                 log.warn("[BOOK-004] 數據邏輯異常，請檢查");
-                roomInventoriesEntity.setAvailableQuantity(roomEntity.getTotalUnits());
+                roomInventoriesEntity.setAvailableQuantity(roomsEntity.getTotalUnits());
             } else {
                 roomInventoriesEntity.setAvailableQuantity(newAvailableQuantity);
             }

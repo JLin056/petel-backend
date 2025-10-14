@@ -19,14 +19,13 @@ public class RoomInventoriesEntity {
      */
     @Id
     @Column(name = "ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 房型編號
      */
     @Column(name = "ROOM_ID")
-    private Long roomId;
+    private String roomId;
 
     /**
      * 入住日期
@@ -49,7 +48,7 @@ public class RoomInventoriesEntity {
     /**
      * 不含設定Table ID的建構子
      */
-    public RoomInventoriesEntity (Long roomId, String stayDate, Integer availableQuantity, Integer price) {
+    public RoomInventoriesEntity (String roomId, String stayDate, Integer availableQuantity, Integer price) {
         this.roomId = roomId;
         this.stayDate = stayDate;
         this.availableQuantity = availableQuantity;

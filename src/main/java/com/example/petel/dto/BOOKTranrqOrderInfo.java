@@ -21,15 +21,15 @@ public class BOOKTranrqOrderInfo implements Serializable {
 
     @JsonProperty("user_id")
     @NotNull(message = "user_id不得為空")
-    private Long userId;
+    private String userId;
 
     @JsonProperty("property_id")
     @NotNull(message = "property_id不得為空")
-    private Long propertyId;
+    private String propertyId;
 
     @JsonProperty("payment_id")
     @NotNull(message = "payment_id不得為空")
-    private Integer paymentId;
+    private String paymentId;
 
     @JsonProperty("check_in")
     @NotBlank(message = "check_in不得為空")

@@ -3,14 +3,14 @@ package com.example.petel.service.impl;
 import com.example.petel.dto.*;
 import com.example.petel.entity.OrderItemsEntity;
 import com.example.petel.entity.OrdersEntity;
-import com.example.petel.entity.RoomEntity;
 import com.example.petel.entity.RoomInventoriesEntity;
+import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.OrderItemsRepository;
 import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.RoomInventoriesRepository;
-import com.example.petel.repository.RoomRepository;
+import com.example.petel.repository.RoomsRepository;
 import com.example.petel.service.BOOK001Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +38,8 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     private final OrderItemsRepository orderItemsRepository;
     /** RoomInventoriesRepository */
     private final RoomInventoriesRepository roomInventoriesRepository;
-    /** RoomRepository */
-    private final RoomRepository roomRepository;
+    /** RoomsRepository */
+    private final RoomsRepository roomsRepository;
 
     /**
      * 建立訂單
@@ -59,20 +59,20 @@ public class BOOK001SvcImpl implements BOOK001Svc {
 
         for (BOOKTranrqOrderDetail orderDetail : orderDetails) {
 
-            long roomId = orderDetail.getRoomId();
+            String roomId = orderDetail.getRoomId();
             String arrivalDate = orderDetail.getArrivalDate();
-            int roomQuantity = orderDetail.getRoomQuantity();
-            int roomPrice = orderDetail.getRoomPrice();
+            Integer roomQuantity = orderDetail.getRoomQuantity();
+            Integer roomPrice = orderDetail.getRoomPrice();
 
             Optional<RoomInventoriesEntity> orderedResult = roomInventoriesRepository.findByRoomIdAndStayDate(roomId, arrivalDate);
 
             if (orderedResult.isEmpty()) {
-                Optional<RoomEntity> roomEntity = roomRepository.findById(roomId);
-                if (roomEntity.isEmpty()) {
+                Optional<RoomsEntity> roomsEntity = roomsRepository.findById(roomId);
+                if (roomsEntity.isEmpty()) {
                     log.error("[BOOK-001] 查無房型編號 {}，訂單建立失敗", roomId);
                     throw new InsertFailException();
                 }
-                int availableQuantity = roomEntity.get().getTotalUnits() - roomQuantity;
+                int availableQuantity = roomsEntity.get().getTotalUnits() - roomQuantity;
                 if (availableQuantity < 0) {
                     log.error("[BOOK-001] 由於該房型總數量不足，訂單建立失敗");
                     throw new InsertFailException();
@@ -113,7 +113,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
         ordersEntity.setCreatedAt(Timestamp.from(Instant.now()));
 
         OrdersEntity savedEntity;
-        long orderId;
+        String orderId;
 
         try {
             savedEntity = ordersRepository.save(ordersEntity);

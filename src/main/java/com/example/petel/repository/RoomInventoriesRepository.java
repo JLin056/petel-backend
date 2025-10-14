@@ -9,15 +9,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoomInventoriesRepository extends JpaRepository<RoomInventoriesEntity, Long> {
+public interface RoomInventoriesRepository extends JpaRepository<RoomInventoriesEntity, String> {
 
     /**
      * 查詢該房型在某日的庫存狀態
      *
-     * @param roomId   Long
+     * @param roomId   String
      * @param stayDate String
      * @return 對應到該房型編號和入住日期的庫存資料
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE) // 悲觀鎖定：防止超賣
-    Optional<RoomInventoriesEntity> findByRoomIdAndStayDate(Long roomId, String stayDate);
+    Optional<RoomInventoriesEntity> findByRoomIdAndStayDate(String roomId, String stayDate);
 }

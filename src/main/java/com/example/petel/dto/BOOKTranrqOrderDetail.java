@@ -21,7 +21,7 @@ public class BOOKTranrqOrderDetail implements Serializable {
 
     @JsonProperty("room_id")
     @NotNull(message = "room_id不得為空")
-    private Long roomId;
+    private String roomId;
 
     @JsonProperty("arrival_date")
     @NotBlank(message = "arrival_date不得為空")

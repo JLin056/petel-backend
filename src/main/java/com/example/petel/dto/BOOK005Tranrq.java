@@ -21,13 +21,13 @@ public class BOOK005Tranrq implements Serializable {
      * orderId
      */
     @JsonProperty("order_id")
-    private Long orderId;
+    private String orderId;
 
     /**
      * paymentId
      */
     @JsonProperty("payment_id")
-    private Integer paymentId;
+    private String paymentId;
 
     /**
      * transactionId

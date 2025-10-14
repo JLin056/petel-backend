@@ -19,16 +19,16 @@ public class BOOK002Tranrs implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("order_id")
-    private Long orderId;
+    private String orderId;
 
     @JsonProperty("user_id")
-    private Long userId;
+    private String userId;
 
     @JsonProperty("property_id")
-    private Long propertyId;
+    private String propertyId;
 
     @JsonProperty("payment_id")
-    private Integer paymentId;
+    private String paymentId;
 
     @JsonProperty("hotel_charges")
     private Integer hotelCharges;

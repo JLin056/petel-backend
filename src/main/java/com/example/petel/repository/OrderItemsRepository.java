@@ -7,21 +7,21 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderItemsRepository extends JpaRepository<OrderItemsEntity, Long> {
+public interface OrderItemsRepository extends JpaRepository<OrderItemsEntity, String> {
 
     /**
      * 查詢某訂單編號的詳細資料
      *
-     * @param orderId Long
+     * @param orderId String
      * @return 某訂單編號對應的實體所構成的列表
      */
-    List<OrderItemsEntity> findByOrderId(Long orderId);
+    List<OrderItemsEntity> findByOrderId(String orderId);
 
     /**
      * 刪除某訂單編號的詳細資料
      *
-     * @param orderId Long
+     * @param orderId String
      * @return 某訂單編號對應的實體所構成的列表
      */
-    List<OrderItemsEntity> deleteByOrderId(Long orderId);
+    List<OrderItemsEntity> deleteByOrderId(String orderId);
 }

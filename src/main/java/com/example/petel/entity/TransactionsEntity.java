@@ -21,20 +21,19 @@ public class TransactionsEntity {
      */
     @Id
     @Column(name = "ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 訂單編號
      */
     @Column(name = "ORDER_ID", nullable = false)
-    private Long orderId;
+    private String orderId;
 
     /**
      * 支付方式
      */
     @Column(name = "PAYMENT_ID", nullable = false)
-    private Long paymentId;
+    private String paymentId;
 
     /**
      * 交易編號：綠界提供

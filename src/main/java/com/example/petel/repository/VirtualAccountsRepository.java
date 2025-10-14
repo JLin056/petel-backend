@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VirtualAccountsRepository extends JpaRepository<VirtualAccountsEntity, Long> {
+public interface VirtualAccountsRepository extends JpaRepository<VirtualAccountsEntity, String> {
 }

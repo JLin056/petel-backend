@@ -20,9 +20,9 @@ public class VirtualAccountsEntity {
     /**
      * 訂單編號
      */
-    @Id
+    @Id // TODO 外鍵：PETEL_ORDERS
     @Column(name = "ORDER_ID", nullable = false)
-    private Long orderId;
+    private String orderId;
 
     /**
      * 虛擬帳號到期日

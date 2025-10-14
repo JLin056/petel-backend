@@ -36,13 +36,15 @@ public class JwtUtil {
      * @param role 角色
      * @return
      */
-    public String generateAccessToken(Long accountId, String email, String role) throws JwtProcessingException {
+    public String generateAccessToken(String accountId, String email, String role, Integer tokenVersion)
+            throws JwtProcessingException {
         log.info("---- [JWT] generateAccessToken ----");
         try {
             String token = Jwts.builder()
-                    .setSubject(String.valueOf(accountId))
+                    .setSubject(accountId)
                     .claim("email", email)
                     .claim("role", role)
+                    .claim("token_version", tokenVersion)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -61,12 +63,13 @@ public class JwtUtil {
      * @param accountId 帳號ID
      * @return Token
      */
-    public String generateRefreshToken(Long accountId) throws JwtProcessingException {
+    public String generateRefreshToken(String accountId, Integer tokenVersion) throws JwtProcessingException {
         log.info("---- [JWT] generateRefreshToken ----");
         try {
             String token = Jwts.builder()
-                    .setSubject(String.valueOf((accountId)))
+                    .setSubject(accountId)
                     .claim("type", "refresh")
+                    .claim("token_version", tokenVersion)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)

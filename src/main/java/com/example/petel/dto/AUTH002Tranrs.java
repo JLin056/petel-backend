@@ -20,7 +20,7 @@ public class AUTH002Tranrs implements Serializable {
      * account ID
      */
     @JsonProperty("AccountId")
-    private long accountId;
+    private String accountId;
 
     /**
      * Email

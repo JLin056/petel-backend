@@ -21,6 +21,7 @@ public class BOOKTranrqOrderDetail implements Serializable {
 
     @JsonProperty("room_id")
     @NotNull(message = "room_id不得為空")
+    @Pattern(regexp = "^R\\d{9}$", message = "請輸入正確格式的room_id")
     private String roomId;
 
     @JsonProperty("arrival_date")

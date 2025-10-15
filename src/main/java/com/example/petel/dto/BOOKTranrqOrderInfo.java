@@ -21,14 +21,17 @@ public class BOOKTranrqOrderInfo implements Serializable {
 
     @JsonProperty("user_id")
     @NotNull(message = "user_id不得為空")
+    @Pattern(regexp = "^U\\d{9}$", message = "請輸入正確格式的user_id")
     private String userId;
 
     @JsonProperty("property_id")
     @NotNull(message = "property_id不得為空")
+    @Pattern(regexp = "^P\\d{9}$", message = "請輸入正確格式的property_id")
     private String propertyId;
 
     @JsonProperty("payment_id")
     @NotNull(message = "payment_id不得為空")
+    @Pattern(regexp = "^Y\\d{9}$", message = "請輸入正確格式的payment_id")
     private String paymentId;
 
     @JsonProperty("check_in")

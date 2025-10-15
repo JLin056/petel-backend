@@ -1,6 +1,7 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
+import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +27,13 @@ public class Admin002SvcImpl implements Admin002Svc {
 
     /**
      * 查詢賣家列表
-     * @param req Req<Admin002Tranrq>
-     * @return Res<Admin002Tranrs>
+     * @param req Req<ADMIN002Tranrq>
+     * @return Res<ADMIN002Tranrs>
      */
     @Override
-    public Res<Admin002Tranrs> querySellers(Req<Admin002Tranrq> req) throws Exception {
+    public Res<ADMIN002Tranrs> querySellers(Req<ADMIN002Tranrq> req) throws DataNotFoundException, IOException {
         log.info("-------- [ADMIN-002] 查詢賣家列表 ---------");
-        Admin002Tranrq tranrq = req.getTranrq();
+        ADMIN002Tranrq tranrq = req.getTranrq();
 
         // 建立查詢參數 Map
         Map<String, Object> paramMap = new HashMap<>();
@@ -70,7 +72,7 @@ public class Admin002SvcImpl implements Admin002Svc {
         }
 
         // 計算分頁參數並加入 paramMap
-        Admin002TranrqPage page = tranrq.getPage();
+        ADMIN002TranrqPage page = tranrq.getPage();
         int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
         int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 5;
         int offset = (pageNumber - 1) * pageSize;
@@ -85,17 +87,17 @@ public class Admin002SvcImpl implements Admin002Svc {
         String sql = sqlUtils.getDynamicQuerySQL("Admin002_Query.sql", paramMap);
         log.info("[ADMIN-002] 執行 SQL: {}", sql);
 
-        List<Admin002TranrsTranrs> sellers = sqlAction.queryForListVO(
+        List<ADMIN002TranrsTranrs> sellers = sqlAction.queryForListVO(
                 sql,
                 paramMap,
-                Admin002TranrsTranrs.class,
+                ADMIN002TranrsTranrs.class,
                 true
         );
 
         log.info("[ADMIN-002] 查詢成功，共 {} 筆，當前頁 {}/{}", totalCount, pageNumber, totalPages);
 
         // 組裝回應
-        Admin002Tranrs tranrs = new Admin002Tranrs();
+        ADMIN002Tranrs tranrs = new ADMIN002Tranrs();
         tranrs.setSellers(sellers != null ? sellers : new ArrayList<>());
         tranrs.setTotalCount(totalCount != null ? totalCount : 0);
         tranrs.setTotalPages(totalPages);

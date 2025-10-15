@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin002Tranrq implements Serializable {
+public class ADMIN002Tranrq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -50,5 +50,5 @@ public class Admin002Tranrq implements Serializable {
      * 分頁資訊
      */
     @JsonProperty("page")
-    private Admin002TranrqPage page;
+    private ADMIN002TranrqPage page;
 }

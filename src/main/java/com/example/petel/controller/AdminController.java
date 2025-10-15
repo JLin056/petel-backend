@@ -1,8 +1,8 @@
 package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
-import com.example.petel.dto.Admin002Tranrq;
-import com.example.petel.dto.Admin002Tranrs;
+import com.example.petel.dto.ADMIN002Tranrq;
+import com.example.petel.dto.ADMIN002Tranrs;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,10 +29,13 @@ public class AdminController extends BaseController {
      * @param admin002Tranrq 請求參數
      * @param errors 驗證錯誤
      * @return 賣家列表
+     * @throws DataNotFoundException 查無資料
+     * @throws InvalidInputException 輸入驗證錯誤
+     * @throws IOException SQL 檔案讀取錯誤
      */
     @PostMapping(value = "/merchant/query")
-    public Res<Admin002Tranrs> querySellers(@Valid @RequestBody Req<Admin002Tranrq> admin002Tranrq, Errors errors)
-            throws Exception, DataNotFoundException, InvalidInputException {
+    public Res<ADMIN002Tranrs> querySellers(@Valid @RequestBody Req<ADMIN002Tranrq> admin002Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
         handleValidForDto(errors);
         return admin002Svc.querySellers(admin002Tranrq);
     }

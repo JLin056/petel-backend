@@ -20,14 +20,13 @@ public class OrderItemsEntity {
      */
     @Id
     @Column(name = "ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 訂單編號
      */
     @Column(name = "ORDER_ID", nullable = false)
-    private Long orderId;
+    private String orderId;
 
     /**
      * 入住日期
@@ -39,7 +38,7 @@ public class OrderItemsEntity {
      * 房型編號
      */
     @Column(name = "ROOM_ID", nullable = false)
-    private Long roomId;
+    private String roomId;
 
     /**
      * 訂單對應到該房型編號的數量

@@ -8,10 +8,13 @@ import com.example.petel.dto.Res;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.service.BOOK001Svc;
+import com.example.petel.service.BOOK009Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,9 +25,17 @@ public class BookController extends BaseController {
     /** BOOK001Svc */
     private final BOOK001Svc book001Svc;
 
+    /** BOOK009Svc */
+    private final BOOK009Svc book009Svc;
+
     @PostMapping(value = "/create")
     public Res<BOOK001Tranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
         return book001Svc.book001(requestBody);
+    }
+
+    @PostMapping(value = "/credit/notify")
+    public String book009(@RequestParam Map<String, Object> requestParam) throws Exception {
+        return book009Svc.book009(requestParam);
     }
 }

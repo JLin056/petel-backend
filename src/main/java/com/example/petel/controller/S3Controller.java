@@ -31,7 +31,7 @@ public class S3Controller extends BaseController {
     /**
      * 確認圖片已上傳並儲存元資料 (使用 Presigned URL 後呼叫)
      */
-    @PostMapping("/images/create")
+    @PostMapping("/create")
     public Res<IMG001Tranrs> confirmImageUpload(@Valid @RequestBody Req<IMG001Tranrq> req, Errors errors)
             throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);

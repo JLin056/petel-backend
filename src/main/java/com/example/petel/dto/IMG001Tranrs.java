@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * IMG-001 圖片上傳 Response
+ * IMG-001 圖片上傳確認 Response (支援單檔與批量上傳)
  */
 @Data
 @NoArgsConstructor
@@ -20,44 +21,32 @@ public class IMG001Tranrs implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 媒體ID
+     * 檔案分類/前綴
      */
-    @JsonProperty("mediaId")
-    private Long mediaId;
+    @JsonProperty("category")
+    private String category;
 
     /**
-     * S3 Bucket 名稱
+     * 關聯ID
      */
-    @JsonProperty("bucket")
-    private String bucket;
+    @JsonProperty("referenceId")
+    private String referenceId;
 
     /**
-     * S3 Object Key
+     * 成功上傳數量
      */
-    @JsonProperty("objectKey")
-    private String objectKey;
+    @JsonProperty("successCount")
+    private Integer successCount;
 
     /**
-     * 公開存取的完整 URL
+     * 失敗上傳數量
      */
-    @JsonProperty("objectUrl")
-    private String objectUrl;
+    @JsonProperty("failedCount")
+    private Integer failedCount;
 
     /**
-     * 檔案大小 (bytes)
+     * 媒體上傳結果列表
      */
-    @JsonProperty("sizeBytes")
-    private Long sizeBytes;
-
-    /**
-     * MIME 類型
-     */
-    @JsonProperty("mimeType")
-    private String mimeType;
-
-    /**
-     * 可見性
-     */
-    @JsonProperty("visibility")
-    private String visibility;
+    @JsonProperty("results")
+    private List<IMG001TranrsMediaResult> results;
 }

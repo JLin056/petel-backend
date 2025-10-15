@@ -1,6 +1,7 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,26 +12,15 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AUTH002Tranrs implements Serializable {
+public class HOTEL002Tranrq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * account ID
+     * property id
      */
-    @JsonProperty("AccountId")
-    private String accountId;
-
-    /**
-     * Email
-     */
-    @JsonProperty("Email")
-    private String email;
-
-    /**
-     * Role
-     */
-    @JsonProperty("Role")
-    private String role;
+    @JsonProperty("id")
+    @NotBlank(message = "id不得為空")
+    private String id;
 }

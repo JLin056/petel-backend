@@ -8,6 +8,7 @@ import com.example.petel.exception.JwtProcessingException;
 import com.example.petel.service.AUTH001Svc;
 import com.example.petel.service.AUTH002Svc;
 import com.example.petel.service.AUTH003Svc;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,7 @@ public class AuthController extends BaseController{
      * @return
      */
     @PostMapping("/logout")
-    public Res<Object> logout(HttpServletResponse resp) {
-        return auth003Svc.logout(resp);
+    public Res<Object> logout(HttpServletRequest request, HttpServletResponse resp) {
+        return auth003Svc.logout(request, resp);
     }
 }

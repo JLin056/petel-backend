@@ -21,6 +21,6 @@ public class Admin009Tranrq implements Serializable {
      * 賣家 ID (必填)
      */
     @NotNull(message = "賣家 ID 不得為空")
-    @JsonProperty("sellersId")
-    private Integer sellersId;
+    @JsonProperty("sellerId")
+    private String sellersId;
 }

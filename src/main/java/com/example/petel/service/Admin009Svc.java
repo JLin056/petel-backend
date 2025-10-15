@@ -16,5 +16,5 @@ public interface Admin009Svc {
      * @throws DataNotFoundException 賣家不存在
      * @throws DeleteFailException 刪除失敗
      */
-    Res<Admin009Tranrs> deleteSeller(Req<Admin009Tranrq> req) throws Exception, DataNotFoundException, DeleteFailException;
+    Res<Admin009Tranrs> deleteSeller(Req<Admin009Tranrq> req) throws DataNotFoundException, DeleteFailException;
 }

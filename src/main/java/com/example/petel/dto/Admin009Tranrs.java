@@ -20,7 +20,7 @@ public class Admin009Tranrs implements Serializable {
      * 刪除的賣家 ID
      */
     @JsonProperty("sellersId")
-    private Integer sellersId;
+    private String sellersId;
 
     /**
      * 一併刪除的物業數量

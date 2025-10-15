@@ -21,24 +21,23 @@ public class SellersEntity {
      * 賣家 ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SELLERS_ID")
-    @JsonAlias("sellersId")
-    private Integer sellersId;
+    @Column(name = "ID")
+    @JsonAlias("Id")
+    private String id;
 
     /**
      * 帳號 ID (外鍵)
      */
-    @Column(name = "ACCOUNTS_ID")
-    @JsonAlias("accountsId")
-    private Integer accountsId;
+    @Column(name = "ACCOUNT_ID")
+    @JsonAlias("accountId")
+    private String accountId;
 
     /**
      * 賣家名稱
      */
-    @Column(name = "SELLERS_NAME")
-    @JsonAlias("sellersName")
-    private String sellersName;
+    @Column(name = "NAME")
+    @JsonAlias("name")
+    private String name;
 
     /**
      * 統編
@@ -50,7 +49,7 @@ public class SellersEntity {
     /**
      * 頭像媒體 ID
      */
-    @Column(name = "AVATAR_MEDIA_ID")
+    @Column(name ="AVATAR_MEDIA_ID")
     @JsonAlias("avatarMediaId")
-    private Integer avatarMediaId;
+    private Long avatarMediaId;
 }

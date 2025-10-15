@@ -35,10 +35,10 @@ public class Admin009SvcImpl implements Admin009Svc {
      */
     @Override
     @Transactional
-    public Res<Admin009Tranrs> deleteSeller(Req<Admin009Tranrq> req) throws Exception, DataNotFoundException, DeleteFailException {
+    public Res<Admin009Tranrs> deleteSeller(Req<Admin009Tranrq> req) throws DataNotFoundException, DeleteFailException {
         log.info("-------- [ADMIN-009] 刪除賣家 ---------");
         Admin009Tranrq tranrq = req.getTranrq();
-        Integer sellersId = tranrq.getSellersId();
+        String sellersId = tranrq.getSellersId();
 
         log.info("[ADMIN-009] 刪除賣家 ID: {}", sellersId);
 
@@ -51,7 +51,7 @@ public class Admin009SvcImpl implements Admin009Svc {
 
         try {
             // 取得賣家的帳號 ID
-            Integer accountsId = seller.getAccountsId();
+            String accountsId = seller.getAccountId();
 
             // 查詢該賣家的所有物業
             List<PropertyEntity> properties = propertyRepository.findBySellerId(sellersId);
@@ -71,7 +71,7 @@ public class Admin009SvcImpl implements Admin009Svc {
 
             // 第三步：刪除關聯的帳號
             if (accountsId != null) {
-                AccountsEntity account = accountsRepository.findById(accountsId.longValue())
+                AccountsEntity account = accountsRepository.findById(accountsId)
                         .orElse(null);
                 if (account != null) {
                     accountsRepository.delete(account);

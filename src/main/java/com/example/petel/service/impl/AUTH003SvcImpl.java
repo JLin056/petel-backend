@@ -2,10 +2,15 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.Res;
 import com.example.petel.dto.ResMwHeader;
+import com.example.petel.entity.AccountsEntity;
+import com.example.petel.exception.JwtProcessingException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.jwt.JwtUtil;
 import com.example.petel.repository.AccountsRepository;
 import com.example.petel.service.AUTH003Svc;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +33,12 @@ public class AUTH003SvcImpl implements AUTH003Svc {
 
     /**
      * 登出
+     * @param request HttpServletRequest
      * @param resp HttpServletResponse
-     * @return Res<Object>
+     * @return
      */
     @Override
-    public Res<Object> logout(HttpServletResponse resp) {
+    public Res<Object> logout(HttpServletRequest request, HttpServletResponse resp) {
         log.info("---- [AUTH-003] 登出 ----");
 
         // 清除 access Token

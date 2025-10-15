@@ -99,6 +99,46 @@ public class WebExceptionHandler {
     public Res<Object> handleJwtProcessingException(JwtProcessingException ex) {
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
     }
+
+    /**
+     * 退款異常
+     */
+    @ResponseBody
+    @ExceptionHandler(RefundFailException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handleRefundFailException(RefundFailException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
+
+    /**
+     * 付款方式異常
+     */
+    @ResponseBody
+    @ExceptionHandler(InvalidPaymentMethodException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handleInvalidPaymentMethodException(InvalidPaymentMethodException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
+
+    /**
+     * 付款異常
+     */
+    @ResponseBody
+    @ExceptionHandler(PaymentFailedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handlePaymentFailedException(PaymentFailedException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
+
+    /**
+     * 參數異常
+     */
+    @ResponseBody
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Res<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.S9999), null);
+    }
 }
 
 

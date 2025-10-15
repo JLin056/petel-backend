@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AccountsRepository extends JpaRepository<AccountsEntity, Long> {
+public interface AccountsRepository extends JpaRepository<AccountsEntity, String> {
 
     /**
      * 檢查 Email 是否存在
@@ -23,4 +23,11 @@ public interface AccountsRepository extends JpaRepository<AccountsEntity, Long> 
      * @return 該筆資料
      */
     Optional<AccountsEntity> findByEmailIgnoreCase(String email);
+
+    /**
+     * 查目前最大
+     * @return
+     */
+    @Query("SELECT MAX(TO_NUMBER(SUBSTR(a.Id, 2))) FROM AccountsEntity a")
+    Integer findMaxAccountIdNumber();
 }

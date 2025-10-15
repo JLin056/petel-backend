@@ -1,0 +1,58 @@
+package com.example.petel.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "PETEL_ROOM_INVENTORIES")
+public class RoomInventoriesEntity {
+
+    /**
+     * Table ID
+     */
+    @Id
+    @Column(name = "ID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * 房型編號
+     */
+    @Column(name = "ROOM_ID")
+    private Long roomId;
+
+    /**
+     * 入住日期
+     */
+    @Column(name = "STAY_DATE")
+    private String stayDate;
+
+    /**
+     * 該房型可供販賣的數量
+     */
+    @Column(name = "AVAILABLE_QTY")
+    private Integer availableQuantity;
+
+    /**
+     * 該房型售價
+     */
+    @Column(name = "PRICE")
+    private Integer price;
+
+    /**
+     * 不含設定Table ID的建構子
+     */
+    public RoomInventoriesEntity (Long roomId, String stayDate, Integer availableQuantity, Integer price) {
+        this.roomId = roomId;
+        this.stayDate = stayDate;
+        this.availableQuantity = availableQuantity;
+        this.price = price;
+    }
+}

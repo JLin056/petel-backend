@@ -26,13 +26,6 @@ public class MERCH005Tranrq implements Serializable {
     private String id;
 
     /**
-     * property id
-     */
-    @JsonProperty("propertyId")
-    @NotBlank(message = "propertyId不得為空")
-    private String propertyId;
-
-    /**
      * name
      */
     @JsonProperty("name")

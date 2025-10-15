@@ -21,36 +21,30 @@ public class UsersEntity {
      * 使用者 ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    @JsonAlias("usersId")
-    private Integer usersId;
+    private String id;
 
     /**
      * 帳號 ID (外鍵)
      */
-    @Column(name = "ACCOUNTS_ID")
-    @JsonAlias("accountsId")
-    private Integer accountsId;
+    @Column(name = "ACCOUNT_ID")
+    private String accountId;
 
     /**
      * 姓名
      */
     @Column(name = "NAME")
-    @JsonAlias("usersName")
-    private String usersName;
+    private String name;
 
     /**
      * 電話
      */
     @Column(name = "PHONE")
-    @JsonAlias("usersPhone")
-    private String usersPhone;
+    private String phone;
 
     /**
      * 頭像媒體 ID
      */
     @Column(name = "AVATAR_MEDIA_ID")
-    @JsonAlias("avatarMediaId")
     private String avatarMediaId;
 }

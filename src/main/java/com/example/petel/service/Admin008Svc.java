@@ -16,5 +16,5 @@ public interface Admin008Svc {
      * @throws DataNotFoundException 使用者不存在
      * @throws DeleteFailException 刪除失敗
      */
-    Res<Admin008Tranrs> deleteUser(Req<Admin008Tranrq> req) throws Exception, DataNotFoundException, DeleteFailException;
+    Res<Admin008Tranrs> deleteUser(Req<Admin008Tranrq> req) throws DataNotFoundException, DeleteFailException;
 }

@@ -20,7 +20,7 @@ public class Admin008Tranrs implements Serializable {
      * 刪除的使用者 ID
      */
     @JsonProperty("usersId")
-    private Integer usersId;
+    private String usersId;
 
     /**
      * 刪除結果訊息

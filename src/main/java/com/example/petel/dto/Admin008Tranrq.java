@@ -22,5 +22,5 @@ public class Admin008Tranrq implements Serializable {
      */
     @NotNull(message = "使用者 ID 不得為空")
     @JsonProperty("usersId")
-    private Integer usersId;
+    private String usersId;
 }

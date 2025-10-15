@@ -30,10 +30,10 @@ public class Admin008SvcImpl implements Admin008Svc {
      */
     @Override
     @Transactional
-    public Res<Admin008Tranrs> deleteUser(Req<Admin008Tranrq> req) throws Exception, DataNotFoundException, DeleteFailException {
+    public Res<Admin008Tranrs> deleteUser(Req<Admin008Tranrq> req) throws DataNotFoundException, DeleteFailException {
         log.info("-------- [ADMIN-008] 刪除使用者 ---------");
         Admin008Tranrq tranrq = req.getTranrq();
-        Integer usersId = tranrq.getUsersId();
+        String usersId = tranrq.getUsersId();
 
         log.info("[ADMIN-008] 刪除使用者 ID: {}", usersId);
 
@@ -46,7 +46,7 @@ public class Admin008SvcImpl implements Admin008Svc {
 
         try {
             // 取得使用者的帳號 ID
-            Integer accountsId = user.getAccountsId();
+            String accountsId = user.getAccountId();
 
             // 第一步：刪除使用者
             usersRepository.delete(user);
@@ -54,7 +54,7 @@ public class Admin008SvcImpl implements Admin008Svc {
 
             // 第二步：刪除關聯的帳號
             if (accountsId != null) {
-                AccountsEntity account = accountsRepository.findById(accountsId.longValue())
+                AccountsEntity account = accountsRepository.findById(accountsId)
                         .orElse(null);
                 if (account != null) {
                     accountsRepository.delete(account);

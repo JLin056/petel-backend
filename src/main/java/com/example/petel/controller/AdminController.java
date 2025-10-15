@@ -26,10 +26,11 @@ public class AdminController extends BaseController {
      * @return Res<Admin008Tranrs>
      * @throws DataNotFoundException 使用者不存在
      * @throws InvalidInputException 輸入驗證錯誤
+     * @throws com.example.petel.exception.DeleteFailException 刪除失敗
      */
     @PostMapping("/members/delete")
     public Res<Admin008Tranrs> deleteUser(@Valid @RequestBody Req<Admin008Tranrq> req, Errors errors)
-            throws Exception, DataNotFoundException, InvalidInputException {
+            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
         handleValidForDto(errors);
         return admin008Svc.deleteUser(req);
     }

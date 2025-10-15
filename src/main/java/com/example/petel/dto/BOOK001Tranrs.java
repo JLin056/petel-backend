@@ -11,26 +11,11 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AUTH002Tranrs implements Serializable {
+public class BOOK001Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * account ID
-     */
-    @JsonProperty("AccountId")
-    private String accountId;
-
-    /**
-     * Email
-     */
-    @JsonProperty("Email")
-    private String email;
-
-    /**
-     * Role
-     */
-    @JsonProperty("Role")
-    private String role;
+    @JsonProperty("order_id")
+    private String orderId;
 }

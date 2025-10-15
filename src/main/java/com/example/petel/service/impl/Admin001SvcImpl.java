@@ -3,14 +3,14 @@ package com.example.petel.service.impl;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
+import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
 import com.example.petel.service.Admin001Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class Admin001SvcImpl implements Admin001Svc {
 
     private final SqlUtils sqlUtils;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SqlAction sqlAction;
 
     /**
      * 查詢所有旅館列表
@@ -30,7 +30,7 @@ public class Admin001SvcImpl implements Admin001Svc {
      * @return Res<Admin001Tranrs>
      */
     @Override
-    public Res<Admin001Tranrs> queryStores(Req<Admin001Tranrq> req) throws Exception {
+    public Res<Admin001Tranrs> queryStores(Req<Admin001Tranrq> req) throws DataNotFoundException, IOException {
         log.info("-------- [ADMIN-001] 查詢所有旅館列表 ---------");
         Admin001Tranrq tranrq = req.getTranrq();
 
@@ -54,6 +54,20 @@ public class Admin001SvcImpl implements Admin001Svc {
             paramMap.put("sellerName", "%" + tranrq.getSellerName() + "%");
         }
 
+        // 使用獨立的 COUNT SQL 查詢總筆數 (不包含分頁參數)
+        String countSql = sqlUtils.getDynamicQuerySQL("ADMIN001_COUNT.sql", paramMap);
+        log.info("[ADMIN-001] 執行 COUNT SQL: {}", countSql);
+
+        List<Map<String, Object>> countResult = sqlAction.queryForList(countSql, paramMap);
+        Integer totalCount = countResult.isEmpty() ? 0 :
+            ((Number) countResult.get(0).get("TOTAL_COUNT")).intValue();
+
+        // 檢查是否有資料
+        if (totalCount == null || totalCount == 0) {
+            log.warn("[ADMIN-001] 查無資料");
+            throw new DataNotFoundException("查無旅館資料");
+        }
+
         // 計算分頁參數
         Admin001TranrqPage page = tranrq.getPage();
         int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
@@ -64,42 +78,19 @@ public class Admin001SvcImpl implements Admin001Svc {
         paramMap.put("offset", offset);
         paramMap.put("pageSize", pageSize);
 
+        // 計算總頁數
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
         // 取得動態 SQL (已包含分頁)
         String sql = sqlUtils.getDynamicQuerySQL("ADMIN001_QUERY.sql", paramMap);
         log.info("[ADMIN-001] 執行 SQL: {}", sql);
 
-        // 查詢總筆數 (移除 ORDER BY 和 OFFSET/FETCH)
-        String sqlForCount = sql.replaceAll("ORDER BY.*?OFFSET.*?ROWS FETCH NEXT.*?ROWS ONLY", "");
-        String countSql = "SELECT COUNT(*) FROM (" + sqlForCount + ") temp_table";
-        Integer totalCount = namedParameterJdbcTemplate.queryForObject(
-                countSql,
-                new MapSqlParameterSource(paramMap),
-                Integer.class
-        );
-
-        // 檢查是否有資料
-        if (totalCount == null || totalCount == 0) {
-            log.warn("[ADMIN-001] 查無資料");
-            throw new DataNotFoundException("查無旅館資料");
-        }
-
-        // 計算總頁數
-        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
-
         // 執行查詢 (使用包含分頁的 SQL)
-        List<Admin001TranrsTranrs> hotels = namedParameterJdbcTemplate.query(
+        List<Admin001TranrsTranrs> hotels = sqlAction.queryForListVO(
                 sql,
-                new MapSqlParameterSource(paramMap),
-                (rs, rowNum) -> new Admin001TranrsTranrs(
-                        rs.getInt("PROPERTY_ID"),
-                        rs.getString("PROPERTY_NAME"),
-                        rs.getString("PROPERTY_TEL"),
-                        rs.getString("PROPERTY_POSTAL_CODE"),
-                        rs.getString("PROPERTY_ADDRESS"),
-                        rs.getString("PROPERTY_BANK_ACCOUNT"),
-                        rs.getString("SELLER_NAME"),
-                        rs.getString("BUSINESS_CODE")
-                )
+                paramMap,
+                Admin001TranrsTranrs.class,
+                true
         );
 
         log.info("[ADMIN-001] 查詢成功，共 {} 筆，當前頁 {}/{}", totalCount, pageNumber, totalPages);

@@ -6,6 +6,8 @@ import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
 
+import java.io.IOException;
+
 public interface Admin001Svc {
 
     /**
@@ -13,6 +15,7 @@ public interface Admin001Svc {
      * @param req Req<Admin001Tranrq>
      * @return Res<Admin001Tranrs>
      * @throws DataNotFoundException 查無資料
+     * @throws IOException SQL 檔案讀取錯誤
      */
-    Res<Admin001Tranrs> queryStores(Req<Admin001Tranrq> req) throws Exception, DataNotFoundException;
+    Res<Admin001Tranrs> queryStores(Req<Admin001Tranrq> req) throws DataNotFoundException, IOException;
 }

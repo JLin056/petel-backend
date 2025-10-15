@@ -48,6 +48,7 @@ public class HOTEL004SvcImpl implements HOTEL004Svc {
         log.info("-------- [HOTEL-004] 查詢單旅館設施 ---------");
         Map<String, Object> paramMap = new HashMap<>();
         String propertyId = hotel004Tranrq.getTranrq().getPropertyId();
+        log.info("[HOTEL-004] 查詢 propertyId = {}", propertyId);
         paramMap.put("PROPERTY_ID", propertyId);
 
         List<HOTEL004TranrsFacility> facilityList = new ArrayList<>();

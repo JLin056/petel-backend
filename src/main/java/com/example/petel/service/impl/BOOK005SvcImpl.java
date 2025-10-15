@@ -26,8 +26,8 @@ public class BOOK005SvcImpl implements BOOK005Svc {
 
     /** OrdersRepository */
     private final OrdersRepository ordersRepository;
-
-    private final String PAYMENT_ID = "Y000000001";
+    /** PAYMENT_ID */
+    private static final String PAYMENT_ID = "Y000000001";
     /** MERCHANT_ID */
     @Value("${ecpay.merchantId}")
     private String MERCHANT_ID;

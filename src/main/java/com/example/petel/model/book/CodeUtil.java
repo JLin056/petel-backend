@@ -43,7 +43,7 @@ public class CodeUtil {
                 .replace("%29", ")")
                 .replace("%20", "+");
 
-        MessageDigest md = MessageDigest.getInstance("SHA-256"); // TODO check this part
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(encodedString.toLowerCase().getBytes());
         byte[] digest = md.digest();
         StringBuilder hexString = new StringBuilder();
@@ -54,7 +54,7 @@ public class CodeUtil {
     }
 
     /**
-     * AES 128 位元 CBC PKCS7 加密 Ref: <a href="https://developers.ecpay.com.tw/?p=45948"> 方法邏輯參考 </a>
+     * AES 128 位元 CBC PKCS7 加密 (Java預設PKCS5Padding與PKCS7Padding行為相同) Ref: <a href="https://developers.ecpay.com.tw/?p=45948"> 方法邏輯參考 </a>
      * @param data      Json 字串 (前端實作：JSON.stringify())
      * @param hashKey   AES密鑰 (16字元)
      * @param hashIV    初始向量 (16字元)
@@ -81,7 +81,7 @@ public class CodeUtil {
      * @param hashIV    初始向量 (16字元)
      * @return          Json 字串
      */
-    public static String dataDecrypt(String encryptedData, String hashKey, String hashIV) throws Exception { // TODO check this method
+    public static String dataDecrypt(String encryptedData, String hashKey, String hashIV) throws Exception {
 
         byte[] decodedBytes = Base64.getDecoder().decode(encryptedData);
 

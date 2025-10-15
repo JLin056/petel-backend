@@ -3,6 +3,7 @@ package com.example.petel.service.impl;
 import com.example.petel.dto.*;
 import com.example.petel.entity.AccountsEntity;
 import com.example.petel.exception.InsertFailException;
+import com.example.petel.exception.InvalidInputException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.AccountsRepository;
 import com.example.petel.service.AUTH001Svc;
@@ -30,7 +31,8 @@ public class AUTH001SvcImpl implements AUTH001Svc {
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<AUTH001Tranrs> register(Req<AUTH001Tranrq> req) throws InsertFailException {
+    public Res<AUTH001Tranrs> register(Req<AUTH001Tranrq> req)
+            throws InvalidInputException, InsertFailException {
         log.info("-------- [AUTH-001] 註冊 ---------");
         AUTH001Tranrq tranrq = req.getTranrq();
         // 驗證 email 是否已被使用
@@ -38,7 +40,7 @@ public class AUTH001SvcImpl implements AUTH001Svc {
 
         if (accountsRepo.existsByEmailIgnoreCase(email)){
             log.warn("[AUTH-001] Email 已被使用：{}", email);
-            throw new InsertFailException("Email 已被使用");
+            throw new InvalidInputException("Email 已被使用");
         }
 
         String accountId = generateNextAccountId();

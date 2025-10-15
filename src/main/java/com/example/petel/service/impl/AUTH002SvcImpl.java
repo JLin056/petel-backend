@@ -44,6 +44,7 @@ public class AUTH002SvcImpl implements AUTH002Svc {
         log.info("---- [AUTH-002] 登入 ----");
         AUTH002Tranrq tranrq = req.getTranrq();
         String email = tranrq.getEmail().trim().toLowerCase();
+        String role = tranrq.getRole();
 
         // 取得該 Email 資訊，若無則 帳號或密碼錯誤
         AccountsEntity accountsEntity = accountsRepo.findByEmailIgnoreCase(email)
@@ -52,8 +53,16 @@ public class AUTH002SvcImpl implements AUTH002Svc {
                     return new InvalidInputException("帳號或密碼錯誤");
                 });
 
+        String dbRole = accountsEntity.getRole();
+        if (dbRole.equalsIgnoreCase(role)) {
+            log.info("[AUTH-002] Role 驗證成功：{}", role);
+        } else {
+            log.warn("[AUTH-002] Role 驗證不符，Request = {}，DB = {}", role, dbRole);
+            throw new InvalidInputException("Role 不符");
+        }
+
         log.debug("[AUTH-002] 查得帳號資訊 accountId={}, status={}, role={}",
-                accountsEntity.getId(), accountsEntity.getStatus(), accountsEntity.getRole());
+                accountsEntity.getId(), accountsEntity.getStatus(), dbRole);
 
         // 信箱驗證
         if (!"active".equalsIgnoreCase(accountsEntity.getStatus())) {
@@ -74,7 +83,7 @@ public class AUTH002SvcImpl implements AUTH002Svc {
         String accessToken = jwtUtil.generateAccessToken(
                 accountsEntity.getId(),
                 accountsEntity.getEmail(),
-                accountsEntity.getRole(),
+                dbRole,
                 accountsEntity.getTokenVersion()
         );
         log.info("[AUTH-002] AccessToken 產生成功 accountId={}", accountsEntity.getId());
@@ -110,11 +119,11 @@ public class AUTH002SvcImpl implements AUTH002Svc {
         log.info("[AUTH-002] Cookie 寫入完成");
 
         log.info("[AUTH-002] 登入成功 accountId={}, role={}, email={}",
-                accountsEntity.getId(), accountsEntity.getRole(), accountsEntity.getEmail());
+                accountsEntity.getId(), dbRole, accountsEntity.getEmail());
 
         return new Res<AUTH002Tranrs>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                new AUTH002Tranrs(accountsEntity.getId(), accountsEntity.getEmail(), accountsEntity.getRole())
+                new AUTH002Tranrs(accountsEntity.getId(), accountsEntity.getEmail(), dbRole)
         );
     }
 }

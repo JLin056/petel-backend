@@ -1,13 +1,7 @@
 package com.example.petel.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 /**
  * S3 媒體檔案實體 - PETEL_MEDIA_S3 表
@@ -21,11 +15,11 @@ import lombok.Setter;
 public class MediaS3Entity {
 
     /**
-     * 媒體ID (主鍵，關聯到 PETEL_MEDIA 的 ID)
+     * 媒體ID (主鍵，關聯到 PETEL_MEDIA 的 ID, varchar2(10))
      */
     @Id
-    @Column(name = "MEDIA_ID")
-    private Long mediaId;
+    @Column(name = "MEDIA_ID", length = 10)
+    private String mediaId;
 
     /**
      * S3 Bucket

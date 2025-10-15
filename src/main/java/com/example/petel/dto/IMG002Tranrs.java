@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * IMG-002 圖片更新 Response
+ * IMG-002 圖片更新 Response (支援單檔與批量更新)
  */
 @Data
 @NoArgsConstructor
@@ -20,50 +21,32 @@ public class IMG002Tranrs implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 媒體ID
+     * 檔案分類/前綴
      */
-    @JsonProperty("mediaId")
-    private Long mediaId;
+    @JsonProperty("category")
+    private String category;
 
     /**
-     * S3 Bucket
+     * 關聯ID
      */
-    @JsonProperty("bucket")
-    private String bucket;
+    @JsonProperty("referenceId")
+    private String referenceId;
 
     /**
-     * S3 Object Key
+     * 成功更新數量
      */
-    @JsonProperty("objectKey")
-    private String objectKey;
+    @JsonProperty("successCount")
+    private Integer successCount;
 
     /**
-     * 公開存取 URL
+     * 失敗更新數量
      */
-    @JsonProperty("objectUrl")
-    private String objectUrl;
+    @JsonProperty("failedCount")
+    private Integer failedCount;
 
     /**
-     * 檔案大小
+     * 媒體更新結果列表
      */
-    @JsonProperty("sizeBytes")
-    private Long sizeBytes;
-
-    /**
-     * 檔案類型
-     */
-    @JsonProperty("mimeType")
-    private String mimeType;
-
-    /**
-     * 更新後的可見性
-     */
-    @JsonProperty("visibility")
-    private String visibility;
-
-    /**
-     * 儲存類型
-     */
-    @JsonProperty("storageType")
-    private String storageType;
+    @JsonProperty("results")
+    private List<IMG002TranrsMediaResult> results;
 }

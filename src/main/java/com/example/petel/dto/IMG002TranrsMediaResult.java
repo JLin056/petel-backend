@@ -9,24 +9,24 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * IMG-001 圖片上傳 Response
+ * IMG-002 單個媒體更新結果
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IMG001Tranrs implements Serializable {
+public class IMG002TranrsMediaResult implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 媒體ID
+     * 媒體ID (varchar2(10))
      */
     @JsonProperty("mediaId")
-    private Long mediaId;
+    private String mediaId;
 
     /**
-     * S3 Bucket 名稱
+     * S3 Bucket
      */
     @JsonProperty("bucket")
     private String bucket;
@@ -38,19 +38,19 @@ public class IMG001Tranrs implements Serializable {
     private String objectKey;
 
     /**
-     * 公開存取的完整 URL
+     * 公開存取 URL
      */
     @JsonProperty("objectUrl")
     private String objectUrl;
 
     /**
-     * 檔案大小 (bytes)
+     * 檔案大小
      */
     @JsonProperty("sizeBytes")
     private Long sizeBytes;
 
     /**
-     * MIME 類型
+     * 檔案類型
      */
     @JsonProperty("mimeType")
     private String mimeType;
@@ -60,4 +60,22 @@ public class IMG001Tranrs implements Serializable {
      */
     @JsonProperty("visibility")
     private String visibility;
+
+    /**
+     * 儲存類型
+     */
+    @JsonProperty("storageType")
+    private String storageType;
+
+    /**
+     * 更新狀態 (SUCCESS, FAILED)
+     */
+    @JsonProperty("status")
+    private String status;
+
+    /**
+     * 錯誤訊息 (如果失敗)
+     */
+    @JsonProperty("errorMessage")
+    private String errorMessage;
 }

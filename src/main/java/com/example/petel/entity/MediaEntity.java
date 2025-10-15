@@ -1,13 +1,12 @@
 package com.example.petel.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -22,12 +21,11 @@ import java.time.LocalDateTime;
 public class MediaEntity{
 
     /**
-     * 媒體ID (主鍵，自動生成)
+     * 媒體ID (主鍵，varchar2(10))
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+    @Column(name = "ID", length = 10)
+    private String id;
 
     /**
      * 儲存類型 (S3, LOCAL, etc.)

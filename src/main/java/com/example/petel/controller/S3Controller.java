@@ -2,13 +2,10 @@ package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
-import com.example.petel.exception.DeleteFailException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.UpdateFailException;
-import com.example.petel.service.IMG001Svc;
 import com.example.petel.service.IMG002Svc;
-import com.example.petel.service.IMG003Svc;
 import com.example.petel.service.S3Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +21,6 @@ public class S3Controller extends BaseController {
     private final S3Svc s3Svc;
     private final IMG001Svc img001Svc;
     private final IMG002Svc img002Svc;
-    private final IMG003Svc img003Svc;
 
     /**
      * 生成預簽名 URL

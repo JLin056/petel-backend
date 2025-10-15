@@ -1,64 +1,46 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * IMG-002 圖片更新 Request
+ * IMG-002 圖片更新 Request (支援單檔與批量更新)
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class
-IMG002Tranrq implements Serializable {
+public class IMG002Tranrq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 媒體ID (要更新的圖片ID)
+     * 檔案分類/前綴 (User_Profile, Property_Facility, Room_Image)
      */
-    @NotNull(message = "媒體ID不得為空")
-    @JsonProperty("mediaId")
-    private Long mediaId;
+    @NotBlank(message = "檔案分類不得為空")
+    @JsonProperty("category")
+    private String category;
 
     /**
-     * 新的 S3 Object Key
+     * 關聯ID (選填，例如：propertyId, userId, roomId)
      */
-    @NotNull(message = "新的 Object Key 不得為空")
-    @JsonProperty("newObjectKey")
-    private String newObjectKey;
+    @JsonProperty("referenceId")
+    private String referenceId;
 
     /**
-     * 新的 S3 Bucket
+     * 媒體更新資訊列表
      */
-    @NotNull(message = "新的 Bucket 不得為空")
-    @JsonProperty("newBucket")
-    private String newBucket;
-
-    /**
-     * 新的檔案類型 (MIME type)
-     */
-    @NotNull(message = "檔案類型不得為空")
-    @JsonProperty("mimeType")
-    private String mimeType;
-
-    /**
-     * 新的檔案大小 (bytes)
-     */
-    @NotNull(message = "檔案大小不得為空")
-    @JsonProperty("sizeBytes")
-    private Long sizeBytes;
-
-    /**
-     * 新的可見性 (PUBLIC, PRIVATE)
-     */
-    @JsonProperty("visibility")
-    private String visibility;
+    @NotEmpty(message = "媒體列表不得為空")
+    @Valid
+    @JsonProperty("medias")
+    private List<IMG002TranrqMediaInfo> medias;
 }

@@ -11,46 +11,53 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * IMG-001 圖片上傳確認 Request (使用 Presigned URL 上傳後的確認)
+ * IMG-002 單個媒體更新資訊
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IMG001Tranrq implements Serializable {
+public class IMG002TranrqMediaInfo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * S3 Object Key (從 presigned URL 回應中取得)
+     * 媒體ID (要更新的圖片ID, varchar2(10))
      */
-    @NotBlank(message = "Object Key 不得為空")
-    @JsonProperty("objectKey")
-    private String objectKey;
+    @NotBlank(message = "媒體ID不得為空")
+    @JsonProperty("mediaId")
+    private String mediaId;
 
     /**
-     * S3 Bucket 名稱
+     * 新的 S3 Object Key
      */
-    @NotBlank(message = "Bucket 不得為空")
-    @JsonProperty("bucket")
-    private String bucket;
+    @NotBlank(message = "新的 Object Key 不得為空")
+    @JsonProperty("newObjectKey")
+    private String newObjectKey;
 
     /**
-     * 檔案類型 (MIME type)
+     * 新的 S3 Bucket
+     */
+    @NotBlank(message = "新的 Bucket 不得為空")
+    @JsonProperty("newBucket")
+    private String newBucket;
+
+    /**
+     * 新的檔案類型 (MIME type)
      */
     @NotBlank(message = "檔案類型不得為空")
     @JsonProperty("mimeType")
     private String mimeType;
 
     /**
-     * 檔案大小 (bytes)
+     * 新的檔案大小 (bytes)
      */
     @NotNull(message = "檔案大小不得為空")
     @JsonProperty("sizeBytes")
     private Long sizeBytes;
 
     /**
-     * 可見性 (PUBLIC, PRIVATE)
+     * 新的可見性 (PUBLIC, PRIVATE)
      */
     @JsonProperty("visibility")
     private String visibility;

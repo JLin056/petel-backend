@@ -22,20 +22,20 @@ public class Admin006SvcImpl implements Admin006Svc {
 
     /**
      * 刪除旅館
-     * @param req Req<Admin006Tranrq>
-     * @return Res<Admin006Tranrs>
+     * @param req Req<ADMIN006Tranrq>
+     * @return Res<ADMIN006Tranrs>
      */
     @Override
     @Transactional
-    public Res<Admin006Tranrs> deleteHotel(Req<Admin006Tranrq> req) throws Exception, DataNotFoundException, DeleteFailException {
+    public Res<ADMIN006Tranrs> deleteHotel(Req<ADMIN006Tranrq> req) throws DataNotFoundException, DeleteFailException {
         log.info("-------- [ADMIN-006] 刪除旅館 ---------");
-        Admin006Tranrq tranrq = req.getTranrq();
-        Integer propertyId = tranrq.getPropertyId();
+        ADMIN006Tranrq tranrq = req.getTranrq();
+        String propertyId = tranrq.getPropertyId();
 
         log.info("[ADMIN-006] 刪除旅館 ID: {}", propertyId);
 
         // 檢查旅館是否存在
-        PropertyEntity property = propertyRepository.findById(Long.valueOf(propertyId))
+        PropertyEntity property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> {
                     log.warn("[ADMIN-006] 旅館不存在，ID: {}", propertyId);
                     return new DataNotFoundException("旅館不存在，ID: " + propertyId);
@@ -47,7 +47,7 @@ public class Admin006SvcImpl implements Admin006Svc {
             log.info("[ADMIN-006] 旅館刪除成功，ID: {}", propertyId);
 
             // 組裝回應
-            Admin006Tranrs tranrs = new Admin006Tranrs();
+            ADMIN006Tranrs tranrs = new ADMIN006Tranrs();
             tranrs.setPropertyId(propertyId);
             tranrs.setMessage("旅館刪除成功");
 

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin006Tranrs implements Serializable {
+public class ADMIN006Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,7 +20,7 @@ public class Admin006Tranrs implements Serializable {
      * 刪除的物業 ID
      */
     @JsonProperty("propertyId")
-    private Integer propertyId;
+    private String propertyId;
 
     /**
      * 刪除結果訊息

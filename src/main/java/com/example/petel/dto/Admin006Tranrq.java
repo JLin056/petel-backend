@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin006Tranrq implements Serializable {
+public class ADMIN006Tranrq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -22,5 +22,5 @@ public class Admin006Tranrq implements Serializable {
      */
     @NotNull(message = "物業 ID 不得為空")
     @JsonProperty("propertyId")
-    private Integer propertyId;
+    private String propertyId;
 }

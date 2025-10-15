@@ -27,15 +27,16 @@ public class AdminController extends BaseController {
 
     /**
      * Admin-006: 刪除旅館
-     * @param req Req<Admin006Tranrq>
+     * @param req Req<ADMIN006Tranrq>
      * @param errors 驗證錯誤
-     * @return Res<Admin006Tranrs>
+     * @return Res<ADMIN006Tranrs>
      * @throws DataNotFoundException 旅館不存在
      * @throws InvalidInputException 輸入驗證錯誤
+     * @throws com.example.petel.exception.DeleteFailException 刪除失敗
      */
     @PostMapping("/hotels/delete")
-    public Res<Admin006Tranrs> deleteHotel(@Valid @RequestBody Req<Admin006Tranrq> req, Errors errors)
-            throws Exception, DataNotFoundException, InvalidInputException {
+    public Res<ADMIN006Tranrs> deleteHotel(@Valid @RequestBody Req<ADMIN006Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
         handleValidForDto(errors);
         return admin006Svc.deleteHotel(req);
     }

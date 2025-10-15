@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
-
 @Entity
 @Getter
 @Setter
@@ -21,10 +19,9 @@ public class AccountsEntity {
      * 帳號 ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 自動遞增
-    @Column(name = "ACCOUNT_ID")
-    @JsonAlias("accountId")
-    private Long accountId;
+    @Column(name = "ID")
+    @JsonAlias("Id")
+    private String id;
 
     /**
      * 帳號（電子信箱）
@@ -54,4 +51,10 @@ public class AccountsEntity {
     @JsonAlias("status")
     private String status;
 
+    /**
+     * Token 版本
+     */
+    @Column(name = "TOKEN_VERSION")
+    @JsonAlias("tokenVersion")
+    private Integer tokenVersion;
 }

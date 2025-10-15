@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AUTH001Tranrs implements Serializable {
+public class AUTH002Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -19,6 +19,18 @@ public class AUTH001Tranrs implements Serializable {
     /**
      * account ID
      */
-    @JsonProperty("accountId")
+    @JsonProperty("AccountId")
     private String accountId;
+
+    /**
+     * Email
+     */
+    @JsonProperty("Email")
+    private String email;
+
+    /**
+     * Role
+     */
+    @JsonProperty("Role")
+    private String role;
 }

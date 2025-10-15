@@ -11,14 +11,11 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AUTH001Tranrs implements Serializable {
+public class BOOK001Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * account ID
-     */
-    @JsonProperty("accountId")
-    private String accountId;
+    @JsonProperty("order_id")
+    private String orderId;
 }

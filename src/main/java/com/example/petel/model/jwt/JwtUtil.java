@@ -5,6 +5,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Slf4j
+@Getter
 @Component
 public class JwtUtil {
 
@@ -33,13 +36,15 @@ public class JwtUtil {
      * @param role 角色
      * @return
      */
-    public String generateAccessToken(Long accountId, String email, String role) throws JwtProcessingException {
+    public String generateAccessToken(String accountId, String email, String role, Integer tokenVersion)
+            throws JwtProcessingException {
         log.info("---- [JWT] generateAccessToken ----");
         try {
             String token = Jwts.builder()
-                    .setSubject(String.valueOf(accountId))
+                    .setSubject(accountId)
                     .claim("email", email)
                     .claim("role", role)
+                    .claim("token_version", tokenVersion)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -58,12 +63,13 @@ public class JwtUtil {
      * @param accountId 帳號ID
      * @return Token
      */
-    public String generateRefreshToken(Long accountId) throws JwtProcessingException {
+    public String generateRefreshToken(String accountId, Integer tokenVersion) throws JwtProcessingException {
         log.info("---- [JWT] generateRefreshToken ----");
         try {
             String token = Jwts.builder()
-                    .setSubject(String.valueOf((accountId)))
+                    .setSubject(accountId)
                     .claim("type", "refresh")
+                    .claim("token_version", tokenVersion)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -75,6 +81,7 @@ public class JwtUtil {
             throw new JwtProcessingException("RefreshToken 建立失敗");
         }
     }
+
     /**
      * 驗證 Token 是否有效
      * @param token Token

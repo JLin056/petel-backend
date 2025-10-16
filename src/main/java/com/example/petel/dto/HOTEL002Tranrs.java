@@ -1,21 +1,20 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class BOOK001Tranrs implements Serializable {
-
+public class HOTEL002Tranrs<T> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("order_id")
-    private String orderId;
+    /**
+     * property  details
+     */
+    @JsonProperty("property_details")
+    private List<T> details;
 }

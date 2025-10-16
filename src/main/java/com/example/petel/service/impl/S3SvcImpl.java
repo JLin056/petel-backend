@@ -36,6 +36,7 @@ public class S3SvcImpl implements S3Svc {
 
     /**
      * 生成 Presigned URL (支援單檔與批量)
+     * 
      * @param req 上傳請求
      * @return Presigned URL 資訊
      */
@@ -54,8 +55,7 @@ public class S3SvcImpl implements S3Svc {
             String objectKey = buildObjectKey(
                     req.getCategory(),
                     req.getReferenceId(),
-                    fileInfo.getFilename()
-            );
+                    fileInfo.getFilename());
             log.info("[S3] 生成 Object Key [{}]：{}", i, objectKey);
 
             // 2. 構造 PutObject 請求
@@ -68,8 +68,7 @@ public class S3SvcImpl implements S3Svc {
             // 3. 創建預簽名請求 (15 分鐘有效)
             PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(
                     r -> r.signatureDuration(Duration.ofMinutes(15))
-                            .putObjectRequest(objectRequest)
-            );
+                            .putObjectRequest(objectRequest));
 
             // 4. 構造公開 URL
             String publicUrl = buildPublicUrl(objectKey);
@@ -80,8 +79,7 @@ public class S3SvcImpl implements S3Svc {
                     fileInfo.getFilename(),
                     presignedRequest.url().toString(),
                     objectKey,
-                    publicUrl
-            ));
+                    publicUrl));
         }
 
         log.info("[S3] 成功生成 {} 個 Presigned URL", uploads.size());
@@ -89,15 +87,15 @@ public class S3SvcImpl implements S3Svc {
         return new S3SignatureRes(
                 req.getCategory(),
                 req.getReferenceId(),
-                uploads
-        );
+                uploads);
     }
 
     /**
      * 構造 S3 Object Key (含分類前綴)
-     * @param category 分類 (User_Profile, Property_Facility, Room_Image)
+     * 
+     * @param category    分類 (User_Profile, Property_Facility, Room_Image)
      * @param referenceId 關聯ID (可選)
-     * @param filename 檔案名稱
+     * @param filename    檔案名稱
      * @return Object Key
      */
     private String buildObjectKey(String category, String referenceId, String filename) {
@@ -113,6 +111,7 @@ public class S3SvcImpl implements S3Svc {
 
     /**
      * 構造公開存取 URL
+     * 
      * @param objectKey S3 Object Key
      * @return 完整 URL
      */

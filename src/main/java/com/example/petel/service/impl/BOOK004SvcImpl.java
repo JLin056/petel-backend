@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 
@@ -97,6 +100,7 @@ public class BOOK004SvcImpl implements BOOK004Svc {
         }
 
         ordersEntity.setStatus("取消訂單");
+        ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
         ordersRepository.save(ordersEntity);
 
         log.info("[BOOK-004] 訂單編號為 {} 的資料，取消訂單成功", orderId);

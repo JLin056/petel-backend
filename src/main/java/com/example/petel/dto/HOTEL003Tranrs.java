@@ -5,12 +5,16 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
-public class HOTEL005Tranrs implements Serializable {
+public class HOTEL003Tranrs<T> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("notice")
-    private String notice;
+    /**
+     * rooms information
+     */
+    @JsonProperty("rooms")
+    private List<T> rooms;
 }

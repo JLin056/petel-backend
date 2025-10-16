@@ -12,5 +12,3 @@ public class DataNotFoundException extends Exception {
         super(message);
     }
 }
-
-

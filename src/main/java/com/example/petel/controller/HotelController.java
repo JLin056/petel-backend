@@ -1,17 +1,19 @@
+
 package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
-import com.example.petel.dto.HOTEL005Tranrq;
-import com.example.petel.dto.HOTEL005Tranrs;
-import com.example.petel.dto.Req;
-import com.example.petel.dto.Res;
+import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
-import com.example.petel.service.HOTEL005Svc;
+import com.example.petel.exception.UpdateFailException;
+import com.example.petel.service.HOTEL002Svc;
+import com.example.petel.service.HOTEL003Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,13 +21,27 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("http://localhost:4200")
 public class HotelController extends BaseController {
 
-    /** HOTELQ005 Service */
-    private final HOTEL005Svc hotel005Svc;
+    /**
+     * HOTEL002 Service
+     */
+    private final HOTEL002Svc hotel002Svc;
 
-    @PostMapping(value = "/policies")
-    public Res<HOTEL005Tranrs> policies(@Valid @RequestBody Req<HOTEL005Tranrq> hotel005Tranrq, Errors errors)
-            throws DataNotFoundException, InvalidInputException {
+    @PostMapping(value = "/detail")
+    public Res<HOTEL002Tranrs<HOTEL002TranrsHotel>> details(@Valid @RequestBody Req<HOTEL002Tranrq> hotel002Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException, UpdateFailException {
         handleValidForDto(errors);
-        return hotel005Svc.policies(hotel005Tranrq);
+        return hotel002Svc.details(hotel002Tranrq);
+    }
+
+    /**
+     * HOTEL003 Service
+     */
+    private final HOTEL003Svc hotel003Svc;
+
+    @PostMapping(value = "/rooms")
+    public Res<HOTEL003Tranrs<HOTEL003TranrsRoom>> rooms(@Valid @RequestBody Req<HOTEL003Tranrq> hotel003Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
+        handleValidForDto(errors);
+        return hotel003Svc.rooms(hotel003Tranrq);
     }
 }

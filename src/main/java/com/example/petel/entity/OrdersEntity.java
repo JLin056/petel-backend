@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,26 +21,25 @@ public class OrdersEntity {
      */
     @Id
     @Column(name = "ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 用戶編號
      */
     @Column(name = "USER_ID", nullable = false)
-    private Long userId;
+    private String userId;
 
     /**
      * 旅館編號
      */
     @Column(name = "PROPERTY_ID", nullable = false)
-    private Long propertyId;
+    private String propertyId;
 
     /**
      * 支付方式（編號）
      */
     @Column(name = "PAYMENT_ID", nullable = false)
-    private Integer paymentId;
+    private String paymentId;
 
     /**
      * 訂單費用
@@ -67,6 +66,24 @@ public class OrdersEntity {
     private String status;
 
     /**
+     * 寵物主人是否同會員帳號持有人：預設為 'y'
+     */
+    @Column(name = "GUEST", nullable = false)
+    private String guest;
+
+    /**
+     * 寵物主人姓名
+     */
+    @Column(name = "GUEST_NAME")
+    private String guestName;
+
+    /**
+     * 寵物主人連絡電話
+     */
+    @Column(name = "GUEST_PHONE")
+    private String guestPhone;
+
+    /**
      * 訂單備註
      */
     @Column(name = "NOTE")
@@ -76,11 +93,11 @@ public class OrdersEntity {
      * 訂單成立時間
      */
     @Column(name = "CREATED_AT", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     /**
      * 訂單更新時間
      */
     @Column(name = "UPDATED_AT")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 }

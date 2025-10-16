@@ -3,14 +3,15 @@ package com.example.petel.service.impl;
 import com.example.petel.dto.*;
 import com.example.petel.entity.OrderItemsEntity;
 import com.example.petel.entity.OrdersEntity;
-import com.example.petel.entity.RoomEntity;
 import com.example.petel.entity.RoomInventoriesEntity;
+import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.InsertFailException;
+import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.OrderItemsRepository;
 import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.RoomInventoriesRepository;
-import com.example.petel.repository.RoomRepository;
+import com.example.petel.repository.RoomsRepository;
 import com.example.petel.service.BOOK001Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +40,10 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     private final OrderItemsRepository orderItemsRepository;
     /** RoomInventoriesRepository */
     private final RoomInventoriesRepository roomInventoriesRepository;
-    /** RoomRepository */
-    private final RoomRepository roomRepository;
+    /** RoomsRepository */
+    private final RoomsRepository roomsRepository;
+    /** BOOKING_LOCK */
+    private static final Object BOOKING_LOCK = new Object();
 
     /**
      * 建立訂單
@@ -57,75 +61,89 @@ public class BOOK001SvcImpl implements BOOK001Svc {
         List<OrderItemsEntity> orderItemsEntities = new ArrayList<>();
         BigDecimal orderPrice = new BigDecimal(0);
 
-        for (BOOKTranrqOrderDetail orderDetail : orderDetails) {
+        synchronized (BOOKING_LOCK) {
 
-            long roomId = orderDetail.getRoomId();
-            String arrivalDate = orderDetail.getArrivalDate();
-            int roomQuantity = orderDetail.getRoomQuantity();
-            int roomPrice = orderDetail.getRoomPrice();
+            String itemsId = IdUtil.generateTableId("D", roomInventoriesRepository.findMaxId());
 
-            Optional<RoomInventoriesEntity> orderedResult = roomInventoriesRepository.findByRoomIdAndStayDate(roomId, arrivalDate);
+            for (BOOKTranrqOrderDetail orderDetail : orderDetails) {
 
-            if (orderedResult.isEmpty()) {
-                Optional<RoomEntity> roomEntity = roomRepository.findById(roomId);
-                if (roomEntity.isEmpty()) {
-                    log.error("[BOOK-001] 查無房型編號 {}，訂單建立失敗", roomId);
-                    throw new InsertFailException();
+                String roomId = orderDetail.getRoomId();
+                String arrivalDate = orderDetail.getArrivalDate();
+                Integer roomQuantity = orderDetail.getRoomQuantity();
+                Integer roomPrice = orderDetail.getRoomPrice();
+
+                Optional<RoomInventoriesEntity> orderedResult = roomInventoriesRepository.findByRoomIdAndStayDate(roomId, arrivalDate);
+
+                if (orderedResult.isEmpty()) {
+                    Optional<RoomsEntity> roomsEntity = roomsRepository.findById(roomId);
+                    if (roomsEntity.isEmpty()) {
+                        log.error("[BOOK-001] 查無房型編號 {}，訂單建立失敗", roomId);
+                        throw new InsertFailException();
+                    }
+                    int availableQuantity = roomsEntity.get().getTotalUnits() - roomQuantity;
+                    if (availableQuantity < 0) {
+                        log.error("[BOOK-001] 由於該房型總數量不足，訂單建立失敗");
+                        throw new InsertFailException();
+                    }
+                    roomInventoriesRepository.save(new RoomInventoriesEntity(IdUtil.generateTableId("Q", roomInventoriesRepository.findMaxId()), roomId, arrivalDate, availableQuantity, roomPrice));
+                } else {
+                    RoomInventoriesEntity inventory = orderedResult.get();
+                    int originalAvailableQuantity = inventory.getAvailableQuantity();
+                    if (roomQuantity > originalAvailableQuantity) {
+                        log.error("[BOOK-001] 訂單要求該房型數量大於該房型總數量，訂單建立失敗");
+                        throw new InsertFailException();
+                    }
+                    inventory.setAvailableQuantity(originalAvailableQuantity - roomQuantity);
+                    roomInventoriesRepository.save(inventory);
                 }
-                int availableQuantity = roomEntity.get().getTotalUnits() - roomQuantity;
-                if (availableQuantity < 0) {
-                    log.error("[BOOK-001] 由於該房型總數量不足，訂單建立失敗");
-                    throw new InsertFailException();
-                }
-                roomInventoriesRepository.save(new RoomInventoriesEntity(roomId, arrivalDate, availableQuantity, roomPrice));
-            } else {
-                RoomInventoriesEntity inventory = orderedResult.get();
-                int originalAvailableQuantity = inventory.getAvailableQuantity();
-                if (roomQuantity > originalAvailableQuantity) {
-                    log.error("[BOOK-001] 訂單要求該房型數量大於該房型總數量，訂單建立失敗");
-                    throw new InsertFailException();
-                }
-                inventory.setAvailableQuantity(originalAvailableQuantity - roomQuantity);
-                roomInventoriesRepository.save(inventory);
+
+                OrderItemsEntity orderItemsEntity = new OrderItemsEntity();
+                orderItemsEntity.setId(itemsId);
+                orderItemsEntity.setArrivalDate(arrivalDate);
+                orderItemsEntity.setRoomId(roomId);
+                orderItemsEntity.setQuantity(roomQuantity);
+                orderItemsEntity.setPrice(roomPrice);
+                orderItemsEntities.add(orderItemsEntity);
+
+                orderPrice = orderPrice.add(BigDecimal.valueOf(roomPrice));
+                itemsId = IdUtil.tableIdIncrement(itemsId);
             }
 
-            OrderItemsEntity orderItemsEntity = new OrderItemsEntity();
-            orderItemsEntity.setArrivalDate(arrivalDate);
-            orderItemsEntity.setRoomId(roomId);
-            orderItemsEntity.setQuantity(roomQuantity);
-            orderItemsEntity.setPrice(roomPrice);
-            orderItemsEntities.add(orderItemsEntity);
+            BOOKTranrqOrderInfo orderInfo = requestBody.getTranrq().getOrderInfo();
 
-            orderPrice = orderPrice.add(BigDecimal.valueOf(roomPrice));
+            OrdersEntity ordersEntity = new OrdersEntity();
+            ordersEntity.setId(IdUtil.generateTableId("O", ordersRepository.findMaxId()));
+            ordersEntity.setUserId(orderInfo.getUserId());
+            ordersEntity.setPropertyId(orderInfo.getPropertyId());
+            ordersEntity.setPaymentId(orderInfo.getPaymentId());
+            ordersEntity.setHotelCharges(orderPrice.intValue());
+            ordersEntity.setCheckIn(orderInfo.getCheckIn());
+            ordersEntity.setCheckOut(orderInfo.getCheckOut());
+            ordersEntity.setStatus(orderInfo.getStatus());
+            ordersEntity.setNote(orderInfo.getNote());
+            ordersEntity.setCreatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+
+            if (!"y".equals(orderInfo.getGuest())) {
+                ordersEntity.setGuest("n");
+                ordersEntity.setGuestName(orderInfo.getGuestName());
+                ordersEntity.setGuestPhone(orderInfo.getGuestPhone());
+            } else {
+                ordersEntity.setGuest("y");
+            }
+
+            String orderId;
+
+            try {
+                orderId = ordersRepository.save(ordersEntity).getId();
+                orderItemsEntities.forEach((entity) -> entity.setOrderId(orderId));
+                orderItemsRepository.saveAll(orderItemsEntities);
+            } catch (Exception e) {
+                log.error("[BOOK-001] 資料新增至資料庫發生異常，訂單建立失敗");
+                throw new InsertFailException();
+            }
+
+            log.info("[BOOK-001] 建立訂單成功，訂單ID：{}", orderId);
+            return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK001Tranrs(orderId));
         }
-
-        BOOKTranrqOrderInfo orderInfo = requestBody.getTranrq().getOrderInfo();
-
-        OrdersEntity ordersEntity = new OrdersEntity();
-        ordersEntity.setUserId(orderInfo.getUserId());
-        ordersEntity.setPropertyId(orderInfo.getPropertyId());
-        ordersEntity.setPaymentId(orderInfo.getPaymentId());
-        ordersEntity.setHotelCharges(orderPrice.intValue());
-        ordersEntity.setCheckIn(orderInfo.getCheckIn());
-        ordersEntity.setCheckOut(orderInfo.getCheckOut());
-        ordersEntity.setStatus(orderInfo.getStatus());
-        ordersEntity.setNote(orderInfo.getNote());
-        ordersEntity.setCreatedAt(Timestamp.from(Instant.now()));
-
-        OrdersEntity savedEntity;
-        long orderId;
-
-        try {
-            savedEntity = ordersRepository.save(ordersEntity);
-            orderId = savedEntity.getId();
-            orderItemsEntities.forEach((entity) -> entity.setOrderId(orderId));
-            orderItemsRepository.saveAll(orderItemsEntities);
-        } catch (Exception e) {
-            log.error("[BOOK-001] 資料新增至資料庫發生異常，訂單建立失敗");
-            throw new InsertFailException();
-        }
-
-        log.info("[BOOK-001] 建立訂單成功，訂單ID：{}", orderId);
-        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK001Tranrs(orderId));
     }
 }

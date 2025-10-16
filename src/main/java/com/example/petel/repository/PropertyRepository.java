@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> {
     /**
      * 根據賣家 ID 查詢所有相關物業
+     * 
      * @param sellerId 賣家 ID
      * @return 物業列表
      */

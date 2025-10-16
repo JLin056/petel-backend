@@ -38,8 +38,9 @@ public class BOOK006SvcImpl implements BOOK006Svc {
     /** HASH_IV */
     @Value("${ecpay.hashIv}")
     private String HASH_IV;
-    /** RETURN_URL */ // TODO 修改成外界可以進入的URL
-    private static final String RETURN_URL = "http://localhost:8080/bookings/credit/notify";
+    /** RETURN_URL */
+    @Value("${ecpay.credit.returnUrl}")
+    private String RETURN_URL;
     /** ITEM_NAME */
     private static final String ITEM_NAME = "PETEL room(s)";
 

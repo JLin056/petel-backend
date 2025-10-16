@@ -29,6 +29,10 @@ public class MERCH001SvcImpl implements MERCH001Svc {
      */
     private static final String MERCH001_QUERY = "MERCH001_QUERY.sql";
     /**
+     * MERCH001_QUERY
+     */
+    private static final String MERCH001_TODAY_QUERY = "MERCH001_TODAY_QUERY.sql";
+    /**
      * SqlAction
      */
     private final SqlAction sqlAction;
@@ -47,11 +51,19 @@ public class MERCH001SvcImpl implements MERCH001Svc {
     @Override
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(Req<MERCH001Tranrq> merch001Tranrq) throws DataNotFoundException, IOException {
         log.info("-------- [MERCH-001] 訂單列表 ---------");
-        Map<String, Object> paramMap = new HashMap<>();
 
+        Map<String, Object> paramMap = new HashMap<>();
         String propertyId = merch001Tranrq.getTranrq().getPropertyId();
         log.info("[MERCH-001] 查詢 propertyId = {}", propertyId);
         paramMap.put("propertyId", propertyId);
+
+        String arrivalDate = merch001Tranrq.getTranrq().getArrivalDate();
+        if (arrivalDate != null && !arrivalDate.isBlank()) {
+            log.info("[MERCH-001] 查詢 propertyId = {}, arrivalDate = {}", propertyId, arrivalDate);
+            paramMap.put("arrivalDate", arrivalDate);
+        } else {
+            log.info("[MERCH-001] 查詢 propertyId = {}，查全部訂單", propertyId);
+        }
 
         MERCH001TranrqPage pageData = merch001Tranrq.getTranrq().getPage();
         log.info("[MERCH-001] 查詢 pageData = {}", pageData);
@@ -68,15 +80,18 @@ public class MERCH001SvcImpl implements MERCH001Svc {
         paramMap.put("pageSize", pageSize);
         paramMap.put("offset", (pageNumber - 1) * pageSize);
 
-        List<MERCH001TranrsBooking> bookingList = new ArrayList<>();
+        String sqlFile = (arrivalDate != null && !arrivalDate.isBlank())
+                ? MERCH001_TODAY_QUERY
+                : MERCH001_QUERY;
 
-        String sql = sqlUtils.getQuerySql(MERCH001_QUERY);
+        String sql = sqlUtils.getQuerySql(sqlFile);
         List<Map<String, Object>> mapList = sqlAction.queryForList(sql, paramMap);
         if (CollectionUtils.isEmpty(mapList)) {
             log.warn("[MERCH-001] 依據 propertyId 查無資料");
             throw new DataNotFoundException("查無訂單資料");
         }
 
+        List<MERCH001TranrsBooking> bookingList = new ArrayList<>();
         mapList.forEach(map -> {
             MERCH001TranrsBooking booking = new MERCH001TranrsBooking();
             booking.setId(MapUtils.getString(map, "ID"));
@@ -86,7 +101,7 @@ public class MERCH001SvcImpl implements MERCH001Svc {
             } else if (createdAtObj instanceof java.time.LocalDateTime localDateTime) {
                 booking.setCreatedAt(localDateTime);
             }
-            booking.setUserName(MapUtils.getString(map, "USERS_NAME"));
+            booking.setUserName(MapUtils.getString(map, "USER_NAME"));
             booking.setCheckIn(MapUtils.getString(map, "CHECK_IN"));
             booking.setCheckOut(MapUtils.getString(map, "CHECK_OUT"));
             booking.setPaymentName(MapUtils.getString(map, "PAYMENT_NAME"));

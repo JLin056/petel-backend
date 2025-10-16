@@ -72,7 +72,7 @@ public class BOOK006SvcImpl implements BOOK006Svc {
         ecPayParams.put("EncryptType", 1);
         ecPayParams.put("CheckMacValue", CodeUtil.generateCheckMacValue(ecPayParams, HASH_KEY, HASH_IV));
 
-        log.info("[BOOK-006] 訂單編號為 {} 的訂單，組合付款參數成功", orderId);
+        log.info("[BOOK-006] 訂單編號為 {} 的訂單，付款參數組合完成", orderId);
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK006Tranrs(ecPayParams));
     }
 }

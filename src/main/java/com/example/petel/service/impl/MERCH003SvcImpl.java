@@ -96,6 +96,31 @@ public class MERCH003SvcImpl implements MERCH003Svc {
         });
         log.info("[MERCH-003] 查詢成功，propertyId={}, reviewList={}", propertyId, reviewList);
 
+        reviewList.forEach(r -> {
+            double avg = ((r.getPriceScore() != null ? r.getPriceScore() : 0.0) + (r.getEnvScore() != null ? r.getEnvScore() : 0.0) + (r.getServiceScore() != null ? r.getServiceScore() : 0.0)) / 3.0;
+            r.setAvgScore(Math.round(avg * 10.0) / 10.0);
+        });
+
+        double avgPriceScore = reviewList.stream()
+                .mapToDouble(r -> r.getPriceScore() != null ? r.getPriceScore() : 0.0)
+                .average()
+                .orElse(0.0);
+
+        double avgEnvScore = reviewList.stream()
+                .mapToDouble(r -> r.getEnvScore() != null ? r.getEnvScore() : 0.0)
+                .average()
+                .orElse(0.0);
+
+        double avgServiceScore = reviewList.stream()
+                .mapToDouble(r -> r.getServiceScore() != null ? r.getServiceScore() : 0.0)
+                .average()
+                .orElse(0.0);
+
+        avgPriceScore = Math.round(avgPriceScore * 10.0) / 10.0;
+        avgEnvScore = Math.round(avgEnvScore * 10.0) / 10.0;
+        avgServiceScore = Math.round(avgServiceScore * 10.0) / 10.0;
+
+
         int totalCount = MapUtils.getInteger(mapList.get(0), "TOTAL_COUNT");
 
         MERCH003Tranrs<MERCH003TranrsReview> merch003Tranrs = new MERCH003Tranrs<>();
@@ -104,6 +129,9 @@ public class MERCH003SvcImpl implements MERCH003Svc {
         int totalPage = (int) Math.ceil(totalCount / pageData.getPageSize().doubleValue());
         merch003Tranrs.setTotalPage(totalPage);
         merch003Tranrs.setTotalCount(totalCount);
+        merch003Tranrs.setAvgPriceScore(avgPriceScore);
+        merch003Tranrs.setAvgEnvScore(avgEnvScore);
+        merch003Tranrs.setAvgServiceScore(avgServiceScore);
 
         return new Res<>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),

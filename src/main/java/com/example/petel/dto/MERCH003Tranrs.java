@@ -13,6 +13,24 @@ public class MERCH003Tranrs<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * avgPriceScore
+     */
+    @JsonProperty("avgPriceScore")
+    private Double avgPriceScore;
+
+    /**
+     * avgEnvScore
+     */
+    @JsonProperty("avgEnvScore")
+    private Double avgEnvScore;
+
+    /**
+     * avgServiceScore
+     */
+    @JsonProperty("avgServiceScore")
+    private Double avgServiceScore;
+
+    /**
      * reviews
      */
     @JsonProperty("reviews")

@@ -43,6 +43,12 @@ public class MERCH003TranrsReview implements Serializable {
     private Double serviceScore;
 
     /**
+     * avgScore
+     */
+    @JsonProperty("avgScore")
+    private Double avgScore;
+
+    /**
      * content
      */
     @JsonProperty("content")

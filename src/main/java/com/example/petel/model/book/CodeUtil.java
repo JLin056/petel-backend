@@ -28,6 +28,9 @@ public class CodeUtil {
         StringBuilder sb = new StringBuilder();
         sb.append("HashKey=").append(hashKey);
         for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
+            if ("CheckMacValue".equals(entry.getKey())) {
+                continue;
+            }
             sb.append("&").append(entry.getKey()).append("=").append(entry.getValue());
         }
         sb.append("&HashIV=").append(hashIV);

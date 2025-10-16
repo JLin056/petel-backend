@@ -63,7 +63,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
 
         synchronized (BOOKING_LOCK) {
 
-            String itemsId = IdUtil.generateTableId("D", roomInventoriesRepository.findMaxId());
+            String itemsId = IdUtil.generateTableId("D", orderItemsRepository.findMaxId());
 
             for (BOOKTranrqOrderDetail orderDetail : orderDetails) {
 

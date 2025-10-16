@@ -28,13 +28,6 @@ public interface AccountsRepository extends JpaRepository<AccountsEntity, String
      * 查目前最大
      * @return
      */
-    @Query(value = """
-        SELECT NVL2(
-                 MAX(TO_NUMBER(SUBSTR(a.ID, 2))),
-                 'A' || LPAD(MAX(TO_NUMBER(SUBSTR(a.ID, 2))), 9, '0'),
-                 NULL
-               )
-        FROM PETEL_ACCOUNTS a
-        """, nativeQuery = true)
+    @Query("select max(a.id) from AccountsEntity a")
     String findMaxAccountId();
 }

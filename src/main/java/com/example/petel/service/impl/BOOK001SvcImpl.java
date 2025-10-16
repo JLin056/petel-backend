@@ -123,6 +123,14 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             ordersEntity.setNote(orderInfo.getNote());
             ordersEntity.setCreatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 
+            if (!"y".equals(orderInfo.getGuest())) {
+                ordersEntity.setGuest("n");
+                ordersEntity.setGuestName(orderInfo.getGuestName());
+                ordersEntity.setGuestPhone(orderInfo.getGuestPhone());
+            } else {
+                ordersEntity.setGuest("y");
+            }
+
             String orderId;
 
             try {

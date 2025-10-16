@@ -50,7 +50,7 @@ public class BOOK008SvcImpl implements BOOK008Svc {
         synchronized (PAYING_LOCK) {
 
             JSONObject jsonObject = new JSONObject(CodeUtil.dataDecrypt(requestBody.getData(), HASH_KEY, HASH_IV));
-            JSONObject orderInfoJsonObject = new JSONObject(jsonObject.getString("OrderInfo"));
+            JSONObject orderInfoJsonObject = jsonObject.getJSONObject("OrderInfo");
 
             TransactionsEntity transactionsEntity = new TransactionsEntity();
             transactionsEntity.setId(IdUtil.generateTableId("T", transactionsRepository.findMaxId()));

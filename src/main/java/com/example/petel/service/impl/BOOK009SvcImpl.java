@@ -60,15 +60,15 @@ public class BOOK009SvcImpl implements BOOK009Svc {
             if (Integer.parseInt(requestParam.get("RtnCode").toString()) != SUCCESS_RTN_CODE) {
                 transactionsEntity.setStatus("付款失敗");
                 transactionsRepository.save(transactionsEntity);
-                log.error("[BOOK-009] 付款失敗");
-                throw new PaymentFailedException();
+                log.warn("[BOOK-009] 付款失敗");
+                return "1|OK";
             }
 
             if (!CodeUtil.generateCheckMacValue(requestParam, HASH_KEY, HASH_IV).equals((requestParam.get("CheckMacValue").toString()))) {
                 transactionsEntity.setStatus("付款異常");
                 transactionsRepository.save(transactionsEntity);
-                log.error("[BOOK-009] 檢查碼相異");
-                throw new PaymentFailedException();
+                log.warn("[BOOK-009] 檢查碼相異");
+                return "1|OK";
             }
 
             transactionsEntity.setStatus("付款成功");

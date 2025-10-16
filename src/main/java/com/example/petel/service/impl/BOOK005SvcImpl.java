@@ -39,7 +39,7 @@ public class BOOK005SvcImpl implements BOOK005Svc {
     private String HASH_IV;
 
     /**
-     * 組合付款參數 for 現場付款
+     * 組合付款參數 for 現場付款：信用卡預先授權
      *
      * @param requestBody Req<BOOK005Tranrq>
      * @return Res<BOOK005Tranrs>

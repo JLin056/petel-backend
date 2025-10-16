@@ -28,11 +28,11 @@ public class MERCH008SvcImpl implements MERCH008Svc {
      *
      * @param requestBody Req<MERCH008Tranrq> （propertyId)
      * @return Res<MERCH008Tranrs>
-     * @throws DataNotFoundException,InsertFailException
+     * @throws InsertFailException
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<MERCH008Tranrs> insert(Req<MERCH008Tranrq> requestBody) throws DataNotFoundException, InsertFailException {
+    public Res<MERCH008Tranrs> insert(Req<MERCH008Tranrq> requestBody) throws InsertFailException {
 
         log.info("-------- [MERCH-008] 新增旅館資訊 ---------");
         MERCH008Tranrq merch008Tranrq = requestBody.getTranrq();

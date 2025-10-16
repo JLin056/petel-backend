@@ -27,7 +27,7 @@ public class MerchController extends BaseController {
 
     @PostMapping(value = "/hotels/create")
     public Res<MERCH008Tranrs> insert(@Valid @RequestBody Req<MERCH008Tranrq> merch008Tranrq, Errors errors)
-            throws DataNotFoundException, InsertFailException, InvalidInputException {
+            throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
         return merch008Svc.insert(merch008Tranrq);
     }

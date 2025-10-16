@@ -9,5 +9,5 @@ import com.example.petel.exception.InsertFailException;
 import jakarta.validation.Valid;
 
 public interface MERCH008Svc {
-    Res<MERCH008Tranrs> insert(@Valid Req<MERCH008Tranrq> merch008Tranrq) throws DataNotFoundException, InsertFailException;
+    Res<MERCH008Tranrs> insert(@Valid Req<MERCH008Tranrq> merch008Tranrq) throws InsertFailException;
 }

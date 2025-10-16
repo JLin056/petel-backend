@@ -58,26 +58,27 @@ public class BOOK008SvcImpl implements BOOK008Svc {
             transactionsEntity.setPaymentId(PAYMENT_ID);
             transactionsEntity.setTransactionId(orderInfoJsonObject.getString("TradeNo"));
             transactionsEntity.setFlowType("Pay");
-            transactionsEntity.setHotelCharges(Integer.parseInt(orderInfoJsonObject.getString("TradeAmt")));
+            transactionsEntity.setHotelCharges(orderInfoJsonObject.getInt("TradeAmt"));
             transactionsEntity.setCreatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 
-            if (Integer.parseInt(jsonObject.getString("RtnCode")) != SUCCESS_RTN_CODE) {
+            if ((jsonObject.getInt("RtnCode") != SUCCESS_RTN_CODE) || (!"1".equals(orderInfoJsonObject.getString("TradeStatus")))) {
                 transactionsEntity.setStatus("付款失敗");
                 transactionsRepository.save(transactionsEntity);
-                log.error("[BOOK-008] 付款失敗");
-                throw new PaymentFailedException();
+                log.warn("[BOOK-008] 付款失敗");
+                return "1|OK";
             }
 
             transactionsEntity.setStatus("付款成功");
             transactionsEntity.setIdempotencyKey(UUID.randomUUID().toString());
-            if (orderInfoJsonObject.get("PaymentTypeChargeFee") == null) {
+            if (orderInfoJsonObject.get("ChargeFee") == null) {
                 transactionsEntity.setTransactionFee(0);
             } else {
-                transactionsEntity.setTransactionFee(Integer.parseInt(orderInfoJsonObject.getString("PaymentTypeChargeFee")));
+                transactionsEntity.setTransactionFee(orderInfoJsonObject.getInt("ChargeFee"));
             }
             transactionsEntity.setPayTime(TimeUtil.parseMerchantTradeDate(orderInfoJsonObject.getString("TradeDate")));
             transactionsRepository.save(transactionsEntity);
         }
+        log.info("[BOOK-008] 付款成功");
         return "1|OK";
     }
 }

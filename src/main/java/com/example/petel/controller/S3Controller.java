@@ -2,8 +2,10 @@ package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
+import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.UpdateFailException;
+import com.example.petel.service.IMG001Svc;
 import com.example.petel.service.IMG002Svc;
 import com.example.petel.service.S3Svc;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class S3Controller extends BaseController {
 
     private final S3Svc s3Svc;
+    private final IMG001Svc img001Svc;
     private final IMG002Svc img002Svc;
 
     /**
@@ -26,6 +29,16 @@ public class S3Controller extends BaseController {
     @PostMapping("/sign-upload")
     public S3SignatureRes signUpload(@RequestBody S3SignUploadReq s3SignUploadReq) {
         return s3Svc.generatePresignedUrl(s3SignUploadReq);
+    }
+
+    /**
+     * 確認圖片已上傳並儲存元資料 (使用 Presigned URL 後呼叫)
+     */
+    @PostMapping("/create")
+    public Res<IMG001Tranrs> confirmImageUpload(@Valid @RequestBody Req<IMG001Tranrq> req, Errors errors)
+            throws InsertFailException, InvalidInputException {
+        handleValidForDto(errors);
+        return img001Svc.uploadImage(req);
     }
 
     /**

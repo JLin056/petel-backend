@@ -28,7 +28,7 @@ import java.util.Map;
 public class BOOK002SvcImpl implements BOOK002Svc {
 
     /** sqlFile */
-    private static final String sqlFile = "BOOK_QUERY.sql";
+    private static final String sqlFile = "BOOK002_QUERY.sql";
     /** sqlAction */
     private final SqlAction sqlAction;
     /** sqlUtils */
@@ -53,6 +53,12 @@ public class BOOK002SvcImpl implements BOOK002Svc {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("orderID", orderId);
         String sql = sqlUtils.getQuerySql(sqlFile);
+
+        if (sql == null || sql.isBlank()) {
+            log.error("[BOOK-002] SQL 檔內容為空或讀取失敗");
+            throw new IOException();
+        }
+
         List<Map<String, Object>> mapList = sqlAction.queryForList(sql, paramMap);
 
         if (mapList.isEmpty()) {
@@ -83,6 +89,14 @@ public class BOOK002SvcImpl implements BOOK002Svc {
         book002Tranrs.setCheckOut(MapUtils.getString(orderInfoMap, "CHECK_OUT"));
         book002Tranrs.setStatus(MapUtils.getString(orderInfoMap, "STATUS"));
         book002Tranrs.setNote(MapUtils.getString(orderInfoMap, "NOTE"));
+
+        if (!"y".equals(MapUtils.getString(orderInfoMap, "GUEST"))) {
+            book002Tranrs.setGuestName(MapUtils.getString(orderInfoMap, "GUEST_NAME"));
+            book002Tranrs.setGuestPhone(MapUtils.getString(orderInfoMap, "GUEST_PHONE"));
+        } else {
+            book002Tranrs.setGuestName(MapUtils.getString(orderInfoMap, "NAME"));
+            book002Tranrs.setGuestPhone(MapUtils.getString(orderInfoMap, "PHONE"));
+        }
 
         if (MapUtils.getObject(orderInfoMap, "CREATED_AT") instanceof Timestamp ts) {
             book002Tranrs.setCreatedAt(ts.toLocalDateTime());

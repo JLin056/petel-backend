@@ -42,6 +42,12 @@ public class BOOK002Tranrs implements Serializable {
     @JsonProperty("status")
     private String status;
 
+    @JsonProperty("guest_name")
+    private String guestName;
+
+    @JsonProperty("guest_phone")
+    private String guestPhone;
+
     @JsonProperty("note")
     private String note;
 

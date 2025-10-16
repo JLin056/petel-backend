@@ -10,7 +10,7 @@ import java.util.Optional;
  * S3 媒體檔案 Repository
  */
 @Repository
-public interface MediaS3Repository extends JpaRepository<MediaS3Entity, Long> {
+public interface MediaS3Repository extends JpaRepository<MediaS3Entity, String> {
 
     /**
      * 根據 Object Key 查詢

@@ -21,11 +21,11 @@ import lombok.Setter;
 public class MediaS3Entity {
 
     /**
-     * 媒體ID (主鍵，關聯到 PETEL_MEDIA 的 ID)
+     * 媒體ID (主鍵，關聯到 PETEL_MEDIA 的 ID, varchar2(10))
      */
     @Id
-    @Column(name = "MEDIA_ID")
-    private Long mediaId;
+    @Column(name = "MEDIA_ID", length = 10)
+    private String mediaId;
 
     /**
      * S3 Bucket

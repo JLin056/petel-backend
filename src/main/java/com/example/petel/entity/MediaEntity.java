@@ -1,6 +1,9 @@
 package com.example.petel.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +25,11 @@ import java.time.LocalDateTime;
 public class MediaEntity{
 
     /**
-     * 媒體ID (主鍵，自動生成)
+     * 媒體ID (主鍵，varchar2(10))
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+    @Column(name = "ID", length = 10)
+    private String id;
 
     /**
      * 儲存類型 (S3, LOCAL, etc.)

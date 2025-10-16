@@ -10,7 +10,7 @@ import java.util.List;
  * 媒體檔案 Repository
  */
 @Repository
-public interface MediaRepository extends JpaRepository<MediaEntity, Long> {
+public interface MediaRepository extends JpaRepository<MediaEntity, String> {
 
     /**
      * 根據儲存類型查詢

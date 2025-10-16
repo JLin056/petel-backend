@@ -34,11 +34,11 @@ public class MERCH008SvcImpl implements MERCH008Svc {
     @Transactional(rollbackOn = Exception.class)
     public Res<MERCH008Tranrs> insert(Req<MERCH008Tranrq> requestBody) throws DataNotFoundException, InsertFailException {
 
-        log.info("-------- [MERCH-008] 旅館資訊新增 ---------");
+        log.info("-------- [MERCH-008] 新增旅館資訊 ---------");
         MERCH008Tranrq merch008Tranrq = requestBody.getTranrq();
 
         String newPropertyId = IdUtil.generateTableId("P", propertyRepository.findMaxId());
-        log.info("[MERCH-004] 生成房型ID:{}", newPropertyId);
+        log.info("[MERCH-008] 生成旅館ID:{}", newPropertyId);
 
         try {
             PropertyEntity propertyEntity = new PropertyEntity();
@@ -53,7 +53,6 @@ public class MERCH008SvcImpl implements MERCH008Svc {
             propertyEntity.setCheckNotice(merch008Tranrq.getCheckNotice());
             propertyEntity.setPetNotice(merch008Tranrq.getPetNotice());
             propertyEntity.setPropertyNotice(merch008Tranrq.getPropertyNotice());
-
             propertyRepository.save(propertyEntity);
             log.info("[MERCH-008] 新增成功，新增欄位：{}", merch008Tranrq);
 

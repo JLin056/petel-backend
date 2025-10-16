@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -28,10 +30,11 @@ public class AdminController extends BaseController {
      * @return Res<Admin001Tranrs>
      * @throws DataNotFoundException 查無資料
      * @throws InvalidInputException 輸入驗證錯誤
+     * @throws IOException SQL 檔案讀取錯誤
      */
     @PostMapping("/hotels/queryStore")
     public Res<Admin001Tranrs> queryStores(@Valid @RequestBody Req<Admin001Tranrq> req, Errors errors)
-            throws Exception, DataNotFoundException, InvalidInputException {
+            throws DataNotFoundException, InvalidInputException, IOException {
         handleValidForDto(errors);
         return admin001Svc.queryStores(req);
     }

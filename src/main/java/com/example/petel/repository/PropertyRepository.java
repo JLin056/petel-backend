@@ -4,7 +4,6 @@ import com.example.petel.entity.PropertyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> {
     /**
@@ -13,5 +12,5 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> 
      * @param sellerId 賣家 ID
      * @return 物業列表
      */
-    List<PropertyEntity> findBySellerId(Integer sellerId);
+    List<PropertyEntity> findBySellerId(String sellerId);
 }

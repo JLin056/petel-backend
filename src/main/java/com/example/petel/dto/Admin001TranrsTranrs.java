@@ -19,48 +19,48 @@ public class Admin001TranrsTranrs implements Serializable {
     /**
      * 物業 ID
      */
-    @JsonProperty("propertyId")
-    private Integer propertyId;
+    @JsonProperty("PROPERTY_ID")
+    private String propertyId;
 
     /**
      * 物業名稱
      */
-    @JsonProperty("propertyName")
+    @JsonProperty("PROPERTY_NAME")
     private String propertyName;
 
     /**
      * 電話
      */
-    @JsonProperty("tel")
+    @JsonProperty("TEL")
     private String tel;
 
     /**
      * 郵遞區號
      */
-    @JsonProperty("postalCode")
+    @JsonProperty("POSTAL_CODE")
     private String postalCode;
 
     /**
      * 地址
      */
-    @JsonProperty("address")
+    @JsonProperty("ADDRESS")
     private String address;
 
     /**
      * 銀行帳號
      */
-    @JsonProperty("bankAccount")
+    @JsonProperty("BANK_ACCOUNT")
     private String bankAccount;
 
     /**
      * 賣家名稱
      */
-    @JsonProperty("sellerName")
+    @JsonProperty("SELLER_NAME")
     private String sellerName;
 
     /**
      * 賣家統編
      */
-    @JsonProperty("businessCode")
+    @JsonProperty("BUSINESS_CODE")
     private String businessCode;
 }

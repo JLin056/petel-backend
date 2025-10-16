@@ -59,8 +59,7 @@ public class BOOK005SvcImpl implements BOOK005Svc {
             log.error("[BOOK-005] 您的付款方式不適用這隻 API");
             throw new InvalidPaymentMethodException();
         }
-
-        log.info("[BOOK-005] 訂單編號為 {} 的訂單，組合付款參數成功", orderId);
+        
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK005Tranrs(MERCHANT_ID, new BOOK005TranrsRqHeader(ZonedDateTime.now(ZoneId.of("Asia/Taipei")).toEpochSecond()), CodeUtil.dataEncrypt(requestBody.getTranrq().getData(), HASH_KEY, HASH_IV)));
     }
 }

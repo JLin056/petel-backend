@@ -25,13 +25,14 @@ public class Admin007SvcImpl implements Admin007Svc {
 
     /**
      * 查詢會員列表
-     * @param req Req<Admin007Tranrq>
-     * @return Res<Admin007Tranrs>
+     * @param req Req<ADMIN007Tranrq>
+     * @return Res<ADMIN007Tranrs>
+     * @throws DataNotFoundException 查無資料
      */
     @Override
-    public Res<Admin007Tranrs> queryMembers(Req<Admin007Tranrq> req) throws Exception {
+    public Res<ADMIN007Tranrs> queryMembers(Req<ADMIN007Tranrq> req) throws DataNotFoundException {
         log.info("-------- [ADMIN-007] 查詢會員列表 ---------");
-        Admin007Tranrq tranrq = req.getTranrq();
+        ADMIN007Tranrq tranrq = req.getTranrq();
 
         // 建立查詢參數 Map
         Map<String, Object> paramMap = new HashMap<>();
@@ -52,7 +53,7 @@ public class Admin007SvcImpl implements Admin007Svc {
         }
 
         // 計算分頁參數
-        Admin007TranrqPage page = tranrq.getPage();
+        ADMIN007TranrqPage page = tranrq.getPage();
         int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
         int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 5;
         int offset = (pageNumber - 1) * pageSize;
@@ -101,10 +102,10 @@ public class Admin007SvcImpl implements Admin007Svc {
 
         // 執行查詢 (使用包含分頁的 SQL)
         System.out.println("執行查詢前的 paramMap: " + paramMap);
-        List<Admin007TranrsTranrs> members = sqlAction.queryForListVO(
+        List<ADMIN007TranrsTranrs> members = sqlAction.queryForListVO(
                 sql,
                 paramMap,
-                Admin007TranrsTranrs.class,
+                ADMIN007TranrsTranrs.class,
                 true
         );
 
@@ -112,7 +113,7 @@ public class Admin007SvcImpl implements Admin007Svc {
         System.out.println(members);
 
         // 組裝回應
-        Admin007Tranrs tranrs = new Admin007Tranrs();
+        ADMIN007Tranrs tranrs = new ADMIN007Tranrs();
         tranrs.setMembers(members != null ? members : new ArrayList<>());
         tranrs.setTotalCount(totalCount != null ? totalCount : 0);
         tranrs.setTotalPages(totalPages);

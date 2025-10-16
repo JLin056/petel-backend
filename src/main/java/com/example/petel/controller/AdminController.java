@@ -21,16 +21,16 @@ public class AdminController extends BaseController {
 
     /**
      * Admin-007: 查詢會員列表
-     * 
-     * @param req    Req<Admin007Tranrq>
+     *
+     * @param req    Req<ADMIN007Tranrq>
      * @param errors 驗證錯誤
-     * @return Res<Admin007Tranrs>
+     * @return Res<ADMIN007Tranrs>
      * @throws DataNotFoundException 查無資料
      * @throws InvalidInputException 輸入驗證錯誤
      */
     @PostMapping("/queryMembers")
-    public Res<Admin007Tranrs> queryMembers(@Valid @RequestBody Req<Admin007Tranrq> req, Errors errors)
-            throws Exception, DataNotFoundException, InvalidInputException {
+    public Res<ADMIN007Tranrs> queryMembers(@Valid @RequestBody Req<ADMIN007Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException {
         handleValidForDto(errors);
         return admin007Svc.queryMembers(req);
     }

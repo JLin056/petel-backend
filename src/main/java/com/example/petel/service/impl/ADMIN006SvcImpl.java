@@ -6,7 +6,7 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.DeleteFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.PropertyRepository;
-import com.example.petel.service.Admin006Svc;
+import com.example.petel.service.ADMIN006Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class Admin006SvcImpl implements Admin006Svc {
+public class ADMIN006SvcImpl implements ADMIN006Svc {
 
     private final PropertyRepository propertyRepository;
 

@@ -31,9 +31,9 @@ public class Admin002SvcImpl implements Admin002Svc {
      * @return Res<ADMIN002Tranrs>
      */
     @Override
-    public Res<ADMIN002Tranrs> querySellers(Req<ADMIN002Tranrq> req) throws DataNotFoundException, IOException {
+    public Res<Admin002Tranrs> querySellers(Req<Admin002Tranrq> req) throws DataNotFoundException, IOException {
         log.info("-------- [ADMIN-002] 查詢賣家列表 ---------");
-        ADMIN002Tranrq tranrq = req.getTranrq();
+        Admin002Tranrq tranrq = req.getTranrq();
 
         // 建立查詢參數 Map
         Map<String, Object> paramMap = new HashMap<>();
@@ -72,7 +72,7 @@ public class Admin002SvcImpl implements Admin002Svc {
         }
 
         // 計算分頁參數並加入 paramMap
-        ADMIN002TranrqPage page = tranrq.getPage();
+        Admin002TranrqPage page = tranrq.getPage();
         int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
         int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 5;
         int offset = (pageNumber - 1) * pageSize;
@@ -87,17 +87,17 @@ public class Admin002SvcImpl implements Admin002Svc {
         String sql = sqlUtils.getDynamicQuerySQL("Admin002_Query.sql", paramMap);
         log.info("[ADMIN-002] 執行 SQL: {}", sql);
 
-        List<ADMIN002TranrsTranrs> sellers = sqlAction.queryForListVO(
+        List<Admin002TranrsTranrs> sellers = sqlAction.queryForListVO(
                 sql,
                 paramMap,
-                ADMIN002TranrsTranrs.class,
+                Admin002TranrsTranrs.class,
                 true
         );
 
         log.info("[ADMIN-002] 查詢成功，共 {} 筆，當前頁 {}/{}", totalCount, pageNumber, totalPages);
 
         // 組裝回應
-        ADMIN002Tranrs tranrs = new ADMIN002Tranrs();
+        Admin002Tranrs tranrs = new Admin002Tranrs();
         tranrs.setSellers(sellers != null ? sellers : new ArrayList<>());
         tranrs.setTotalCount(totalCount != null ? totalCount : 0);
         tranrs.setTotalPages(totalPages);

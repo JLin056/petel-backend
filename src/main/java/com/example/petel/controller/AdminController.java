@@ -3,6 +3,8 @@ package com.example.petel.controller;
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.ADMIN002Tranrq;
 import com.example.petel.dto.ADMIN002Tranrs;
+import com.example.petel.dto.Admin002Tranrq;
+import com.example.petel.dto.Admin002Tranrs;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
@@ -34,7 +36,7 @@ public class AdminController extends BaseController {
      * @throws IOException SQL 檔案讀取錯誤
      */
     @PostMapping(value = "/merchant/query")
-    public Res<ADMIN002Tranrs> querySellers(@Valid @RequestBody Req<ADMIN002Tranrq> admin002Tranrq, Errors errors)
+    public Res<Admin002Tranrs> querySellers(@Valid @RequestBody Req<Admin002Tranrq> admin002Tranrq, Errors errors)
             throws DataNotFoundException, InvalidInputException, IOException {
         handleValidForDto(errors);
         return admin002Svc.querySellers(admin002Tranrq);

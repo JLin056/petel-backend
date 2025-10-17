@@ -17,5 +17,5 @@ public class BOOK001Tranrs implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("order_id")
-    private Long orderId;
+    private String orderId;
 }

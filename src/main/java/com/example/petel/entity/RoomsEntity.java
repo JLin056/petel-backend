@@ -2,7 +2,7 @@ package com.example.petel.entity;
 
 
 import jakarta.persistence.*;
-        import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,22 +12,21 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PETEL_ROOM")
-public class RoomEntity {
+@Table(name = "PETEL_ROOMS")
+public class RoomsEntity {
 
     /**
      * 房型編號
      */
     @Id
     @Column(name = "ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 旅館編號
      */
-    @Column(name = "PROPERTY_ID")
-    private Long propertyId;
+    @Column(name = "PROPERTY_ID", nullable = false)
+    private String propertyId;
 
     /**
      * Name
@@ -51,5 +50,17 @@ public class RoomEntity {
      * 寵物類型
      */
     @Column(name = "PET_TYPE_ID")
-    private Integer petTypeId;
+    private String petTypeId;
+
+    /**
+     * 房型資訊
+     */
+    @Column(name = "INFO")
+    private String info;
+
+    /**
+     * 房型面積
+     */
+    @Column(name = "ROOM_SIZE")
+    private String roomSize;
 }

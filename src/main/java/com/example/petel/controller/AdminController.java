@@ -6,6 +6,7 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.Admin001Svc;
+import com.example.petel.service.Admin006Svc;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class AdminController extends BaseController {
     /** Admin001 Service */
     private final Admin001Svc admin001Svc;
 
+    /** Admin006 Service */
+    private final Admin006Svc admin006Svc;
     /** ADMIN003 Service */
     private final ADMIN003Svc admin003Svc;
 
@@ -58,4 +61,19 @@ public class AdminController extends BaseController {
         return admin001Svc.queryStores(req);
     }
 
+    /**
+     * Admin-006: 刪除旅館
+     * @param req Req<ADMIN006Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<ADMIN006Tranrs>
+     * @throws DataNotFoundException 旅館不存在
+     * @throws InvalidInputException 輸入驗證錯誤
+     * @throws com.example.petel.exception.DeleteFailException 刪除失敗
+     */
+    @PostMapping("/hotels/delete")
+    public Res<ADMIN006Tranrs> deleteHotel(@Valid @RequestBody Req<ADMIN006Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
+        handleValidForDto(errors);
+        return admin006Svc.deleteHotel(req);
+    }
 }

@@ -1,10 +1,11 @@
 package com.example.petel.service.impl;
 
+import com.example.petel.entity.OrdersEntity;
 import com.example.petel.entity.TransactionsEntity;
-import com.example.petel.exception.PaymentFailedException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.TimeUtil;
 import com.example.petel.model.book.CodeUtil;
+import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.TransactionsRepository;
 import com.example.petel.service.BOOK009Svc;
 import jakarta.transaction.Transactional;
@@ -29,6 +30,8 @@ public class BOOK009SvcImpl implements BOOK009Svc {
 
     /** TransactionsRepository */
     private final TransactionsRepository transactionsRepository;
+    /** OrdersRepository */
+    private final OrdersRepository ordersRepository;
     /** PAYMENT_ID */
     private static final String PAYMENT_ID = "Y000000002";
     /** SUCCESS_RTN_CODE */
@@ -49,17 +52,27 @@ public class BOOK009SvcImpl implements BOOK009Svc {
         synchronized (PAYING_LOCK) {
 
             TransactionsEntity transactionsEntity = new TransactionsEntity();
-            transactionsEntity.setId(IdUtil.generateTableId("T", transactionsRepository.findMaxId()));
-            transactionsEntity.setOrderId(requestParam.get("MerchantTradeNo").toString().replaceFirst("^PETEL", ""));
-            transactionsEntity.setPaymentId(PAYMENT_ID);
-            transactionsEntity.setTransactionId(requestParam.get("TradeNo").toString());
-            transactionsEntity.setFlowType("Pay");
-            transactionsEntity.setHotelCharges(Integer.parseInt(requestParam.get("TradeAmt").toString()));
-            transactionsEntity.setCreatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+            String orderId = requestParam.get("MerchantTradeNo").toString().replaceFirst("^PETEL", "");
+
+            if (transactionsRepository.findByOrderId(orderId).isPresent()) {
+                transactionsEntity = transactionsRepository.findByOrderId(orderId).get();
+            } else {
+                transactionsEntity.setId(IdUtil.generateTableId("T", transactionsRepository.findMaxId()));
+                transactionsEntity.setOrderId(orderId);
+                transactionsEntity.setPaymentId(PAYMENT_ID);
+                transactionsEntity.setTransactionId(requestParam.get("TradeNo").toString());
+                transactionsEntity.setFlowType("Pay");
+                transactionsEntity.setHotelCharges(Integer.parseInt(requestParam.get("TradeAmt").toString()));
+                transactionsEntity.setCreatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+            }
 
             if (Integer.parseInt(requestParam.get("RtnCode").toString()) != SUCCESS_RTN_CODE) {
                 transactionsEntity.setStatus("付款失敗");
                 transactionsRepository.save(transactionsEntity);
+                OrdersEntity ordersEntity = ordersRepository.findById(orderId).get();
+                ordersEntity.setStatus("未付款");
+                ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+                ordersRepository.save(ordersEntity);
                 log.warn("[BOOK-009] 付款失敗");
                 return "1|OK";
             }
@@ -67,6 +80,10 @@ public class BOOK009SvcImpl implements BOOK009Svc {
             if (!CodeUtil.generateCheckMacValue(requestParam, HASH_KEY, HASH_IV).equals((requestParam.get("CheckMacValue").toString()))) {
                 transactionsEntity.setStatus("付款異常");
                 transactionsRepository.save(transactionsEntity);
+                OrdersEntity ordersEntity = ordersRepository.findById(orderId).get();
+                ordersEntity.setStatus("未付款");
+                ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+                ordersRepository.save(ordersEntity);
                 log.warn("[BOOK-009] 檢查碼相異");
                 return "1|OK";
             }
@@ -80,6 +97,10 @@ public class BOOK009SvcImpl implements BOOK009Svc {
             }
             transactionsEntity.setPayTime(TimeUtil.parseMerchantTradeDate(requestParam.get("TradeDate").toString()));
             transactionsRepository.save(transactionsEntity);
+            OrdersEntity ordersEntity = ordersRepository.findById(orderId).get();
+            ordersEntity.setStatus("已付款");
+            ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+            ordersRepository.save(ordersEntity);
         }
 
         return "1|OK";

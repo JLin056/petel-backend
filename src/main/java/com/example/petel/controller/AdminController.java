@@ -4,8 +4,10 @@ import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.Admin001Svc;
 import com.example.petel.service.Admin006Svc;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -24,6 +26,24 @@ public class AdminController extends BaseController {
 
     /** Admin006 Service */
     private final Admin006Svc admin006Svc;
+    /** ADMIN003 Service */
+    private final ADMIN003Svc admin003Svc;
+
+    /**
+     * Admin-003: 查詢訂單列表
+     *
+     * @param req    Req<ADMIN003Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<ADMIN003Tranrs>
+     * @throws DataNotFoundException 查無資料
+     * @throws InvalidInputException 輸入驗證錯誤
+     */
+    @PostMapping("/bookings/list")
+    public Res<ADMIN003Tranrs> queryOrders(@Valid @RequestBody Req<ADMIN003Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
+        handleValidForDto(errors);
+        return admin003Svc.queryOrders(req);
+    }
 
     /**
      * Admin-001: 查詢所有旅館列表

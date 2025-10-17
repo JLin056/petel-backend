@@ -86,6 +86,5 @@ public class MERCH008Tranrq implements Serializable {
      * property notice
      */
     @JsonProperty("propertyNotice")
-    @NotBlank(message = "propertyNotice不得為空")
     private String propertyNotice;
 }

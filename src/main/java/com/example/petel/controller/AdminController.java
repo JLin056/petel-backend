@@ -4,13 +4,14 @@ import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
-
+import com.example.petel.service.Admin001Svc;
 import com.example.petel.service.Admin006Svc;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,12 +19,27 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("http://localhost:4200")
 public class AdminController extends BaseController {
 
+    /** Admin001 Service */
+    private final Admin001Svc admin001Svc;
 
     /** Admin006 Service */
     private final Admin006Svc admin006Svc;
 
-
-
+    /**
+     * Admin-001: 查詢所有旅館列表
+     * @param req Req<Admin001Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<Admin001Tranrs>
+     * @throws DataNotFoundException 查無資料
+     * @throws InvalidInputException 輸入驗證錯誤
+     * @throws IOException SQL 檔案讀取錯誤
+     */
+    @PostMapping("/hotels/queryStore")
+    public Res<Admin001Tranrs> queryStores(@Valid @RequestBody Req<Admin001Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
+        handleValidForDto(errors);
+        return admin001Svc.queryStores(req);
+    }
 
     /**
      * Admin-006: 刪除旅館
@@ -40,5 +56,4 @@ public class AdminController extends BaseController {
         handleValidForDto(errors);
         return admin006Svc.deleteHotel(req);
     }
-
 }

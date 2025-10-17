@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +36,8 @@ public class BookController extends BaseController {
     /** BOOK008Svc */
     private final BOOK008Svc book008Svc;
 
+    /** BOOK009Svc */
+    private final BOOK009Svc book009Svc;
 
     @PostMapping(value = "/create")
     public Res<BOOK001Tranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
@@ -69,5 +72,10 @@ public class BookController extends BaseController {
     @PostMapping(value = "/authorize/notify")
     public String book008(@RequestBody BOOK008Tranrq requestBody) throws Exception {
         return book008Svc.book008(requestBody);
+    }
+
+    @PostMapping(value = "/credit/notify")
+    public String book009(@RequestParam Map<String, Object> requestParam) throws Exception {
+        return book009Svc.book009(requestParam);
     }
 }

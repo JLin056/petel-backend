@@ -1,0 +1,43 @@
+package com.example.petel.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Admin001Tranrs implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 旅館列表
+     */
+    @JsonProperty("hotels")
+    private List<Admin001TranrsTranrs> hotels;
+
+    /**
+     * 總筆數
+     */
+    @JsonProperty("totalCount")
+    private Integer totalCount;
+
+    /**
+     * 總頁數
+     */
+    @JsonProperty("totalPages")
+    private Integer totalPages;
+
+    /**
+     * 當前頁碼
+     */
+    @JsonProperty("currentPage")
+    private Integer currentPage;
+}

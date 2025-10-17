@@ -48,6 +48,16 @@ public class BOOKTranrqOrderInfo implements Serializable {
     @NotBlank(message = "status不得為空")
     private String status;
 
+    @JsonProperty("guest")
+    @NotBlank(message = "guest不得為空")
+    private String guest;
+
+    @JsonProperty("guest_name")
+    private String guestName;
+
+    @JsonProperty("guest_phone")
+    private String guestPhone;
+
     @JsonProperty("note")
     private String note;
 }

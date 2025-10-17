@@ -2,10 +2,12 @@ package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
-import com.example.petel.exception.DeleteFailException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.exception.UpdateFailException;
+import com.example.petel.exception.DeleteFailException;
 import com.example.petel.service.IMG001Svc;
+import com.example.petel.service.IMG002Svc;
 import com.example.petel.service.IMG003Svc;
 import com.example.petel.service.S3Svc;
 import jakarta.validation.Valid;
@@ -21,6 +23,7 @@ public class S3Controller extends BaseController {
 
     private final S3Svc s3Svc;
     private final IMG001Svc img001Svc;
+    private final IMG002Svc img002Svc;
     private final IMG003Svc img003Svc;
 
     /**
@@ -41,6 +44,15 @@ public class S3Controller extends BaseController {
         return img001Svc.uploadImage(req);
     }
 
+    /**
+     * 更新圖片 (替換 S3 檔案)
+     */
+    @PostMapping("/update")
+    public Res<IMG002Tranrs> updateImage(@Valid @RequestBody Req<IMG002Tranrq> req, Errors errors)
+            throws UpdateFailException, InvalidInputException {
+        handleValidForDto(errors);
+        return img002Svc.updateImage(req);
+    }
 
     /**
      * 刪除圖片 (刪除 S3 檔案和資料庫記錄)
@@ -51,4 +63,6 @@ public class S3Controller extends BaseController {
         handleValidForDto(errors);
         return img003Svc.deleteImage(req);
     }
+
 }
+

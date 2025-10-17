@@ -4,6 +4,7 @@ import com.example.petel.dto.*;
 import com.example.petel.entity.AccountsEntity;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.AccountsRepository;
 import com.example.petel.service.AUTH001Svc;
@@ -43,7 +44,10 @@ public class AUTH001SvcImpl implements AUTH001Svc {
             throw new InvalidInputException("Email 已被使用");
         }
 
-        String accountId = generateNextAccountId();
+        log.info("[AUTH-001] 找目前最大 Account Id" );
+        String lastAccountId = accountsRepo.findMaxAccountId();
+        String accountId = IdUtil.generateTableId("A", lastAccountId);
+        log.info("[AUTH-001] 產生 Account Id = {}", accountId );
 
         AccountsEntity accountsEntity = new AccountsEntity();
         accountsEntity.setId(accountId);
@@ -65,15 +69,5 @@ public class AUTH001SvcImpl implements AUTH001Svc {
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
                 new AUTH001Tranrs(accountId)
         );
-    }
-
-    /**
-     * 產生下一個 account ID
-     * @return String account ID
-     */
-    private String generateNextAccountId() {
-        Integer maxNum = accountsRepo.findMaxAccountIdNumber();
-        int nextNumber = maxNum == null ? 1 : maxNum + 1;
-        return String.format("A%03d", nextNumber);
     }
 }

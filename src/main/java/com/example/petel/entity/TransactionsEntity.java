@@ -98,4 +98,3 @@ public class TransactionsEntity {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 }
-

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin001TranrsTranrs implements Serializable {
+public class ADMIN001TranrsTranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -12,8 +12,8 @@ public interface ADMIN001Svc {
 
     /**
      * 查詢所有旅館列表
-     * @param req Req<Admin001Tranrq>
-     * @return Res<Admin001Tranrs>
+     * @param req Req<ADMIN001Tranrq>
+     * @return Res<ADMIN001Tranrs>
      * @throws DataNotFoundException 查無資料
      * @throws IOException SQL 檔案讀取錯誤
      */

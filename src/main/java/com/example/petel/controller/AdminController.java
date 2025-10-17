@@ -7,6 +7,7 @@ import com.example.petel.exception.InvalidInputException;
 import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.ADMIN001Svc;
 import com.example.petel.service.ADMIN006Svc;
+import com.example.petel.service.Admin007Svc;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,12 @@ public class AdminController extends BaseController {
 
     /** Admin006 Service */
     private final ADMIN006Svc admin006Svc;
+
     /** ADMIN003 Service */
     private final ADMIN003Svc admin003Svc;
+
+    /** Admin007 Service */
+    private final Admin007Svc admin007Svc;
 
     /**
      * Admin-003: 查詢訂單列表
@@ -76,4 +81,23 @@ public class AdminController extends BaseController {
         handleValidForDto(errors);
         return admin006Svc.deleteHotel(req);
     }
+
+
+
+    /**
+     * Admin-007: 查詢會員列表
+     *
+     * @param req    Req<ADMIN007Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<ADMIN007Tranrs>
+     * @throws DataNotFoundException 查無資料
+     * @throws InvalidInputException 輸入驗證錯誤
+     */
+    @PostMapping("/queryMembers")
+    public Res<ADMIN007Tranrs> queryMembers(@Valid @RequestBody Req<ADMIN007Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException,IOException {
+        handleValidForDto(errors);
+        return admin007Svc.queryMembers(req);
+    }
+
 }

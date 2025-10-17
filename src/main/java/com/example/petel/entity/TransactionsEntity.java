@@ -59,7 +59,7 @@ public class TransactionsEntity {
     /**
      * Idempotency Key
      */
-    @Column(name = "IDEMPOTENCY_KEY", nullable = false)
+    @Column(name = "IDEMPOTENCY_KEY")
     private String idempotencyKey;
 
     /**
@@ -71,7 +71,7 @@ public class TransactionsEntity {
     /**
      * 交易手續費
      */
-    @Column(name = "TXN_FEE", nullable = false)
+    @Column(name = "TXN_FEE")
     private Integer transactionFee;
 
     /**
@@ -98,4 +98,3 @@ public class TransactionsEntity {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 }
-

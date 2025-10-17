@@ -8,6 +8,7 @@ import com.example.petel.exception.JwtProcessingException;
 import com.example.petel.service.AUTH001Svc;
 import com.example.petel.service.AUTH002Svc;
 import com.example.petel.service.AUTH003Svc;
+import com.example.petel.service.AUTH008Svc;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -26,6 +27,8 @@ public class AuthController extends BaseController{
     private final AUTH002Svc auth002Svc;
     /** AUTH003 Service */
     private final AUTH003Svc auth003Svc;
+    /** AUTH008 Service */
+    private final AUTH008Svc auth008Svc;
 
     /**
      * 註冊
@@ -68,5 +71,10 @@ public class AuthController extends BaseController{
     @PostMapping("/logout")
     public Res<Object> logout(HttpServletRequest request, HttpServletResponse resp) {
         return auth003Svc.logout(request, resp);
+    }
+
+    @PostMapping("/check")
+    public Res<AUTH008Tranrs> check(HttpServletRequest request) {
+        return auth008Svc.check(request);
     }
 }

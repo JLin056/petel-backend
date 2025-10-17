@@ -38,6 +38,5 @@ public class MERCH009Tranrq implements Serializable {
      * media id
      */
     @JsonProperty("mediaId")
-    @NotBlank(message = "mediaId不得為空")
     private String mediaId;
 }

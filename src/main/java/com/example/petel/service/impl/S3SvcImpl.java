@@ -36,7 +36,6 @@ public class S3SvcImpl implements S3Svc {
 
     /**
      * 生成 Presigned URL (支援單檔與批量)
-     * 
      * @param req 上傳請求
      * @return Presigned URL 資訊
      */
@@ -92,7 +91,6 @@ public class S3SvcImpl implements S3Svc {
 
     /**
      * 構造 S3 Object Key (含分類前綴)
-     * 
      * @param category    分類 (User_Profile, Property_Facility, Room_Image)
      * @param referenceId 關聯ID (可選)
      * @param filename    檔案名稱
@@ -111,7 +109,6 @@ public class S3SvcImpl implements S3Svc {
 
     /**
      * 構造公開存取 URL
-     * 
      * @param objectKey S3 Object Key
      * @return 完整 URL
      */

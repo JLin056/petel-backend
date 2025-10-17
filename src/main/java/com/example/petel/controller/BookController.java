@@ -10,8 +10,10 @@ import com.example.petel.service.BOOK001Svc;
 import com.example.petel.service.BOOK004Svc;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.exception.UpdateFailException;
 import com.example.petel.service.BOOK001Svc;
 import com.example.petel.service.BOOK002Svc;
+import com.example.petel.service.BOOK003Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -27,13 +29,15 @@ public class BookController extends BaseController {
 
     /** BOOK001Svc */
     private final BOOK001Svc book001Svc;
-
+  
     /** BOOK002Svc */
     private final BOOK002Svc book002Svc;
   
+    /** BOOK003Svc */
+    private final BOOK003Svc book003Svc;
+  
     /** BOOK004Svc */
-    private final BOOK004Svc book004Svc;
-    
+    private final BOOK004Svc book004Svc;    
 
     @PostMapping(value = "/create")
     public Res<BOOK001Tranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
@@ -41,10 +45,17 @@ public class BookController extends BaseController {
         return book001Svc.book001(requestBody);
     }
     
+  
     @PostMapping(value = "/detail")
     public Res<BOOK002Tranrs> book002(@Valid @RequestBody Req<BOOK002Tranrq> requestBody, Errors errors) throws DataNotFoundException, IOException, InvalidInputException {
         handleValidForDto(errors);
         return book002Svc.book002(requestBody);
+    }
+  
+    @PostMapping(value = "/update")
+    public Res<Object> book003(@Valid @RequestBody Req<BOOK003Tranrq> requestBody, Errors errors) throws DataNotFoundException, UpdateFailException, InvalidInputException {
+        handleValidForDto(errors);
+        return book003Svc.book003(requestBody);
     }
   
     @PostMapping(value = "/cancel")

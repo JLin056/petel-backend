@@ -1,25 +1,16 @@
 package com.example.petel.controller;
 
+import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
-import com.example.petel.exception.UpdateFailException;
-import com.example.petel.service.MERCH010Svc;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.petel.controller.advice.BaseController;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
-import com.example.petel.service.MERCH004Svc;
-import com.example.petel.service.MERCH008Svc;
-import com.example.petel.service.MERCH009Svc;
-
+import com.example.petel.exception.UpdateFailException;
+import com.example.petel.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +22,11 @@ public class MerchController extends BaseController {
      * MERCH004 Service
      */
     private final MERCH004Svc merch004Svc;
+
+    /**
+     * MERCH005 Service
+     */
+    private final MERCH005Svc merch005Svc;
 
     /**
      * MERCH008 Service
@@ -52,6 +48,13 @@ public class MerchController extends BaseController {
             throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
         return merch004Svc.create(merch004Tranrq);
+    }
+
+    @PostMapping(value = "/rooms/edit")
+    public Res<MERCH005Tranrs> edit(@Valid @RequestBody Req<MERCH005Tranrq> merch005Tranrq, Errors errors)
+            throws DataNotFoundException, UpdateFailException, InvalidInputException {
+        handleValidForDto(errors);
+        return merch005Svc.edit(merch005Tranrq);
     }
 
     @PostMapping(value = "/hotels/create")

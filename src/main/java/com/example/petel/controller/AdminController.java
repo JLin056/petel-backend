@@ -4,58 +4,35 @@ import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
-<<<<<<< HEAD
-import com.example.petel.service.Admin007Svc;
-=======
 import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.ADMIN001Svc;
 import com.example.petel.service.ADMIN006Svc;
+import com.example.petel.service.Admin007Svc;
 
->>>>>>> dev
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-<<<<<<< HEAD
-=======
 import java.io.IOException;
 
->>>>>>> dev
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 @CrossOrigin("http://localhost:4200")
 public class AdminController extends BaseController {
 
-<<<<<<< HEAD
-    /** Admin007 Service */
-    private final Admin007Svc admin007Svc;
-
-    /**
-     * Admin-007: 查詢會員列表
-     *
-     * @param req    Req<ADMIN007Tranrq>
-     * @param errors 驗證錯誤
-     * @return Res<ADMIN007Tranrs>
-     * @throws DataNotFoundException 查無資料
-     * @throws InvalidInputException 輸入驗證錯誤
-     */
-    @PostMapping("/queryMembers")
-    public Res<ADMIN007Tranrs> queryMembers(@Valid @RequestBody Req<ADMIN007Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException {
-        handleValidForDto(errors);
-        return admin007Svc.queryMembers(req);
-    }
-
-=======
     /** Admin001 Service */
     private final ADMIN001Svc admin001Svc;
 
     /** Admin006 Service */
     private final ADMIN006Svc admin006Svc;
+
     /** ADMIN003 Service */
     private final ADMIN003Svc admin003Svc;
+
+    /** Admin007 Service */
+    private final Admin007Svc admin007Svc;
 
     /**
      * Admin-003: 查詢訂單列表
@@ -104,5 +81,23 @@ public class AdminController extends BaseController {
         handleValidForDto(errors);
         return admin006Svc.deleteHotel(req);
     }
->>>>>>> dev
+
+
+
+    /**
+     * Admin-007: 查詢會員列表
+     *
+     * @param req    Req<ADMIN007Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<ADMIN007Tranrs>
+     * @throws DataNotFoundException 查無資料
+     * @throws InvalidInputException 輸入驗證錯誤
+     */
+    @PostMapping("/queryMembers")
+    public Res<ADMIN007Tranrs> queryMembers(@Valid @RequestBody Req<ADMIN007Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException {
+        handleValidForDto(errors);
+        return admin007Svc.queryMembers(req);
+    }
+
 }

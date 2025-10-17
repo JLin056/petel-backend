@@ -8,7 +8,7 @@ import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.ADMIN001Svc;
 import com.example.petel.service.ADMIN006Svc;
 import com.example.petel.service.Admin007Svc;
-
+import com.example.petel.service.ADMIN002Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -24,6 +24,9 @@ public class AdminController extends BaseController {
 
     /** Admin001 Service */
     private final ADMIN001Svc admin001Svc;
+    
+    /** Admin002 Service */
+    private final ADMIN002Svc admin002Svc;
 
     /** Admin006 Service */
     private final ADMIN006Svc admin006Svc;
@@ -34,21 +37,7 @@ public class AdminController extends BaseController {
     /** Admin007 Service */
     private final Admin007Svc admin007Svc;
 
-    /**
-     * Admin-003: 查詢訂單列表
-     *
-     * @param req    Req<ADMIN003Tranrq>
-     * @param errors 驗證錯誤
-     * @return Res<ADMIN003Tranrs>
-     * @throws DataNotFoundException 查無資料
-     * @throws InvalidInputException 輸入驗證錯誤
-     */
-    @PostMapping("/bookings/list")
-    public Res<ADMIN003Tranrs> queryOrders(@Valid @RequestBody Req<ADMIN003Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException, IOException {
-        handleValidForDto(errors);
-        return admin003Svc.queryOrders(req);
-    }
+ 
 
     /**
      * Admin-001: 查詢所有旅館列表
@@ -64,6 +53,22 @@ public class AdminController extends BaseController {
             throws DataNotFoundException, InvalidInputException, IOException {
         handleValidForDto(errors);
         return admin001Svc.queryStores(req);
+    }
+
+    /**
+     * Admin-002: 查詢賣家列表
+     * @param req Req<Admin002Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<Admin002Tranrs>
+     * @throws DataNotFoundException 查無資料
+     * @throws InvalidInputException 輸入驗證錯誤
+     * @throws IOException SQL 檔案讀取錯誤
+     */
+    @PostMapping("/merchant/query")
+    public Res<ADMIN002Tranrs> querySellers(@Valid @RequestBody Req<ADMIN002Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
+        handleValidForDto(errors);
+        return admin002Svc.querySellers(req);
     }
 
     /**
@@ -99,5 +104,23 @@ public class AdminController extends BaseController {
         handleValidForDto(errors);
         return admin007Svc.queryMembers(req);
     }
+
+
+    /**
+     * Admin-003: 查詢訂單列表
+     *
+     * @param req    Req<ADMIN003Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<ADMIN003Tranrs>
+     * @throws DataNotFoundException 查無資料
+     * @throws InvalidInputException 輸入驗證錯誤
+     */
+    @PostMapping("/bookings/list")
+    public Res<ADMIN003Tranrs> queryOrders(@Valid @RequestBody Req<ADMIN003Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
+        handleValidForDto(errors);
+        return admin003Svc.queryOrders(req);
+    }
+
 
 }

@@ -83,26 +83,6 @@ public class JwtUtil {
     }
 
     /**
-     * 驗證 Token 是否有效
-     * @param token Token
-     * @return boolean
-     */
-    public boolean validateToken(String token) {
-        log.info("---- [JWT] validateToken ----");
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
-            log.info("[JWT] validateToken 驗證成功");
-            return true;
-        } catch (Exception e) {
-            log.error("[JWT] validateToken 驗證失敗：{}", e.getMessage(), e);
-        }
-        return false;
-    }
-
-    /**
      * 解析 Token 拿出的 payload
      * @param token Token
      * @return Payload

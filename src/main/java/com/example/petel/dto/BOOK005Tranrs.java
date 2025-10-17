@@ -16,12 +16,6 @@ public class BOOK005Tranrs implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("MerchantID")
-    private String merchantId;
-
-    @JsonProperty("RqHeader")
-    private BOOK005TranrsRqHeader rqHeader;
-
-    @JsonProperty("Data")
-    private String data;
+    @JsonProperty("response_body")
+    private String responseBody;
 }

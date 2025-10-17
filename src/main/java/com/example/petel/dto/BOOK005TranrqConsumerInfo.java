@@ -14,30 +14,22 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BOOK005Tranrq implements Serializable {
+public class BOOK005TranrqConsumerInfo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * orderId
+     * phone
      */
-    @JsonProperty("order_id")
-    @NotNull(message = "order_id不得為空")
-    @Pattern(regexp = "^O\\d{9}$", message = "請輸入正確格式的order_id")
-    private String orderId;
+    @JsonProperty("phone")
+    @NotNull(message = "信用卡持卡人電話必填")
+    private String phone;
 
     /**
-     * cardInfo
+     * name
      */
-    @JsonProperty("card_info")
-    @Valid
-    private BOOK005TranrqCardInfo cardInfo;
-
-    /**
-     * consumerInfo
-     */
-    @JsonProperty("consumer_info")
-    @Valid
-    private BOOK005TranrqConsumerInfo consumerInfo;
+    @JsonProperty("name")
+    @NotNull(message = "信用卡持卡人英文姓名必填")
+    private String name;
 }

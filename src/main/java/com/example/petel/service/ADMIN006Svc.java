@@ -7,7 +7,7 @@ import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.DeleteFailException;
 
-public interface Admin006Svc {
+public interface ADMIN006Svc {
 
     /**
      * 刪除旅館

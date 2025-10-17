@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin001Tranrs implements Serializable {
+public class ADMIN001Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class Admin001Tranrs implements Serializable {
      * 旅館列表
      */
     @JsonProperty("hotels")
-    private List<Admin001TranrsTranrs> hotels;
+    private List<ADMIN001TranrsTranrs> hotels;
 
     /**
      * 總筆數

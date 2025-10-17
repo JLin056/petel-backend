@@ -1,14 +1,14 @@
 package com.example.petel.service;
 
-import com.example.petel.dto.Admin001Tranrq;
-import com.example.petel.dto.Admin001Tranrs;
+import com.example.petel.dto.ADMIN001Tranrq;
+import com.example.petel.dto.ADMIN001Tranrs;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
 
 import java.io.IOException;
 
-public interface Admin001Svc {
+public interface ADMIN001Svc {
 
     /**
      * 查詢所有旅館列表
@@ -17,5 +17,5 @@ public interface Admin001Svc {
      * @throws DataNotFoundException 查無資料
      * @throws IOException SQL 檔案讀取錯誤
      */
-    Res<Admin001Tranrs> queryStores(Req<Admin001Tranrq> req) throws DataNotFoundException, IOException;
+    Res<ADMIN001Tranrs> queryStores(Req<ADMIN001Tranrq> req) throws DataNotFoundException, IOException;
 }

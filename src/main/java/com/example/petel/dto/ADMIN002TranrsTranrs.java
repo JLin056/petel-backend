@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin002Tranrq implements Serializable {
+public class ADMIN002TranrsTranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -19,36 +19,42 @@ public class Admin002Tranrq implements Serializable {
     /**
      * 賣家 ID
      */
-    @JsonProperty("Seller_Id")
+    @JsonProperty("SELLER_ID")
     private String sellerId;
 
     /**
      * 帳號 ID
      */
-    @JsonProperty("Account_Id")
+    @JsonProperty("ACCOUNT_ID")
     private String accountId;
 
     /**
      * Email
      */
-    @JsonProperty("Email")
+    @JsonProperty("EMAIL")
     private String email;
 
     /**
-     * 賣家名稱 (支援模糊查詢)
+     * 賣家名稱
      */
-    @JsonProperty("Name")
+    @JsonProperty("NAME")
     private String name;
 
     /**
      * 統編
      */
-    @JsonProperty("Business_Code")
+    @JsonProperty("BUSINESS_CODE")
     private String businessCode;
 
     /**
-     * 分頁資訊
+     * 角色
      */
-    @JsonProperty("page")
-    private Admin002TranrqPage page;
+    @JsonProperty("ROLE")
+    private String role;
+
+    /**
+     * 帳號狀態
+     */
+    @JsonProperty("STATUS")
+    private String status;
 }

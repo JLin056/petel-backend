@@ -1,6 +1,7 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
+import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,7 @@ public class Admin007SvcImpl implements Admin007Svc {
      * @throws DataNotFoundException 查無資料
      */
     @Override
-    public Res<ADMIN007Tranrs> queryMembers(Req<ADMIN007Tranrq> req) throws DataNotFoundException {
+    public Res<ADMIN007Tranrs> queryMembers(Req<ADMIN007Tranrq> req) throws DataNotFoundException, IOException {
         log.info("-------- [ADMIN-007] 查詢會員列表 ---------");
         ADMIN007Tranrq tranrq = req.getTranrq();
 

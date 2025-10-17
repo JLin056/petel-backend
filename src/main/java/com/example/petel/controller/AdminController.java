@@ -95,7 +95,7 @@ public class AdminController extends BaseController {
      */
     @PostMapping("/queryMembers")
     public Res<ADMIN007Tranrs> queryMembers(@Valid @RequestBody Req<ADMIN007Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException {
+            throws DataNotFoundException, InvalidInputException,IOException {
         handleValidForDto(errors);
         return admin007Svc.queryMembers(req);
     }

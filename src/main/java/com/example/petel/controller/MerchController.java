@@ -3,6 +3,7 @@ package com.example.petel.controller;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.UpdateFailException;
+import com.example.petel.service.*;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
-import com.example.petel.service.MERCH001Svc;
-import com.example.petel.service.MERCH004Svc;
-import com.example.petel.service.MERCH008Svc;
-import com.example.petel.service.MERCH009Svc;
-import com.example.petel.service.MERCH010Svc;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor

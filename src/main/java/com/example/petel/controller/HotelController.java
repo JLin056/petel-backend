@@ -1,3 +1,4 @@
+
 package com.example.petel.controller;
 
 import com.example.petel.controller.advice.BaseController;
@@ -6,6 +7,7 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.UpdateFailException;
 import com.example.petel.service.HOTEL002Svc;
+import com.example.petel.service.HOTEL003Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -29,5 +31,17 @@ public class HotelController extends BaseController {
             throws DataNotFoundException, InvalidInputException, UpdateFailException {
         handleValidForDto(errors);
         return hotel002Svc.details(hotel002Tranrq);
+    }
+
+    /**
+     * HOTEL003 Service
+     */
+    private final HOTEL003Svc hotel003Svc;
+
+    @PostMapping(value = "/rooms")
+    public Res<HOTEL003Tranrs<HOTEL003TranrsRoom>> rooms(@Valid @RequestBody Req<HOTEL003Tranrq> hotel003Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
+        handleValidForDto(errors);
+        return hotel003Svc.rooms(hotel003Tranrq);
     }
 }

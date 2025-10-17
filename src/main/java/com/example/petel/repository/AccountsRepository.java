@@ -28,6 +28,6 @@ public interface AccountsRepository extends JpaRepository<AccountsEntity, String
      * 查目前最大
      * @return
      */
-    @Query("SELECT MAX(TO_NUMBER(SUBSTR(a.Id, 2))) FROM AccountsEntity a")
-    Integer findMaxAccountIdNumber();
+    @Query("select max(a.id) from AccountsEntity a")
+    String findMaxAccountId();
 }

@@ -30,6 +30,9 @@ public class BookController extends BaseController {
     /** BOOK004Svc */
     private final BOOK004Svc book004Svc;
 
+    /** BOOK005Svc */
+    private final BOOK005Svc book005Svc;
+
     /** BOOK006Svc */
     private final BOOK006Svc book006Svc;
 
@@ -61,6 +64,12 @@ public class BookController extends BaseController {
     public Res<Object> book004(@Valid @RequestBody Req<BOOK004Tranrq> requestBody, Errors errors) throws DataNotFoundException, DeleteFailException, InvalidInputException {
         handleValidForDto(errors);
         return book004Svc.book004(requestBody);
+    }
+
+    @PostMapping(value = "/authorize")
+    public Res<BOOK005Tranrs> book005(@Valid @RequestBody Req<BOOK005Tranrq> requestBody, Errors errors) throws Exception {
+        handleValidForDto(errors);
+        return book005Svc.book005(requestBody);
     }
 
     @PostMapping(value = "/credit")

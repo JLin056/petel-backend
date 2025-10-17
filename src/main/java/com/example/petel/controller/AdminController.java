@@ -5,8 +5,8 @@ import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.service.ADMIN003Svc;
-import com.example.petel.service.Admin001Svc;
-import com.example.petel.service.Admin006Svc;
+import com.example.petel.service.ADMIN001Svc;
+import com.example.petel.service.ADMIN006Svc;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ import java.io.IOException;
 public class AdminController extends BaseController {
 
     /** Admin001 Service */
-    private final Admin001Svc admin001Svc;
+    private final ADMIN001Svc admin001Svc;
 
     /** Admin006 Service */
-    private final Admin006Svc admin006Svc;
+    private final ADMIN006Svc admin006Svc;
     /** ADMIN003 Service */
     private final ADMIN003Svc admin003Svc;
 
@@ -47,15 +47,15 @@ public class AdminController extends BaseController {
 
     /**
      * Admin-001: 查詢所有旅館列表
-     * @param req Req<Admin001Tranrq>
+     * @param req Req<ADMIN001Tranrq>
      * @param errors 驗證錯誤
-     * @return Res<Admin001Tranrs>
+     * @return Res<ADMIN001Tranrs>
      * @throws DataNotFoundException 查無資料
      * @throws InvalidInputException 輸入驗證錯誤
      * @throws IOException SQL 檔案讀取錯誤
      */
     @PostMapping("/hotels/queryStore")
-    public Res<Admin001Tranrs> queryStores(@Valid @RequestBody Req<Admin001Tranrq> req, Errors errors)
+    public Res<ADMIN001Tranrs> queryStores(@Valid @RequestBody Req<ADMIN001Tranrq> req, Errors errors)
             throws DataNotFoundException, InvalidInputException, IOException {
         handleValidForDto(errors);
         return admin001Svc.queryStores(req);

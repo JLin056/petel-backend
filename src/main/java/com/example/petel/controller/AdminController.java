@@ -5,16 +5,11 @@ import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.service.ADMIN003Svc;
-<<<<<<< HEAD
-import com.example.petel.service.Admin001Svc;
-import com.example.petel.service.Admin006Svc;
-import com.example.petel.service.Admin008Svc;
-=======
 import com.example.petel.service.ADMIN001Svc;
 import com.example.petel.service.ADMIN006Svc;
 import com.example.petel.service.Admin007Svc;
 import com.example.petel.service.ADMIN002Svc;
->>>>>>> dev
+import com.example.petel.service.Admin008Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -30,76 +25,55 @@ public class AdminController extends BaseController {
 
     /** Admin001 Service */
     private final ADMIN001Svc admin001Svc;
-    
+
     /** Admin002 Service */
     private final ADMIN002Svc admin002Svc;
 
     /** Admin006 Service */
-<<<<<<< HEAD
-    private final Admin006Svc admin006Svc;
-=======
     private final ADMIN006Svc admin006Svc;
->>>>>>> dev
 
     /** ADMIN003 Service */
     private final ADMIN003Svc admin003Svc;
 
-<<<<<<< HEAD
+    /** Admin007 Service */
+    private final Admin007Svc admin007Svc;
+
     /** Admin008 Service */
     private final Admin008Svc admin008Svc;
 
     /**
-     * Admin-003: 查詢訂單列表
-     */
-    @PostMapping("/bookings/list")
-    public Res<ADMIN003Tranrs> queryOrders(
-            @Valid @RequestBody Req<ADMIN003Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException, IOException {
-        handleValidForDto(errors);
-        return admin003Svc.queryOrders(req);
-    }
-
-    /**
      * Admin-001: 查詢所有旅館列表
-     */
-    @PostMapping("/hotels/queryStore")
-    public Res<Admin001Tranrs> queryStores(
-            @Valid @RequestBody Req<Admin001Tranrq> req, Errors errors)
-=======
-    /** Admin007 Service */
-    private final Admin007Svc admin007Svc;
-
- 
-
-    /**
-     * Admin-001: 查詢所有旅館列表
-     * @param req Req<ADMIN001Tranrq>
+     * 
+     * @param req    Req<ADMIN001Tranrq>
      * @param errors 驗證錯誤
      * @return Res<ADMIN001Tranrs>
      * @throws DataNotFoundException 查無資料
      * @throws InvalidInputException 輸入驗證錯誤
-     * @throws IOException SQL 檔案讀取錯誤
+     * @throws IOException           SQL 檔案讀取錯誤
+     *                               Admin-003: 查詢訂單列表
      */
     @PostMapping("/hotels/queryStore")
     public Res<ADMIN001Tranrs> queryStores(@Valid @RequestBody Req<ADMIN001Tranrq> req, Errors errors)
->>>>>>> dev
-            throws DataNotFoundException, InvalidInputException, IOException {
+            throws InvalidInputException, DataNotFoundException, IOException {
+
         handleValidForDto(errors);
         return admin001Svc.queryStores(req);
     }
 
     /**
      * Admin-002: 查詢賣家列表
-     * @param req Req<Admin002Tranrq>
+     * 
+     * @param req    Req<Admin002Tranrq>
      * @param errors 驗證錯誤
      * @return Res<Admin002Tranrs>
      * @throws DataNotFoundException 查無資料
      * @throws InvalidInputException 輸入驗證錯誤
-     * @throws IOException SQL 檔案讀取錯誤
+     * @throws IOException           SQL 檔案讀取錯誤
+     *                               Admin-001: 查詢所有旅館列表
      */
     @PostMapping("/merchant/query")
-    public Res<ADMIN002Tranrs> querySellers(@Valid @RequestBody Req<ADMIN002Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException, IOException {
+    public Res<ADMIN002Tranrs> querySellers(@Valid @RequestBody Req<ADMIN002Tranrq> req, Errors errors) throws InvalidInputException, DataNotFoundException, IOException {
+
         handleValidForDto(errors);
         return admin002Svc.querySellers(req);
     }
@@ -115,20 +89,6 @@ public class AdminController extends BaseController {
         return admin006Svc.deleteHotel(req);
     }
 
-<<<<<<< HEAD
-    /**
-     * Admin-008: 刪除使用者（連同其關聯的帳號）
-     */
-    @PostMapping("/members/delete")
-    public Res<Admin008Tranrs> deleteUser(
-            @Valid @RequestBody Req<Admin008Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
-        handleValidForDto(errors);
-        return admin008Svc.deleteUser(req);
-    }
-=======
-
-
     /**
      * Admin-007: 查詢會員列表
      *
@@ -140,11 +100,10 @@ public class AdminController extends BaseController {
      */
     @PostMapping("/queryMembers")
     public Res<ADMIN007Tranrs> queryMembers(@Valid @RequestBody Req<ADMIN007Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException,IOException {
+            throws DataNotFoundException, InvalidInputException, IOException {
         handleValidForDto(errors);
         return admin007Svc.queryMembers(req);
     }
-
 
     /**
      * Admin-003: 查詢訂單列表
@@ -162,6 +121,14 @@ public class AdminController extends BaseController {
         return admin003Svc.queryOrders(req);
     }
 
-
->>>>>>> dev
+    /**
+     * Admin-008: 刪除使用者（連同其關聯的帳號）
+     */
+    @PostMapping("/members/delete")
+    public Res<Admin008Tranrs> deleteUser(
+            @Valid @RequestBody Req<Admin008Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
+        handleValidForDto(errors);
+        return admin008Svc.deleteUser(req);
+    }
 }

@@ -5,8 +5,10 @@ import com.example.petel.dto.*;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.UpdateFailException;
+import com.example.petel.exception.DeleteFailException;
 import com.example.petel.service.IMG001Svc;
 import com.example.petel.service.IMG002Svc;
+import com.example.petel.service.IMG003Svc;
 import com.example.petel.service.S3Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class S3Controller extends BaseController {
     private final S3Svc s3Svc;
     private final IMG001Svc img001Svc;
     private final IMG002Svc img002Svc;
+    private final IMG003Svc img003Svc;
 
     /**
      * 生成預簽名 URL
@@ -51,4 +54,15 @@ public class S3Controller extends BaseController {
         return img002Svc.updateImage(req);
     }
 
+    /**
+     * 刪除圖片 (刪除 S3 檔案和資料庫記錄)
+     */
+    @PostMapping("/delete")
+    public Res<IMG003Tranrs> deleteImage(@Valid @RequestBody Req<IMG003Tranrq> req, Errors errors)
+            throws DeleteFailException, InvalidInputException {
+        handleValidForDto(errors);
+        return img003Svc.deleteImage(req);
+    }
+
 }
+

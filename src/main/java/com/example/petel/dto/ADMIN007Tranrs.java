@@ -12,16 +12,16 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin001Tranrs implements Serializable {
+public class ADMIN007Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 旅館列表
+     * 會員列表
      */
-    @JsonProperty("hotels")
-    private List<Admin001TranrsTranrs> hotels;
+    @JsonProperty("members")
+    private List<ADMIN007TranrsTranrs> members;
 
     /**
      * 總筆數

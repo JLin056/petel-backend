@@ -7,24 +7,16 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin001TranrqPage implements Serializable {
+public class BOOK006Tranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 頁碼
-     */
-    @JsonProperty("pageNumber")
-    private Integer pageNumber;
-
-    /**
-     * 每頁筆數
-     */
-    @JsonProperty("pageSize")
-    private Integer pageSize;
+    @JsonProperty("ecPay_params")
+    private Map<String, Object> ecPayParams;
 }

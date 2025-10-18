@@ -73,8 +73,8 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
         log.info("[ADMIN-003] 查詢參數: {}", paramMap);
 
         // SqlUtils 會自動處理 SQL 中的 [] 條件
-        String sql = sqlUtils.getDynamicQuerySQL("Admin003_Query.sql", paramMap);
-        String countSql = sqlUtils.getDynamicQuerySQL("Admin003_Count.sql", paramMap);
+        String sql = sqlUtils.getDynamicQuerySQL("ADMIN003_Query.sql", paramMap);
+        String countSql = sqlUtils.getDynamicQuerySQL("ADMIN003_Count.sql", paramMap);
 
 
 

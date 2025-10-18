@@ -14,4 +14,12 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
     /** 用 accountId 查 user */
     @Query(value = "SELECT ID FROM PETEL_USERS WHERE ACCOUNT_ID = :accountId", nativeQuery = true)
     String findIdByAccountId(@Param("accountId") String accountId);
+
+    /**
+     * 用 userID 查 accountID
+     * @param userId
+     * @return
+     */
+    @Query(value = "SELECT ACCOUNT_ID FROM PETEL_USERS WHERE ID = :userId", nativeQuery = true)
+    String findByAccountByUserId(@Param("userId") String userId);
 }

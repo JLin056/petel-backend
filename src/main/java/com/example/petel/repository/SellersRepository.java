@@ -20,4 +20,12 @@ public interface SellersRepository extends JpaRepository<SellersEntity, String> 
     /** 用 accountId 查 seller */
     @Query(value = "SELECT ID FROM PETEL_SELLERS WHERE ACCOUNT_ID = :accountId", nativeQuery = true)
     String findIdByAccountId(@Param("accountId") String accountId);
+
+    /**
+     * 用 SellerId 查 AccountId
+     * @param sellerId
+     * @return
+     */
+    @Query(value = "SELECT ACCOUNT_ID FROM PETEL_SELLERS WHERE ID = :sellerId", nativeQuery = true)
+    String findByAccountBySellerId(@Param("sellerId") String sellerId);
 }

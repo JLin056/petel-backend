@@ -41,25 +41,30 @@ public class AUTH006SvcImpl implements AUTH006Svc {
     @Override
     public Res<AUTH006Tranrs> getInfo(AccountPrincipal authInfo)
             throws JwtProcessingException {
+        log.info("---- [AUTH-006] 取得使用者資訊 ----");
         if (authInfo == null){
+            log.warn("[AUTH-006] 無法取得使用者資訊：authInfo 為 null，回傳 401");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         String accountId = authInfo.getAccountId();
         String role = authInfo.getRole();
+        log.info("[AUTH-006] 登入使用者資訊：accountId={}, role={}", accountId, role);
 
         String mainId = accountQuerySvc.getIdByRoleAndAccountId(
                 role, accountId
         );
+        log.info("[AUTH-006] 查詢對應主表 ID 成功：mainId={}", mainId);
 
         String email = accountRepo.findEmailById(accountId);
+        log.info("[AUTH-006] 查詢 Email 成功：email={}", email);
 
         AUTH006Tranrs tranrs = new AUTH006Tranrs();
         tranrs.setAccountId(accountId);
         tranrs.setEmail(email);
         tranrs.setRole(role);
         tranrs.setMainId(mainId);
-
+        log.info("[AUTH-006] 取得使用者資訊成功，回傳結果：{}", tranrs);
 
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), tranrs);
     }

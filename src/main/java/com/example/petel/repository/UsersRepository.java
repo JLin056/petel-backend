@@ -11,7 +11,25 @@ import java.util.Optional;
 @Repository
 public interface UsersRepository extends JpaRepository<UsersEntity, String> {
 
-    /** 用 accountId 查 user */
+    /**
+     * 用 accountId 查 user
+     * @param accountId
+     * @return
+     */
     @Query(value = "SELECT ID FROM PETEL_USERS WHERE ACCOUNT_ID = :accountId", nativeQuery = true)
     String findIdByAccountId(@Param("accountId") String accountId);
+
+    /**
+     * 查目前最大ID
+     * @return
+     */
+    @Query("select max(e.id) from UsersEntity e")
+    String findMaxId();
+
+    /**
+     * 檢查 accountID 是否存在
+     * @param accountId
+     * @return
+     */
+    boolean existsByAccountId(String accountId);
 }

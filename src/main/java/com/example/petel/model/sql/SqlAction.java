@@ -185,13 +185,13 @@ public class SqlAction {
 
     /**
      * 修改
-     * @param em
+     *
      * @param sql
      * @param parameters
      * @return
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    public int update(EntityManager em, String sql, Map<String, ?> parameters) {
+    public int update(String sql, Map<String, ?> parameters) {
         return executeQuery(em, sql, parameters);
     }
 

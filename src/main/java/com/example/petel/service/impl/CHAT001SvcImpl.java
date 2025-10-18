@@ -80,25 +80,26 @@ public class CHAT001SvcImpl implements CHAT001Svc {
             throw new DataNotFoundException("找不到商家帳號");
         }
 
-        String accountId = auth.getAccountId();
-        String role = auth.getRole();
-        boolean isUser = false;
-        boolean isSeller = false;
-
-        if ("user".equalsIgnoreCase(role)) {
-            isUser = accountId != null && accountId.equals(userAccountId);
-        } else if ("seller".equalsIgnoreCase(role)) {
-            isSeller = accountId != null && accountId.equals(sellerAccountId);
-        } else {
-            log.warn("[CHAT001] 未支援之角色，role={}", role);
-            throw new InvalidInputException("未支援之角色");
-        }
-
-        if (!isUser && !isSeller) {
-            log.warn("[CHAT001] 認證失敗，無權建立聊天室, orderId={}, accountId={}, role={}",
-                    orderId, accountId, role);
-            throw new InvalidInputException("認證失敗，無權建立聊天室");
-        }
+          // 開發階段 先把驗證拿掉
+//        String accountId = auth.getAccountId();
+//        String role = auth.getRole();
+//        boolean isUser = false;
+//        boolean isSeller = false;
+//
+//        if ("user".equalsIgnoreCase(role)) {
+//            isUser = accountId != null && accountId.equals(userAccountId);
+//        } else if ("seller".equalsIgnoreCase(role)) {
+//            isSeller = accountId != null && accountId.equals(sellerAccountId);
+//        } else {
+//            log.warn("[CHAT001] 未支援之角色，role={}", role);
+//            throw new InvalidInputException("未支援之角色");
+//        }
+//
+//        if (!isUser && !isSeller) {
+//            log.warn("[CHAT001] 認證失敗，無權建立聊天室, orderId={}, accountId={}, role={}",
+//                    orderId, accountId, role);
+//            throw new InvalidInputException("認證失敗，無權建立聊天室");
+//        }
 
         // 檢查是否已建立過聊天室
         Optional<ChatThreadEntity> threadByOrderId = threadRepo.findByOrderId(orderId);

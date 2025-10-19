@@ -23,8 +23,8 @@ public class USER001SvcImpl implements USER001Svc {
     /** ObjectMapper */
     private final ObjectMapper objectMapper;
 
-    @Transactional
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public Res<USER001Tranrs> createUser(String accountId, Req<USER001Tranrq> req)
             throws InsertFailException {
         log.info("---- [USER-001] 新增會員資訊 ----");

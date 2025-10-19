@@ -44,4 +44,11 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
      */
     @Query(value = "SELECT ACCOUNT_ID FROM PETEL_USERS WHERE ID = :userId", nativeQuery = true)
     String findByAccountByUserId(@Param("userId") String userId);
+
+    /**
+     * 用 account ID 找資料
+     * @param accountId
+     * @return
+     */
+    Optional<UsersEntity> findByAccountId(String accountId);
 }

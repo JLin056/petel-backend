@@ -13,6 +13,7 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
 
     /**
      * 用 accountId 查 user
+     * 
      * @param accountId
      * @return
      */
@@ -21,6 +22,7 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
 
     /**
      * 查目前最大ID
+     * 
      * @return
      */
     @Query("select max(e.id) from UsersEntity e")
@@ -28,8 +30,18 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
 
     /**
      * 檢查 accountID 是否存在
+     * 
      * @param accountId
      * @return
      */
     boolean existsByAccountId(String accountId);
+
+    /**
+     * 用 userID 查 accountID
+     * 
+     * @param userId
+     * @return
+     */
+    @Query(value = "SELECT ACCOUNT_ID FROM PETEL_USERS WHERE ID = :userId", nativeQuery = true)
+    String findByAccountByUserId(@Param("userId") String userId);
 }

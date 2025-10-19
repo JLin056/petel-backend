@@ -25,4 +25,12 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, String> {
         WHERE o.ID = :orderId
         """, nativeQuery = true)
     Map<String, Object> findUserAndSellerByOrderId(@Param("orderId") String orderId);
+
+    /**
+     * 用 orderId 取 userId 和 PropertyId
+     * @param orderId
+     * @return
+     */
+    @Query(value = "SELECT USER_ID AS USERID, PROPERTY_ID AS PROPERTYID FROM PETEL_ORDERS WHERE ID = :orderId", nativeQuery = true)
+    Map<String, Object> findUserAndPropertyByOrderId(@Param("orderId") String orderId);
 }

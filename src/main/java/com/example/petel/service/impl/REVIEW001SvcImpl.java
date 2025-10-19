@@ -52,12 +52,16 @@ public class REVIEW001SvcImpl implements REVIEW001Svc {
         log.info("[REVIEW001] 訂單查詢成功，userId = {}, propertyId = {}", userId, propertyId);
 
         // 驗證身份（開發階段先註解掉）
-        String usersRepoIdByAccountId = usersRepo.findIdByAccountId(accountId);
-        if (!userId.equals(usersRepoIdByAccountId)) {
-            log.warn("[REVIEW001] 使用者不符，userId = {}, usersRepoIdByAccountId = {}", userId, usersRepoIdByAccountId);
-            throw new InvalidInputException("無權限評論該訂單");
+//        String usersRepoIdByAccountId = usersRepo.findIdByAccountId(accountId);
+//        if (!userId.equals(usersRepoIdByAccountId)) {
+//            log.warn("[REVIEW001] 使用者不符，userId = {}, usersRepoIdByAccountId = {}", userId, usersRepoIdByAccountId);
+//            throw new InvalidInputException("無權限評論該訂單");
+//        }
+//        log.info("[REVIEW001] 身分驗證通過");
+
+        if (reviewsRepo.existsByOrderId(orderId)) {
+            throw new InvalidInputException("此訂單已被評論，無法重複評論");
         }
-        log.info("[REVIEW001] 身分驗證通過");
 
         String maxId = reviewsRepo.findMaxId();
         String reviewId = IdUtil.generateTableId("R", maxId);

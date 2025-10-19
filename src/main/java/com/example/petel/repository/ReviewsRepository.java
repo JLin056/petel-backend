@@ -12,4 +12,11 @@ public interface ReviewsRepository extends JpaRepository<ReviewsEntity, String> 
      */
     @Query("select max(e.id) from ReviewsEntity e")
     String findMaxId();
+
+    /**
+     * 檢查是否已有 orderId
+     * @param orderId
+     * @return
+     */
+    boolean existsByOrderId(String orderId);
 }

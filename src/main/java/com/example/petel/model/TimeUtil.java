@@ -1,7 +1,5 @@
 package com.example.petel.model;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,5 +31,25 @@ public class TimeUtil {
      */
     public static long getDifferenceOfDays(LocalDate date1, LocalDate date2) {
         return ChronoUnit.DAYS.between(date1, date2);
+    }
+
+    /**
+     * Convert the time to the format required by ECPay.
+     *
+     * @param dateTime The LocalDateTime object.
+     * @return "yyyy/MM/dd HH:mm:ss"
+     */
+    public static String getMerchantTradeDate(LocalDateTime dateTime) {
+        return DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(dateTime);
+    }
+
+    /**
+     * Inverse function of getMerchantTradeDate.
+     *
+     * @param date The String object: "yyyy/MM/dd HH:mm:ss".
+     * @return The LocalDateTime object.
+     */
+    public static LocalDateTime parseMerchantTradeDate(String date) {
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
     }
 }

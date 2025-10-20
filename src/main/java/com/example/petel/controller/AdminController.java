@@ -9,6 +9,7 @@ import com.example.petel.service.ADMIN001Svc;
 import com.example.petel.service.ADMIN006Svc;
 import com.example.petel.service.Admin007Svc;
 import com.example.petel.service.ADMIN002Svc;
+import com.example.petel.service.ADMIN004Svc;
 import com.example.petel.service.Admin008Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,9 @@ public class AdminController extends BaseController {
 
     /** ADMIN003 Service */
     private final ADMIN003Svc admin003Svc;
+
+    /** ADMIN004 Service */
+    private final ADMIN004Svc admin004Svc;
 
     /** Admin007 Service */
     private final Admin007Svc admin007Svc;
@@ -120,6 +124,24 @@ public class AdminController extends BaseController {
         handleValidForDto(errors);
         return admin003Svc.queryOrders(req);
     }
+
+    /**
+     * Admin-004: 更新訂單備註
+     *
+     * @param req    Req<ADMIN004Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<ADMIN004Tranrs>
+     * @throws DataNotFoundException 訂單不存在
+     * @throws InvalidInputException 輸入驗證錯誤
+     * @throws com.example.petel.exception.UpdateFailException 更新失敗
+     */
+    @PostMapping("/bookings/edit")
+    public Res<ADMIN004Tranrs> updateOrderNote(@Valid @RequestBody Req<ADMIN004Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.UpdateFailException, IOException {
+        handleValidForDto(errors);
+        return admin004Svc.updateOrderNote(req);
+    }
+
 
     /**
      * Admin-008: 刪除使用者（連同其關聯的帳號）

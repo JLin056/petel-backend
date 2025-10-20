@@ -67,7 +67,14 @@ public class WebExceptionHandler {
     @ExceptionHandler(UpdateFailException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Res<Object> handleUpdateFailException(UpdateFailException ex) {
-        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.UPDATE_FAIL), null);
+        ResMwHeader resMwHeader = new ResMwHeader();
+        String message = ex.getMessage();
+        if (message == null || message.isBlank()) {
+            message = ReturnCodeAndDescEnum.UPDATE_FAIL.getDesc();
+        }
+        resMwHeader.setReturnCode(ReturnCodeAndDescEnum.UPDATE_FAIL.getCode());
+        resMwHeader.setReturnDesc(message);
+        return new Res<>(resMwHeader, null);
     }
 
     /**

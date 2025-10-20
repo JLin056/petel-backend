@@ -4,12 +4,14 @@ import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.exception.UpdateFailException;
 import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.ADMIN001Svc;
 import com.example.petel.service.ADMIN006Svc;
 import com.example.petel.service.Admin007Svc;
 import com.example.petel.service.ADMIN002Svc;
 import com.example.petel.service.ADMIN004Svc;
+import com.example.petel.service.ADMIN005Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -38,10 +40,13 @@ public class AdminController extends BaseController {
     /** ADMIN004 Service */
     private final ADMIN004Svc admin004Svc;
 
+    /** ADMIN005 Service */
+    private final ADMIN005Svc admin005Svc;
+
     /** Admin007 Service */
     private final Admin007Svc admin007Svc;
 
- 
+
 
     /**
      * Admin-001: 查詢所有旅館列表
@@ -138,9 +143,26 @@ public class AdminController extends BaseController {
      */
     @PostMapping("/bookings/edit")
     public Res<ADMIN004Tranrs> updateOrderNote(@Valid @RequestBody Req<ADMIN004Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.UpdateFailException, IOException {
+            throws DataNotFoundException, InvalidInputException, UpdateFailException, IOException {
         handleValidForDto(errors);
         return admin004Svc.updateOrderNote(req);
+    }
+
+    /**
+     * Admin-005: 取消訂單
+     *
+     * @param req    Req<ADMIN005Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<ADMIN005Tranrs>
+     * @throws DataNotFoundException 訂單不存在
+     * @throws InvalidInputException 輸入驗證錯誤
+     * @throws com.example.petel.exception.UpdateFailException 取消失敗
+     */
+    @PostMapping("/bookings/cancel")
+    public Res<ADMIN005Tranrs> cancelOrder(@Valid @RequestBody Req<ADMIN005Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, UpdateFailException {
+        handleValidForDto(errors);
+        return admin005Svc.cancelOrder(req);
     }
 
 

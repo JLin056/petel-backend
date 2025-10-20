@@ -4,13 +4,14 @@ import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.exception.UpdateFailException;
 import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.ADMIN001Svc;
 import com.example.petel.service.ADMIN006Svc;
-import com.example.petel.service.Admin007Svc;
+import com.example.petel.service.ADMIN007Svc;
 import com.example.petel.service.ADMIN002Svc;
 import com.example.petel.service.ADMIN004Svc;
-import com.example.petel.service.Admin008Svc;
+import com.example.petel.service.ADMIN008Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -40,10 +41,10 @@ public class AdminController extends BaseController {
     private final ADMIN004Svc admin004Svc;
 
     /** Admin007 Service */
-    private final Admin007Svc admin007Svc;
+    private final ADMIN007Svc admin007Svc;
 
     /** Admin008 Service */
-    private final Admin008Svc admin008Svc;
+    private final ADMIN008Svc admin008Svc;
 
     /**
      * Admin-001: 查詢所有旅館列表
@@ -137,7 +138,7 @@ public class AdminController extends BaseController {
      */
     @PostMapping("/bookings/edit")
     public Res<ADMIN004Tranrs> updateOrderNote(@Valid @RequestBody Req<ADMIN004Tranrq> req, Errors errors)
-            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.UpdateFailException, IOException {
+            throws DataNotFoundException, InvalidInputException, UpdateFailException, IOException {
         handleValidForDto(errors);
         return admin004Svc.updateOrderNote(req);
     }
@@ -147,8 +148,8 @@ public class AdminController extends BaseController {
      * Admin-008: 刪除使用者（連同其關聯的帳號）
      */
     @PostMapping("/members/delete")
-    public Res<Admin008Tranrs> deleteUser(
-            @Valid @RequestBody Req<Admin008Tranrq> req, Errors errors)
+    public Res<ADMIN008Tranrs> deleteUser(
+            @Valid @RequestBody Req<ADMIN008Tranrq> req, Errors errors)
             throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
         handleValidForDto(errors);
         return admin008Svc.deleteUser(req);

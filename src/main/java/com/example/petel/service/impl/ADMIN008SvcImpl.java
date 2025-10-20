@@ -8,7 +8,7 @@ import com.example.petel.exception.DeleteFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.AccountsRepository;
 import com.example.petel.repository.UsersRepository;
-import com.example.petel.service.Admin008Svc;
+import com.example.petel.service.ADMIN008Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class Admin008SvcImpl implements Admin008Svc {
+public class ADMIN008SvcImpl implements ADMIN008Svc {
 
     private final UsersRepository usersRepository;
     private final AccountsRepository accountsRepository;
@@ -30,9 +30,9 @@ public class Admin008SvcImpl implements Admin008Svc {
      */
     @Override
     @Transactional
-    public Res<Admin008Tranrs> deleteUser(Req<Admin008Tranrq> req) throws DataNotFoundException, DeleteFailException {
+    public Res<ADMIN008Tranrs> deleteUser(Req<ADMIN008Tranrq> req) throws DataNotFoundException, DeleteFailException {
         log.info("-------- [ADMIN-008] 刪除使用者 ---------");
-        Admin008Tranrq tranrq = req.getTranrq();
+        ADMIN008Tranrq tranrq = req.getTranrq();
         String usersId = tranrq.getUsersId();
 
         log.info("[ADMIN-008] 刪除使用者 ID: {}", usersId);
@@ -65,7 +65,7 @@ public class Admin008SvcImpl implements Admin008Svc {
             }
 
             // 組裝回應
-            Admin008Tranrs tranrs = new Admin008Tranrs();
+            ADMIN008Tranrs tranrs = new ADMIN008Tranrs();
             tranrs.setUsersId(usersId);
             tranrs.setMessage("使用者刪除成功，連同刪除關聯帳號");
 

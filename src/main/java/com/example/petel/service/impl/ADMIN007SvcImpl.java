@@ -5,7 +5,7 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
-import com.example.petel.service.Admin007Svc;
+import com.example.petel.service.ADMIN007Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class Admin007SvcImpl implements Admin007Svc {
+public class ADMIN007SvcImpl implements ADMIN007Svc {
 
     private final SqlUtils sqlUtils;
     private final SqlAction sqlAction;

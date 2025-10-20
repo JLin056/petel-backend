@@ -1,9 +1,7 @@
 package com.example.petel.controller;
 
-import com.example.petel.dto.*;
-import com.example.petel.exception.DataNotFoundException;
-import com.example.petel.exception.UpdateFailException;
-import com.example.petel.service.*;
+import java.io.IOException;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,13 +10,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.petel.controller.advice.BaseController;
+import com.example.petel.dto.MERCH001Tranrq;
+import com.example.petel.dto.MERCH001Tranrs;
+import com.example.petel.dto.MERCH001TranrsBooking;
+import com.example.petel.dto.MERCH003Tranrq;
+import com.example.petel.dto.MERCH003Tranrs;
+import com.example.petel.dto.MERCH003TranrsReview;
+import com.example.petel.dto.MERCH004Tranrq;
+import com.example.petel.dto.MERCH004Tranrs;
+import com.example.petel.dto.MERCH005Tranrq;
+import com.example.petel.dto.MERCH005Tranrs;
+import com.example.petel.dto.MERCH008Tranrq;
+import com.example.petel.dto.MERCH008Tranrs;
+import com.example.petel.dto.MERCH009Tranrq;
+import com.example.petel.dto.MERCH009Tranrs;
+import com.example.petel.dto.MERCH010Tranrq;
+import com.example.petel.dto.MERCH010Tranrs;
+import com.example.petel.dto.Req;
+import com.example.petel.dto.Res;
+import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.exception.UpdateFailException;
+import com.example.petel.service.MERCH001Svc;
+import com.example.petel.service.MERCH003Svc;
+import com.example.petel.service.MERCH004Svc;
+import com.example.petel.service.MERCH005Svc;
+import com.example.petel.service.MERCH008Svc;
+import com.example.petel.service.MERCH009Svc;
+import com.example.petel.service.MERCH010Svc;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +53,11 @@ public class MerchController extends BaseController {
      * MERCH001 Service
      */
     private final MERCH001Svc merch001Svc;
+
+    /**
+     * MERCH003 Service
+     */
+    private final MERCH003Svc merch003Svc;
 
     /**
      * MERCH004 Service
@@ -68,6 +96,13 @@ public class MerchController extends BaseController {
             throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
         return merch004Svc.create(merch004Tranrq);
+    }
+
+    @PostMapping(value = "/hotels/reviews")
+    public Res<MERCH003Tranrs<MERCH003TranrsReview>> reviews(@Valid @RequestBody Req<MERCH003Tranrq> merch003Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException, IOException {
+        handleValidForDto(errors);
+        return merch003Svc.reviews(merch003Tranrq);
     }
 
     @PostMapping(value = "/rooms/edit")

@@ -98,7 +98,7 @@ public class MerchController extends BaseController {
         return merch004Svc.create(merch004Tranrq);
     }
 
-     @PostMapping(value = "/hotels/reviews")
+    @PostMapping(value = "/hotels/reviews")
     public Res<MERCH003Tranrs<MERCH003TranrsReview>> reviews(@Valid @RequestBody Req<MERCH003Tranrq> merch003Tranrq, Errors errors)
             throws DataNotFoundException, InvalidInputException, IOException {
         handleValidForDto(errors);

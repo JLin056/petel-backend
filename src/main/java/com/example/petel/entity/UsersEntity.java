@@ -46,7 +46,7 @@ public class UsersEntity {
     /**
      * 頭像媒體 ID
      */
-    @Column(name = "AVATAR_MEDIA_ID")
-    @JsonProperty("avatarMediaId")
-    private String avatarMediaId;
+    @Column(name = "MEDIA_ID")
+    @JsonProperty("mediaId")
+    private String mediaId;
 }

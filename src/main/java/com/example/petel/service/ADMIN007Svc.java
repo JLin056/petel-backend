@@ -8,7 +8,7 @@ import com.example.petel.exception.DataNotFoundException;
 
 import java.io.IOException;
 
-public interface Admin007Svc {
+public interface ADMIN007Svc {
 
     /**
      * 查詢會員列表

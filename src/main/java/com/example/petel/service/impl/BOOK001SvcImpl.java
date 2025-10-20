@@ -63,7 +63,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
 
         synchronized (BOOKING_LOCK) {
 
-            String itemsId = IdUtil.generateTableId("D", roomInventoriesRepository.findMaxId());
+            String itemsId = IdUtil.generateTableId("D", orderItemsRepository.findMaxId());
 
             for (BOOKTranrqOrderDetail orderDetail : orderDetails) {
 
@@ -122,6 +122,14 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             ordersEntity.setStatus(orderInfo.getStatus());
             ordersEntity.setNote(orderInfo.getNote());
             ordersEntity.setCreatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+
+            if (!"y".equals(orderInfo.getGuest())) {
+                ordersEntity.setGuest("n");
+                ordersEntity.setGuestName(orderInfo.getGuestName());
+                ordersEntity.setGuestPhone(orderInfo.getGuestPhone());
+            } else {
+                ordersEntity.setGuest("y");
+            }
 
             String orderId;
 

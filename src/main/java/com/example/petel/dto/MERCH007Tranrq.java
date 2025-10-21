@@ -1,7 +1,7 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.io.Serial;
@@ -14,13 +14,6 @@ public class MERCH007Tranrq implements Serializable {
     private static final long SerialVersionUID = 1L;
 
     /**
-     * property id
-     */
-    @JsonProperty("id")
-    @NotBlank(message = "id不得為空")
-    private String id;
-
-    /**
      * name
      */
     @JsonProperty("name")
@@ -30,12 +23,14 @@ public class MERCH007Tranrq implements Serializable {
      * tel
      */
     @JsonProperty("tel")
+    @Pattern(regexp = "^[0-9+\\-()\\s]{6,20}$", message = "phone格式不正確")
     private String tel;
 
     /**
      * postal code
      */
     @JsonProperty("postalCode")
+    @Pattern(regexp = "^[0-9]{3}$", message = "postalCode為3碼")
     private String postalCode;
 
     /**
@@ -48,6 +43,7 @@ public class MERCH007Tranrq implements Serializable {
      * bank account
      */
     @JsonProperty("bankAccount")
+    @Pattern(regexp = "^[0-9]{17}$", message = "bankAccount含銀行編號共17碼")
     private String bankAccount;
 
     /**

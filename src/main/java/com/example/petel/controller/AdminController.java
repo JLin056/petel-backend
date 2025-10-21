@@ -171,7 +171,7 @@ public class AdminController extends BaseController {
      * @throws InvalidInputException 輸入驗證錯誤
      * @throws com.example.petel.exception.DeleteFailException 刪除失敗
      */
-    @PostMapping("/merchant/delete")
+    @PostMapping("/sellers/delete")
     public Res<Admin009Tranrs> deleteSeller(
             @Valid @RequestBody Req<Admin009Tranrq> req, Errors errors)
             throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {

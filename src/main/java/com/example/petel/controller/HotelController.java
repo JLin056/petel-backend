@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.petel.controller.advice.BaseController;
+import com.example.petel.dto.HOTEL001Tranrq;
+import com.example.petel.dto.HOTEL001Tranrs;
+import com.example.petel.dto.HOTEL001TranrsHotel;
 import com.example.petel.dto.HOTEL002Tranrq;
 import com.example.petel.dto.HOTEL002Tranrs;
 import com.example.petel.dto.HOTEL002TranrsHotel;
@@ -24,6 +27,7 @@ import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.UpdateFailException;
+import com.example.petel.service.HOTEL001Svc;
 import com.example.petel.service.HOTEL002Svc;
 import com.example.petel.service.HOTEL003Svc;
 import com.example.petel.service.HOTEL004Svc;
@@ -36,6 +40,11 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/hotels")
 @CrossOrigin("http://localhost:4200")
 public class HotelController extends BaseController {
+
+    /**
+     * HOTEL001 Service
+     */
+    private final HOTEL001Svc hotel001Svc;
 
     /**
      * HOTEL002 Service
@@ -51,6 +60,13 @@ public class HotelController extends BaseController {
      * HOTEL004 Service
      */
     private final HOTEL004Svc hotel004Svc;
+
+    @PostMapping(value = "/query")
+    public Res<HOTEL001Tranrs<HOTEL001TranrsHotel>> query(@Valid @RequestBody Req<HOTEL001Tranrq> hotel001Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException {
+        handleValidForDto(errors);
+        return hotel001Svc.queryHotels(hotel001Tranrq);
+    }
 
     @PostMapping(value = "/detail")
     public Res<HOTEL002Tranrs<HOTEL002TranrsHotel>> details(@Valid @RequestBody Req<HOTEL002Tranrq> hotel002Tranrq, Errors errors)

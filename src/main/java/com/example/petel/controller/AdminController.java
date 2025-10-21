@@ -4,13 +4,14 @@ import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
-import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.ADMIN001Svc;
-import com.example.petel.service.ADMIN006Svc;
-import com.example.petel.service.ADMIN008Svc;
-import com.example.petel.service.ADMIN007Svc;
 import com.example.petel.service.ADMIN002Svc;
+import com.example.petel.service.ADMIN003Svc;
 import com.example.petel.service.ADMIN004Svc;
+import com.example.petel.service.ADMIN006Svc;
+import com.example.petel.service.ADMIN007Svc;
+import com.example.petel.service.ADMIN008Svc;
+import com.example.petel.service.Admin009Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -24,14 +25,11 @@ import java.io.IOException;
 @CrossOrigin("http://localhost:4200")
 public class AdminController extends BaseController {
 
-    /** Admin001 Service */
+    /** ADMIN001 Service */
     private final ADMIN001Svc admin001Svc;
-    
-    /** Admin002 Service */
-    private final ADMIN002Svc admin002Svc;
 
-    /** Admin006 Service */
-    private final ADMIN006Svc admin006Svc;
+    /** ADMIN002 Service */
+    private final ADMIN002Svc admin002Svc;
 
     /** ADMIN003 Service */
     private final ADMIN003Svc admin003Svc;
@@ -39,11 +37,17 @@ public class AdminController extends BaseController {
     /** ADMIN004 Service */
     private final ADMIN004Svc admin004Svc;
 
-    /** Admin007 Service */
-    private final ADMIN001Svc admin007Svc;
+    /** ADMIN006 Service */
+    private final ADMIN006Svc admin006Svc;
 
-    /** Admin008 Service */
+    /** ADMIN007 Service */
+    private final ADMIN007Svc admin007Svc;
+
+    /** ADMIN008 Service */
     private final ADMIN008Svc admin008Svc;
+
+    /** ADMIN009 Service */
+    private final Admin009Svc admin009Svc;
 
  
 
@@ -156,5 +160,22 @@ public class AdminController extends BaseController {
             throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
         handleValidForDto(errors);
         return admin008Svc.deleteUser(req);
+    }
+
+    /**
+     * Admin-009: 刪除賣家（連同其相關的所有物業和帳號）
+     * @param req Req<Admin009Tranrq>
+     * @param errors 驗證錯誤
+     * @return Res<Admin009Tranrs>
+     * @throws DataNotFoundException 賣家不存在
+     * @throws InvalidInputException 輸入驗證錯誤
+     * @throws com.example.petel.exception.DeleteFailException 刪除失敗
+     */
+    @PostMapping("/merchant/delete")
+    public Res<Admin009Tranrs> deleteSeller(
+            @Valid @RequestBody Req<Admin009Tranrq> req, Errors errors)
+            throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
+        handleValidForDto(errors);
+        return admin009Svc.deleteSeller(req);
     }
 }

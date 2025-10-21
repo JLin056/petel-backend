@@ -1,6 +1,7 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,26 +12,15 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin009Tranrs implements Serializable {
+public class ADMIN009Tranrq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 刪除的賣家 ID
+     * 賣家 ID (必填)
      */
-    @JsonProperty("sellersId")
+    @NotNull(message = "賣家 ID 不得為空")
+    @JsonProperty("sellerId")
     private String sellersId;
-
-    /**
-     * 一併刪除的物業數量
-     */
-    @JsonProperty("deletedPropertiesCount")
-    private Integer deletedPropertiesCount;
-
-    /**
-     * 刪除結果訊息
-     */
-    @JsonProperty("message")
-    private String message;
 }

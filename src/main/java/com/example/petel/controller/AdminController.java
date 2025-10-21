@@ -11,7 +11,7 @@ import com.example.petel.service.ADMIN004Svc;
 import com.example.petel.service.ADMIN006Svc;
 import com.example.petel.service.ADMIN007Svc;
 import com.example.petel.service.ADMIN008Svc;
-import com.example.petel.service.Admin009Svc;
+import com.example.petel.service.ADMIN009Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -47,7 +47,7 @@ public class AdminController extends BaseController {
     private final ADMIN008Svc admin008Svc;
 
     /** ADMIN009 Service */
-    private final Admin009Svc admin009Svc;
+    private final ADMIN009Svc admin009Svc;
 
  
 
@@ -172,8 +172,8 @@ public class AdminController extends BaseController {
      * @throws com.example.petel.exception.DeleteFailException 刪除失敗
      */
     @PostMapping("/sellers/delete")
-    public Res<Admin009Tranrs> deleteSeller(
-            @Valid @RequestBody Req<Admin009Tranrq> req, Errors errors)
+    public Res<ADMIN009Tranrs> deleteSeller(
+            @Valid @RequestBody Req<ADMIN009Tranrq> req, Errors errors)
             throws DataNotFoundException, InvalidInputException, com.example.petel.exception.DeleteFailException {
         handleValidForDto(errors);
         return admin009Svc.deleteSeller(req);

@@ -10,7 +10,7 @@ import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.AccountsRepository;
 import com.example.petel.repository.PropertyRepository;
 import com.example.petel.repository.SellersRepository;
-import com.example.petel.service.Admin009Svc;
+import com.example.petel.service.ADMIN009Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class Admin009SvcImpl implements Admin009Svc {
+public class ADMIN009SvcImpl implements ADMIN009Svc {
 
     private final SellersRepository sellersRepository;
     private final PropertyRepository propertyRepository;
@@ -35,9 +35,9 @@ public class Admin009SvcImpl implements Admin009Svc {
      */
     @Override
     @Transactional
-    public Res<Admin009Tranrs> deleteSeller(Req<Admin009Tranrq> req) throws DataNotFoundException, DeleteFailException {
+    public Res<ADMIN009Tranrs> deleteSeller(Req<ADMIN009Tranrq> req) throws DataNotFoundException, DeleteFailException {
         log.info("-------- [ADMIN-009] 刪除賣家 ---------");
-        Admin009Tranrq tranrq = req.getTranrq();
+        ADMIN009Tranrq tranrq = req.getTranrq();
         String sellersId = tranrq.getSellersId();
 
         log.info("[ADMIN-009] 刪除賣家 ID: {}", sellersId);
@@ -82,7 +82,7 @@ public class Admin009SvcImpl implements Admin009Svc {
             }
 
             // 組裝回應
-            Admin009Tranrs tranrs = new Admin009Tranrs();
+            ADMIN009Tranrs tranrs = new ADMIN009Tranrs();
             tranrs.setSellersId(sellersId);
             tranrs.setDeletedPropertiesCount(propertiesCount);
             tranrs.setMessage("賣家刪除成功，連同刪除 " + propertiesCount + " 筆物業及關聯帳號");

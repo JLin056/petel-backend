@@ -1,55 +1,44 @@
 package com.example.petel.entity;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.sql.Timestamp;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "PETEL_SELLERS")
+@Data
 public class SellersEntity {
 
     /**
-     * 賣家 ID
+     * 商家ID
      */
     @Id
     @Column(name = "ID")
-    @JsonAlias("Id")
     private String id;
 
     /**
-     * 帳號 ID (外鍵)
+     * 帳號ID
      */
     @Column(name = "ACCOUNT_ID")
-    @JsonAlias("accountId")
     private String accountId;
 
     /**
-     * 賣家名稱
+     * 商家姓名
      */
     @Column(name = "NAME")
-    @JsonAlias("name")
     private String name;
 
     /**
-     * 統編
+     * 營業編號
      */
     @Column(name = "BUSINESS_CODE")
-    @JsonAlias("businessCode")
     private String businessCode;
 
     /**
-     * 頭像媒體 ID
+     * 大頭照圖片ID
      */
-    @Column(name ="AVATAR_MEDIA_ID")
-    @JsonAlias("avatarMediaId")
-    private Long avatarMediaId;
+    @Column(name = "MEDIA_ID")
+    private String mediaId;
 }

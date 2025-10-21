@@ -5,13 +5,13 @@ import com.example.petel.dto.*;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.JwtProcessingException;
-import com.example.petel.service.AUTH001Svc;
-import com.example.petel.service.AUTH002Svc;
-import com.example.petel.service.AUTH003Svc;
+import com.example.petel.model.jwt.AccountPrincipal;
+import com.example.petel.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +26,10 @@ public class AuthController extends BaseController{
     private final AUTH002Svc auth002Svc;
     /** AUTH003 Service */
     private final AUTH003Svc auth003Svc;
+    /** AUTH006 Service */
+    private final AUTH006Svc auth006Svc;
+    /** AUTH008 Service */
+    private final AUTH008Svc auth008Svc;
 
     /**
      * 註冊
@@ -68,5 +72,24 @@ public class AuthController extends BaseController{
     @PostMapping("/logout")
     public Res<Object> logout(HttpServletRequest request, HttpServletResponse resp) {
         return auth003Svc.logout(request, resp);
+    }
+
+    /**
+     *
+     */
+    @PostMapping("/me")
+    public Res<AUTH006Tranrs> getInfo(@AuthenticationPrincipal AccountPrincipal authInfo)
+            throws JwtProcessingException{
+        return auth006Svc.getInfo(authInfo);
+    }
+
+    /**
+     * 驗證使用者資訊
+     * @param request
+     * @return
+     */
+    @PostMapping("/check")
+    public Res<AUTH008Tranrs> check(HttpServletRequest request) {
+        return auth008Svc.check(request);
     }
 }

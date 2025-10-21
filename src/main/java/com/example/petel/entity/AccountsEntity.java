@@ -56,5 +56,5 @@ public class AccountsEntity {
      */
     @Column(name = "TOKEN_VERSION")
     @JsonAlias("tokenVersion")
-    private Integer tokenVersion;
+    private int tokenVersion;
 }

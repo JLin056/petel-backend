@@ -66,6 +66,24 @@ public class OrdersEntity {
     private String status;
 
     /**
+     * 寵物主人是否同會員帳號持有人：預設為 'y'
+     */
+    @Column(name = "GUEST", nullable = false)
+    private String guest;
+
+    /**
+     * 寵物主人姓名
+     */
+    @Column(name = "GUEST_NAME")
+    private String guestName;
+
+    /**
+     * 寵物主人連絡電話
+     */
+    @Column(name = "GUEST_PHONE")
+    private String guestPhone;
+
+    /**
      * 訂單備註
      */
     @Column(name = "NOTE")

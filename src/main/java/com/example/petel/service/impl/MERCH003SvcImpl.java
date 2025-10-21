@@ -53,7 +53,7 @@ public class MERCH003SvcImpl implements MERCH003Svc {
         log.info("[MERCH-003] 查詢 propertyId = {}", propertyId);
         paramMap.put("propertyId", propertyId);
 
-        MERCH003TranrqPage pageData = merch003Tranrq.getTranrq().getPage();
+        PageRequest pageData = merch003Tranrq.getTranrq().getPage();
         log.info("[MERCH-003] 查詢 pageData = {}", pageData);
         Integer pageSize = pageData.getPageSize();
         Integer pageNumber = pageData.getPageNumber();

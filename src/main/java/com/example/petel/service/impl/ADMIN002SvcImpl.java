@@ -72,7 +72,7 @@ public class ADMIN002SvcImpl implements ADMIN002Svc {
         }
 
         // 計算分頁參數並加入 paramMap
-        ADMIN002TranrqPage page = tranrq.getPage();
+        PageRequest page = tranrq.getPage();
         int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
         int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 5;
         int offset = (pageNumber - 1) * pageSize;

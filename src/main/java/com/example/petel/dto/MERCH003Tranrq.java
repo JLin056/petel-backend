@@ -28,5 +28,5 @@ public class MERCH003Tranrq implements Serializable {
      * 頁碼資料
      */
     @JsonProperty("page")
-    private MERCH003TranrqPage page;
+    private PageRequest page;
 }

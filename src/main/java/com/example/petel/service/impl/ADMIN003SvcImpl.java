@@ -37,7 +37,7 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
         ADMIN003Tranrq tranrq = req.getTranrq();
 
         // 計算分頁參數
-        ADMIN003TranrqPage page = tranrq.getPage();
+        PageRequest page = tranrq.getPage();
 
 
         int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
@@ -53,8 +53,11 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
 
 
         // 動態參數（SqlUtils 會根據參數是否存在來決定是否包含 [] 中的條件）
-        if (StringUtils.isNotBlank(tranrq.getDate())) {
-            paramMap.put("date", tranrq.getDate());
+        if (StringUtils.isNotBlank(tranrq.getOrderId())) {
+            paramMap.put("orderId", tranrq.getOrderId());
+        }
+        if (StringUtils.isNotBlank(tranrq.getCheckIn())) {
+            paramMap.put("checkIn", tranrq.getCheckIn());
         }
         if (StringUtils.isNotBlank(tranrq.getUserName())) {
             paramMap.put("userName", "%" + tranrq.getUserName() + "%");
@@ -156,7 +159,9 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
 
             ADMIN003TranrsTranrs order = new ADMIN003TranrsTranrs();
             order.setOrderId(result.getOrderId());
-            order.setDate(result.getDate());
+            order.setStayDate(result.getStayDate());
+            order.setCheckIn(result.getCheckIn());
+            order.setCheckOut(result.getCheckOut());
             order.setUserName(finalUserName);
             order.setUserPhone(finalUserPhone);
             order.setPropertyName(result.getPropertyName());
@@ -164,6 +169,7 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
             order.setRoom(result.getRoom());
             order.setQuantity(result.getQuantity());
             order.setHotelCharges(result.getHotelCharges());
+            order.setPriceEverynight(result.getPriceEverynight());
             order.setStatus(result.getStatus());
             order.setNote(result.getNote());
             order.setCreatedAt(result.getCreatedAt());

@@ -69,7 +69,7 @@ public class ADMIN001SvcImpl implements ADMIN001Svc {
         }
 
         // 計算分頁參數
-        ADMIN001TranrqPage page = tranrq.getPage();
+        PageRequest page = tranrq.getPage();
         int pageNumber = (page != null && page.getPageNumber() != null) ? page.getPageNumber() : 1;
         int pageSize = (page != null && page.getPageSize() != null) ? page.getPageSize() : 10;
         int offset = (pageNumber - 1) * pageSize;

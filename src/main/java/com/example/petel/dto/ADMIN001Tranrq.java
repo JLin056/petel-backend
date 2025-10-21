@@ -50,5 +50,5 @@ public class ADMIN001Tranrq implements Serializable {
      * 分頁資訊
      */
     @JsonProperty("page")
-    private ADMIN001TranrqPage page;
+    private PageRequest page;
 }

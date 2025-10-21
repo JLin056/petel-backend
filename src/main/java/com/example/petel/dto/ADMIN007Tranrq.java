@@ -45,5 +45,5 @@ ADMIN007Tranrq implements Serializable {
      * 分頁資訊
      */
     @JsonProperty("page")
-    private ADMIN007TranrqPage page;
+    private PageRequest page;
 }

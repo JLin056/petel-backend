@@ -17,10 +17,16 @@ public class ADMIN003Tranrq implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 訂單日期 (ARRIVAL_DATE)
+     * 訂單編號
      */
-    @JsonProperty("date")
-    private String date;
+    @JsonProperty("ORDER_ID")
+    private String orderId;
+
+    /**
+     * 入住日期
+     */
+    @JsonProperty("CHECK_IN")
+    private String checkIn;
 
     /**
      * 會員姓名
@@ -50,5 +56,5 @@ public class ADMIN003Tranrq implements Serializable {
      * 分頁資訊
      */
     @JsonProperty("page")
-    private ADMIN003TranrqPage page;
+    private PageRequest page;
 }

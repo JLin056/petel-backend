@@ -23,10 +23,22 @@ public class ADMIN003TranrsTranrs implements Serializable {
     private String orderId;
 
     /**
-     * 訂單日期 (入住日期)
+     * 住宿日期
      */
-    @JsonProperty("ORDER_DATE")
-    private String date;
+    @JsonProperty("STAY_DATE")
+    private String stayDate;
+
+    /**
+     * 入住日期
+     */
+    @JsonProperty("CHECK_IN")
+    private String checkIn;
+
+    /**
+     * 退房日期
+     */
+    @JsonProperty("CHECK_OUT")
+    private String checkOut;
 
     /**
      * 會員姓名
@@ -69,6 +81,12 @@ public class ADMIN003TranrsTranrs implements Serializable {
      */
     @JsonProperty("HOTEL_CHARGES")
     private Integer hotelCharges;
+
+    /**
+     * 訂單總價
+     */
+    @JsonProperty("PRICE_EVERYNIGHT")
+    private Integer priceEverynight;
 
     /**
      * 付款狀態

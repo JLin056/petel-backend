@@ -65,7 +65,7 @@ public class MERCH001SvcImpl implements MERCH001Svc {
             log.info("[MERCH-001] 查詢 propertyId = {}，查全部訂單", propertyId);
         }
 
-        MERCH001TranrqPage pageData = merch001Tranrq.getTranrq().getPage();
+        PageRequest pageData = merch001Tranrq.getTranrq().getPage();
         log.info("[MERCH-001] 查詢 pageData = {}", pageData);
         Integer pageSize = pageData.getPageSize();
         Integer pageNumber = pageData.getPageNumber();

@@ -29,14 +29,12 @@ public class MERCH007Tranrq implements Serializable {
      * tel
      */
     @JsonProperty("tel")
-    @Pattern(regexp = "^[0-9+\\-()\\s]{6,20}$", message = "phone格式不正確")
     private String tel;
 
     /**
      * postal code
      */
     @JsonProperty("postalCode")
-    @Pattern(regexp = "^[0-9]{3}$", message = "postalCode為3碼")
     private String postalCode;
 
     /**
@@ -49,7 +47,6 @@ public class MERCH007Tranrq implements Serializable {
      * bank account
      */
     @JsonProperty("bankAccount")
-    @Pattern(regexp = "^[0-9]{17}$", message = "bankAccount含銀行編號共17碼")
     private String bankAccount;
 
     /**

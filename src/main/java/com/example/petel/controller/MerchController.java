@@ -22,6 +22,8 @@ import com.example.petel.dto.MERCH005Tranrq;
 import com.example.petel.dto.MERCH005Tranrs;
 import com.example.petel.dto.MERCH006Tranrq;
 import com.example.petel.dto.MERCH006Tranrs;
+import com.example.petel.dto.MERCH007Tranrq;
+import com.example.petel.dto.MERCH007Tranrs;
 import com.example.petel.dto.MERCH008Tranrq;
 import com.example.petel.dto.MERCH008Tranrs;
 import com.example.petel.dto.MERCH009Tranrq;
@@ -40,6 +42,7 @@ import com.example.petel.service.MERCH003Svc;
 import com.example.petel.service.MERCH004Svc;
 import com.example.petel.service.MERCH005Svc;
 import com.example.petel.service.MERCH006Svc;
+import com.example.petel.service.MERCH007Svc;
 import com.example.petel.service.MERCH008Svc;
 import com.example.petel.service.MERCH009Svc;
 import com.example.petel.service.MERCH010Svc;
@@ -77,6 +80,11 @@ public class MerchController extends BaseController {
      * MERCH006 Service
      */
     private final MERCH006Svc merch006Svc;
+
+    /**
+     * MERCH007 Service
+     */
+    private final MERCH007Svc merch007Svc;
 
     /**
      * MERCH008 Service
@@ -126,6 +134,13 @@ public class MerchController extends BaseController {
             throws DataNotFoundException, DeleteFailException, InvalidInputException {
         handleValidForDto(errors);
         return merch006Svc.delete(merch006Tranrq);
+    }
+
+    @PostMapping(value = "/hotels/edit")
+    public Res<MERCH007Tranrs> update(@Valid @RequestBody Req<MERCH007Tranrq> merch007Tranrq, Errors errors)
+            throws DataNotFoundException, UpdateFailException, InvalidInputException {
+        handleValidForDto(errors);
+        return merch007Svc.update(merch007Tranrq);
     }
 
     @PostMapping(value = "/hotels/create")

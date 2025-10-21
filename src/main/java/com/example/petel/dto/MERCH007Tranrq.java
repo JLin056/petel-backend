@@ -14,6 +14,12 @@ public class MERCH007Tranrq implements Serializable {
     private static final long SerialVersionUID = 1L;
 
     /**
+     * propertyId
+     */
+    @JsonProperty("id")
+    private String id;
+
+    /**
      * name
      */
     @JsonProperty("name")

@@ -39,6 +39,7 @@ public class MERCH002SvcImpl implements MERCH002Svc {
         List<MERCH002TranrsRoom> roomList = new ArrayList<>();
         for (RoomsEntity roomEntity : rooms) {
             MERCH002TranrsRoom room = new MERCH002TranrsRoom();
+            room.setId(roomEntity.getId());
             room.setPetTypeId(roomEntity.getPetTypeId());
             room.setName(roomEntity.getName());
             room.setTotalUnits(roomEntity.getTotalUnits());

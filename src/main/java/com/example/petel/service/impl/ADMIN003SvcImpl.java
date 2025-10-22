@@ -159,17 +159,19 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
 
             ADMIN003TranrsTranrs order = new ADMIN003TranrsTranrs();
             order.setOrderId(result.getOrderId());
-            order.setStayDate(result.getStayDate());
+//            order.setStayDate(result.getStayDate());
             order.setCheckIn(result.getCheckIn());
             order.setCheckOut(result.getCheckOut());
-            order.setUserName(finalUserName);
-            order.setUserPhone(finalUserPhone);
+            order.setUserName(result.getUserName());
+            order.setUserPhone(result.getUserPhone());
+            order.setFinalUserName(finalUserName);
+            order.setFinalUserPhone(finalUserPhone);
             order.setPropertyName(result.getPropertyName());
             order.setPropertyPhone(result.getPropertyPhone());
             order.setRoom(result.getRoom());
-            order.setQuantity(result.getQuantity());
+//            order.setQuantity(result.getQuantity());
             order.setHotelCharges(result.getHotelCharges());
-            order.setPriceEverynight(result.getPriceEverynight());
+//            order.setPriceEverynight(result.getPriceEverynight());
             order.setStatus(result.getStatus());
             order.setNote(result.getNote());
             order.setCreatedAt(result.getCreatedAt());

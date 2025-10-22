@@ -22,8 +22,8 @@ public class ADMIN003QueryResult implements Serializable {
     @JsonProperty("ORDER_ID")
     private String orderId;
 
-    @JsonProperty("STAY_DATE")
-    private String stayDate;
+//    @JsonProperty("STAY_DATE")
+//    private String stayDate;
 
     @JsonProperty("GUEST")
     private String guest;
@@ -58,11 +58,11 @@ public class ADMIN003QueryResult implements Serializable {
     @JsonProperty("ROOM")
     private String room;
 
-    @JsonProperty("QUANTITY")
-    private Integer quantity;
+//    @JsonProperty("QUANTITY")
+//    private Integer quantity;
 
-    @JsonProperty("PRICE_EVERYNIGHT")
-    private Integer priceEverynight;
+//    @JsonProperty("PRICE_EVERYNIGHT")
+//    private Integer priceEverynight;
 
     @JsonProperty("STATUS")
     private String status;

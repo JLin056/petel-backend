@@ -12,6 +12,7 @@ public interface RoomsRepository extends JpaRepository<RoomsEntity, String> {
 
     /**
      * 查目前最大的表格 ID
+     *
      * @return ID
      */
     @Query("select max(e.id) from RoomsEntity e")
@@ -19,6 +20,7 @@ public interface RoomsRepository extends JpaRepository<RoomsEntity, String> {
 
     /**
      * 查旅館ID
+     *
      * @param propertyId
      * @return propertyId
      */

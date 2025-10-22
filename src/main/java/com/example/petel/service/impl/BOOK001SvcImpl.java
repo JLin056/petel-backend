@@ -8,10 +8,7 @@ import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
-import com.example.petel.repository.OrderItemsRepository;
-import com.example.petel.repository.OrdersRepository;
-import com.example.petel.repository.RoomInventoriesRepository;
-import com.example.petel.repository.RoomsRepository;
+import com.example.petel.repository.*;
 import com.example.petel.service.BOOK001Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +39,8 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     private final RoomInventoriesRepository roomInventoriesRepository;
     /** RoomsRepository */
     private final RoomsRepository roomsRepository;
+
+    private final UsersRepository usersRepository;
     /** BOOKING_LOCK */
     private static final Object BOOKING_LOCK = new Object();
 
@@ -54,7 +53,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<BOOK001Tranrs> book001(Req<BOOK001Tranrq> requestBody) throws InsertFailException {
+    public Res<BOOK001Tranrs> book001(String accountId, Req<BOOK001Tranrq> requestBody) throws InsertFailException {
 
         log.info("-------- [BOOK-001] 建立訂單 API 啟動 --------");
         List<BOOKTranrqOrderDetail> orderDetails = requestBody.getTranrq().getOrderDetail();
@@ -113,7 +112,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
 
             OrdersEntity ordersEntity = new OrdersEntity();
             ordersEntity.setId(IdUtil.generateTableId("O", ordersRepository.findMaxId()));
-            ordersEntity.setUserId(orderInfo.getUserId());
+            ordersEntity.setUserId(usersRepository.findIdByAccountId(accountId));
             ordersEntity.setPropertyId(orderInfo.getPropertyId());
             ordersEntity.setPaymentId(orderInfo.getPaymentId());
             ordersEntity.setHotelCharges(orderPrice.intValue());

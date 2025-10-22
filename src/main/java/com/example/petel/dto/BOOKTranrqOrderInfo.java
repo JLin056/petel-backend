@@ -19,11 +19,6 @@ public class BOOKTranrqOrderInfo implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("user_id")
-    @NotNull(message = "user_id不得為空")
-    @Pattern(regexp = "^U\\d{9}$", message = "請輸入正確格式的user_id")
-    private String userId;
-
     @JsonProperty("property_id")
     @NotNull(message = "property_id不得為空")
     @Pattern(regexp = "^P\\d{9}$", message = "請輸入正確格式的property_id")

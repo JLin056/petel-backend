@@ -16,18 +16,33 @@ public class USER006Tranrq implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * status
+     */
     @JsonProperty("status")
     private String status;
 
+    /**
+     * from
+     */
     @JsonProperty("from")
     private String from;
 
+    /**
+     * to
+     */
     @JsonProperty("to")
     private String to;
 
+    /**
+     * page
+     */
     @JsonProperty("page")
     private Integer page;
 
+    /**
+     * pageSize
+     */
     @JsonProperty("pageSize")
     private Integer pageSize;
 

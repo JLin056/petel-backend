@@ -33,6 +33,14 @@ public class USER006SvcImpl implements USER006Svc {
     @Value("${petel.s3.public-base}")
     private String s3Base;
 
+    /**
+     * 取得歷史訂單紀錄列表
+     * @param accountId
+     * @param req
+     * @return
+     * @throws IOException
+     * @throws DataNotFoundException
+     */
     @Override
     public Res<USER006Tranrs> getBookingList(String accountId, Req<USER006Tranrq> req)
             throws IOException, DataNotFoundException {

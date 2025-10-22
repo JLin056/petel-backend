@@ -2,51 +2,42 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.model.ReturnCodeAndDescEnum;
+import com.example.petel.model.jwt.AccountPrincipal;
+import com.example.petel.repository.SellersRepository;
 import com.example.petel.repository.UsersRepository;
-import com.example.petel.service.USER007Svc;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.petel.service.AUTH009Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class USER007SvcImpl implements USER007Svc {
+public class AUTH009SvcImpl implements AUTH009Svc {
 
     /** UsersRepository */
     private final UsersRepository usersRepo;
+    /** UsersRepository */
+    private final SellersRepository sellersRepo;
 
     @Override
-    public Res<USER007Tranrs> check(String accountId) {
-        log.info("---- [USER-007] 驗證使用者是否填寫會員資訊 ----");
+    public Res<AUTH009Tranrs> check(String accountId, String role) {
+        log.info("---- [USER-007] 驗證使用者是否填寫會員或商家資訊 ----");
 
-        boolean existsByAccountId = usersRepo.existsByAccountId(accountId);
-        USER007Tranrs tranrs = new USER007Tranrs();
-        if (existsByAccountId) {
-            
-
+        boolean filled;
+        if ("user".equalsIgnoreCase(role)) {
+            filled = usersRepo.existsByAccountId(accountId);
+        } else if ("seller".equalsIgnoreCase(role)) {
+            filled = sellersRepo.existsByAccountId(accountId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不支援的角色：" + role);
         }
 
-        USER004Tranrs tranrs = new USER004Tranrs();
-
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean valid =  auth instanceof UsernamePasswordAuthenticationToken && // 如果是 null，未登入
-                auth.isAuthenticated() && // 已驗證
-                auth.getPrincipal() != null && // 有使用者資訊
-                auth.getAuthorities() != null && // 有權限資訊
-                !auth.getAuthorities().isEmpty(); // 檢查真的有值
-        log.info("[AUTH-008] 驗證完成，valid ={}", valid);
-
-
-        return new Res<AUTH008Tranrs>(
-                new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                tranrs
-        );
+        log.info("[PROFILE-CHECK] filled={}", filled);
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
+                new AUTH009Tranrs(filled));
     }
 }

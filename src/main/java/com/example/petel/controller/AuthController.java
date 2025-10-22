@@ -30,6 +30,8 @@ public class AuthController extends BaseController{
     private final AUTH006Svc auth006Svc;
     /** AUTH008 Service */
     private final AUTH008Svc auth008Svc;
+    /** AUTH009 Service */
+    private final AUTH009Svc auth009Svc;
 
     /**
      * 註冊
@@ -91,5 +93,15 @@ public class AuthController extends BaseController{
     @PostMapping("/check")
     public Res<AUTH008Tranrs> check(HttpServletRequest request) {
         return auth008Svc.check(request);
+    }
+
+    /**
+     * 驗證使用者是否填寫資訊
+     * @param authInfo
+     * @return
+     */
+    @PostMapping("/profile/check")
+    public Res<AUTH009Tranrs> check(@AuthenticationPrincipal AccountPrincipal authInfo) {
+        return auth009Svc.check(authInfo.getAccountId(), authInfo.getRole());
     }
 }

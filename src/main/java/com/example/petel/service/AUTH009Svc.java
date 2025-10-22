@@ -1,10 +1,10 @@
 package com.example.petel.service;
 
 import com.example.petel.dto.Res;
-import com.example.petel.dto.USER007Tranrs;
+import com.example.petel.dto.AUTH009Tranrs;
 import jakarta.servlet.http.HttpServletRequest;
 
-public interface USER007Svc {
+public interface AUTH009Svc {
 
-    Res<USER007Tranrs> check(HttpServletRequest request);
+    Res<AUTH009Tranrs> check(String accountId, String role);
 }

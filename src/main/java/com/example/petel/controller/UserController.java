@@ -9,12 +9,15 @@ import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.service.USER001Svc;
 import com.example.petel.service.USER002Svc;
 import com.example.petel.service.USER004Svc;
+import com.example.petel.service.USER006Svc;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
@@ -28,6 +31,8 @@ public class UserController extends BaseController {
     private final USER002Svc user002Svc;
     /** USER002Svc */
     private final USER004Svc user004Svc;
+    /** USER006Svc */
+    private final USER006Svc user006Svc;
 
     /**
      * 新增會員資訊
@@ -74,6 +79,25 @@ public class UserController extends BaseController {
     public Res<USER004Tranrs> getUser(@AuthenticationPrincipal AccountPrincipal authInfo)
             throws DataNotFoundException {
         return user004Svc.getUserInfo(authInfo.getAccountId());
+    }
+
+    /**
+     * 取得歷史訂單紀錄列表
+     * @param authInfo
+     * @param req
+     * @param errors
+     * @return
+     * @throws InvalidInputException
+     * @throws DataNotFoundException
+     * @throws IOException
+     */
+    @PostMapping("/bookings/get")
+    public Res<USER006Tranrs> getBookingList(@AuthenticationPrincipal AccountPrincipal authInfo,
+                                             @RequestBody Req<USER006Tranrq> req,
+                                             Errors errors)
+            throws InvalidInputException, DataNotFoundException, IOException {
+        handleValidForDto(errors);
+        return user006Svc.getBookingList(authInfo.getAccountId(), req);
     }
 
 }

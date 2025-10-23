@@ -25,8 +25,8 @@ public class ADMIN003TranrsTranrs implements Serializable {
     /**
      * 住宿日期
      */
-    @JsonProperty("STAY_DATE")
-    private String stayDate;
+//    @JsonProperty("STAY_DATE")
+//    private String stayDate;
 
     /**
      * 入住日期
@@ -53,6 +53,18 @@ public class ADMIN003TranrsTranrs implements Serializable {
     private String userPhone;
 
     /**
+     * 訂購人姓名
+     */
+    @JsonProperty("FINAL_USER_NAME")
+    private String finalUserName;
+
+    /**
+     * 訂購人電話
+     */
+    @JsonProperty("FINAL_USER_Phone")
+    private String finalUserPhone;
+
+    /**
      * 旅館名稱
      */
     @JsonProperty("PROPERTY_NAME")
@@ -73,8 +85,8 @@ public class ADMIN003TranrsTranrs implements Serializable {
     /**
      * 數量
      */
-    @JsonProperty("QUANTITY")
-    private Integer quantity;
+//    @JsonProperty("QUANTITY")
+//    private Integer quantity;
 
     /**
      * 訂單總價
@@ -85,8 +97,8 @@ public class ADMIN003TranrsTranrs implements Serializable {
     /**
      * 訂單總價
      */
-    @JsonProperty("PRICE_EVERYNIGHT")
-    private Integer priceEverynight;
+//    @JsonProperty("PRICE_EVERYNIGHT")
+//    private Integer priceEverynight;
 
     /**
      * 付款狀態

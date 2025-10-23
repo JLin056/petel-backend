@@ -28,4 +28,12 @@ public interface SellersRepository extends JpaRepository<SellersEntity, String> 
      */
     @Query(value = "SELECT ACCOUNT_ID FROM PETEL_SELLERS WHERE ID = :sellerId", nativeQuery = true)
     String findByAccountBySellerId(@Param("sellerId") String sellerId);
+
+    /**
+     * 檢查 accountID 是否存在
+     *
+     * @param accountId
+     * @return
+     */
+    boolean existsByAccountId(String accountId);
 }

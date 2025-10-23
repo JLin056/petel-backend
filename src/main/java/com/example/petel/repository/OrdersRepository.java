@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -33,4 +34,19 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, String> {
      */
     @Query(value = "SELECT USER_ID AS USERID, PROPERTY_ID AS PROPERTYID FROM PETEL_ORDERS WHERE ID = :orderId", nativeQuery = true)
     Map<String, Object> findUserAndPropertyByOrderId(@Param("orderId") String orderId);
+
+    /**
+     * 用 userId 查 order
+     *
+     * @param userId
+     * @return
+     */
+    @Query(value = """
+        SELECT *
+        FROM PETEL_ORDERS
+        WHERE USER_ID = :userId
+        ORDER BY CREATED_AT DESC
+    """, nativeQuery = true)
+    List<OrdersEntity> findByUserIdOrderByCreatedAtDesc(@Param("userId") String userId);
+
 }

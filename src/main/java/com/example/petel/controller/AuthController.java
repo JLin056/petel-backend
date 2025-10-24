@@ -5,6 +5,7 @@ import com.example.petel.dto.*;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.JwtProcessingException;
+import com.example.petel.exception.UpdateFailException;
 import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,6 +35,10 @@ public class AuthController extends BaseController{
     private final AUTH008Svc auth008Svc;
     /** AUTH009 Service */
     private final AUTH009Svc auth009Svc;
+    /** AUTH004Svc Service */
+    private final AUTH004Svc auth004Svc;
+    /** AUTH005Svc Service */
+    private final AUTH005Svc auth005Svc;
 
     /**
      * 註冊
@@ -103,5 +110,31 @@ public class AuthController extends BaseController{
     @PostMapping("/profile/check")
     public Res<AUTH009Tranrs> check(@AuthenticationPrincipal AccountPrincipal authInfo) {
         return auth009Svc.check(authInfo.getAccountId(), authInfo.getRole());
+    }
+
+    /**
+     * 忘記密碼
+     * @param req
+     * @return
+     */
+    @PostMapping("/forgot")
+    public Res<AUTH004Tranrs> forgot(@Valid @RequestBody Req<AUTH004Tranrq> req) {
+        return auth004Svc.forgotPassword(req);
+    }
+
+    /**
+     * 重設密碼
+     * @param req
+     * @param errors
+     * @return
+     * @throws InvalidInputException
+     * @throws UpdateFailException
+     * @throws IOException
+     */
+    @PostMapping("/reset")
+    public Res<Object> reset(@Valid @RequestBody Req<AUTH005Tranrq> req, Errors errors)
+            throws InvalidInputException, UpdateFailException, IOException {
+        handleValidForDto(errors);
+        return auth005Svc.resetPassword(req);
     }
 }

@@ -47,4 +47,12 @@ public interface AccountsRepository extends JpaRepository<AccountsEntity, String
      */
     @Query("select a.email from AccountsEntity a where a.id = :id")
     String findEmailById(@Param("id") String id);
+
+    /**
+     * 用 Email 查 id
+     * @param email
+     * @return
+     */
+    @Query("SELECT a.id FROM AccountsEntity a WHERE LOWER(a.email) = LOWER(:email)")
+    String findIdByEmailIgnoreCase(@Param("email") String email);
 }

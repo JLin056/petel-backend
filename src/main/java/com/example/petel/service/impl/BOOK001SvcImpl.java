@@ -39,7 +39,7 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     private final RoomInventoriesRepository roomInventoriesRepository;
     /** RoomsRepository */
     private final RoomsRepository roomsRepository;
-
+    /** UsersRepository */
     private final UsersRepository usersRepository;
     /** BOOKING_LOCK */
     private static final Object BOOKING_LOCK = new Object();

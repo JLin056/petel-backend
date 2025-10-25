@@ -7,6 +7,7 @@ import com.example.petel.exception.InvalidInputException;
 import com.example.petel.service.MEDIA001Svc;
 import com.example.petel.service.MEDIA002Svc;
 import com.example.petel.service.MEDIA003Svc;
+import com.example.petel.service.MEDIA004Svc;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -26,6 +27,9 @@ public class MediaController extends BaseController {
 
     /** MEDIA003 Service */
     private final MEDIA003Svc media003Svc;
+
+    /** MEDIA004 Service */
+    private final MEDIA004Svc media004Svc;
 
     /**
      * Base64 圖片上傳
@@ -68,5 +72,19 @@ public class MediaController extends BaseController {
             throws InvalidInputException {
         handleValidForDto(errors);
         return media003Svc.deleteBase64Media(req);
+    }
+
+    /**
+     * Base64 圖片查詢
+     * @param req Base64 圖片查詢請求
+     * @param errors 驗證錯誤
+     * @return 查詢結果
+     * @throws InvalidInputException 輸入驗證異常
+     */
+    @PostMapping("/query/base64")
+    public Res<MEDIA004Tranrs> queryBase64(@Valid @RequestBody Req<MEDIA004Tranrq> req, Errors errors)
+            throws InvalidInputException {
+        handleValidForDto(errors);
+        return media004Svc.queryBase64Media(req);
     }
 }

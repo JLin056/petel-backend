@@ -61,3 +61,4 @@ public class MEDIA001TranrqMediaInfo implements Serializable {
     @JsonProperty("visibility")
     private String visibility;
 }
+

@@ -3,9 +3,11 @@ package com.example.petel.controller;
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.*;
+import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,9 +45,10 @@ public class BookController extends BaseController {
     private final BOOK009Svc book009Svc;
 
     @PostMapping(value = "/create")
-    public Res<BOOK001Tranrs> book001(@Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
+    public Res<BOOK001Tranrs> book001(@AuthenticationPrincipal AccountPrincipal authInfo,
+            @Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
-        return book001Svc.book001(requestBody);
+        return book001Svc.book001(authInfo.getAccountId(), requestBody);
     }
 
     @PostMapping(value = "/detail")

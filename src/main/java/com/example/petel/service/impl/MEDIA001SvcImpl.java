@@ -39,7 +39,7 @@ public class MEDIA001SvcImpl implements MEDIA001Svc {
 
         MEDIA001Tranrq tranrq = req.getTranrq();
         log.info("[MEDIA-001] 分類：{}, 關聯ID：{}, 媒體數量：{}",
-                tranrq.getCategory(), tranrq.getReferenceId(), tranrq.getMedias().size());
+                 tranrq.getCategory(), tranrq.getReferenceId(), tranrq.getMedias().size());
 
         List<MEDIA001TranrsMediaResult> results = new ArrayList<>();
         int successCount = 0;
@@ -115,16 +115,16 @@ public class MEDIA001SvcImpl implements MEDIA001Svc {
 
         // 6. 建立回應
         MEDIA001Tranrs tranrs = new MEDIA001Tranrs(
-                tranrq.getCategory(),
-                tranrq.getReferenceId(),
-                successCount,
-                failedCount,
-                results
+            tranrq.getCategory(),
+            tranrq.getReferenceId(),
+            successCount,
+            failedCount,
+            results
         );
 
         return new Res<>(
-                new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                tranrs
+            new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
+            tranrs
         );
     }
 

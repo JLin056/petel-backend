@@ -142,14 +142,14 @@ public class MEDIA002SvcImpl implements MEDIA002Svc {
 
         // 5. 建立回應
         MEDIA002Tranrs tranrs = new MEDIA002Tranrs(
-                successCount,
-                failedCount,
-                results
+            successCount,
+            failedCount,
+            results
         );
 
         return new Res<>(
-                new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                tranrs
+            new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
+            tranrs
         );
     }
 

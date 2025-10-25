@@ -1,4 +1,5 @@
 SELECT
+    u.ID as USER_ID,
     a.ID as ACCOUNT_ID,
     a.EMAIL,
     u.NAME,
@@ -10,10 +11,10 @@ SELECT
  LEFT JOIN
     PETEL_ACCOUNTS a ON u.ACCOUNT_ID = a.ID
  WHERE
-    a.ROLE = 'USER'
-    [AND a.ID = :accountId]
-    [AND a.EMAIL = :email]
+    (a.ROLE = 'USER' or a.ROLE = 'user')
+    [AND a.ID LIKE :accountId]
+    [AND a.EMAIL LIKE :email]
     [AND u.NAME LIKE :name]
-    [AND u.PHONE = :phone]
+    [AND u.PHONE LIKE :phone]
  ORDER BY a.ID
  [OFFSET :offset ROWS FETCH NEXT :pageSize ROWS ONLY]

@@ -1,6 +1,7 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,12 @@ public class ADMIN007TranrsTranrs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 使用者 ID (必填)
+     */
+    @JsonProperty("USER_ID")
+    private String usersId;
 
     /**
      * 會員 ID

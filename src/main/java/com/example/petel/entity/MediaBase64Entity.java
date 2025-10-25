@@ -36,7 +36,7 @@ public class MediaBase64Entity {
     private String base64Data;
 
     /**
-     * Bucket
+     * S3 Bucket
      */
     @Column(name = "BUCKET", length = 50)
     private String bucket;

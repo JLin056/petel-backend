@@ -41,17 +41,17 @@ public class ADMIN007SvcImpl implements ADMIN007Svc {
 
         // 動態組裝 SQL 參數
         if (StringUtils.isNotBlank(tranrq.getAccountId())) {
-            paramMap.put("accountId", tranrq.getAccountId());
+            paramMap.put("accountId", "%" +tranrq.getAccountId()+ "%");
         }
         if (StringUtils.isNotBlank(tranrq.getEmail())) {
-            paramMap.put("email", tranrq.getEmail());
+            paramMap.put("email", "%" +tranrq.getEmail()+ "%");
         }
         if (StringUtils.isNotBlank(tranrq.getName())) {
             // 模糊查詢：加上 %
             paramMap.put("name", "%" + tranrq.getName() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getPhone())) {
-            paramMap.put("phone", tranrq.getPhone());
+            paramMap.put("phone", "%" +tranrq.getPhone()+ "%");
         }
 
         // 計算分頁參數
@@ -74,16 +74,16 @@ public class ADMIN007SvcImpl implements ADMIN007Svc {
         // 查詢總筆數 (使用獨立的 COUNT SQL - 不需要分頁參數)
         Map<String, Object> countParamMap = new HashMap<>();
         if (StringUtils.isNotBlank(tranrq.getAccountId())) {
-            countParamMap.put("accountId", tranrq.getAccountId());
+            countParamMap.put("accountId","%" + tranrq.getAccountId()+ "%");
         }
         if (StringUtils.isNotBlank(tranrq.getEmail())) {
-            countParamMap.put("email", tranrq.getEmail());
+            countParamMap.put("email", "%" +tranrq.getEmail()+ "%");
         }
         if (StringUtils.isNotBlank(tranrq.getName())) {
             countParamMap.put("name", "%" + tranrq.getName() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getPhone())) {
-            countParamMap.put("phone", tranrq.getPhone());
+            countParamMap.put("phone","%" + tranrq.getPhone()+ "%");
         }
         String countSql = sqlUtils.getDynamicQuerySQL("Admin007_Count.sql", countParamMap);
         List<Map<String, Object>> countResult = sqlAction.queryForList(countSql, countParamMap);

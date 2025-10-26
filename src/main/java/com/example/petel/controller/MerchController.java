@@ -1,25 +1,17 @@
 package com.example.petel.controller;
 
-import java.io.IOException;
-
-import com.example.petel.dto.*;
-import com.example.petel.service.*;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.petel.controller.advice.BaseController;
-import com.example.petel.exception.DataNotFoundException;
-import com.example.petel.exception.DeleteFailException;
-import com.example.petel.exception.InsertFailException;
-import com.example.petel.exception.InvalidInputException;
-import com.example.petel.exception.UpdateFailException;
-
+import com.example.petel.dto.*;
+import com.example.petel.exception.*;
+import com.example.petel.model.jwt.AccountPrincipal;
+import com.example.petel.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -134,10 +126,11 @@ public class MerchController extends BaseController {
     }
 
     @PostMapping(value = "/sellers/create")
-    public Res<MERCH009Tranrs> createSeller(@Valid @RequestBody Req<MERCH009Tranrq> merch009Tranrq, Errors errors)
+    public Res<MERCH009Tranrs> createSeller(@AuthenticationPrincipal AccountPrincipal authInfo,
+                                            @Valid @RequestBody Req<MERCH009Tranrq> merch009Tranrq, Errors errors)
             throws InsertFailException, InvalidInputException {
         handleValidForDto(errors);
-        return merch009Svc.createSeller(merch009Tranrq);
+        return merch009Svc.createSeller(authInfo.getAccountId(), merch009Tranrq);
     }
 
     @PostMapping(value = "/sellers/edit")

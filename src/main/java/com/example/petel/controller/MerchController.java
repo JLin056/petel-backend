@@ -5,6 +5,7 @@ import com.example.petel.dto.*;
 import com.example.petel.exception.*;
 import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.service.*;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -68,6 +69,11 @@ public class MerchController extends BaseController {
      * MERCH010 Service
      */
     private final MERCH010Svc merch010Svc;
+
+    /**
+     * MERCH011 Service
+     */
+    private final MERCH011Svc merch011Svc;
 
     @PostMapping(value = "/bookings/list")
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(@Valid @RequestBody Req<MERCH001Tranrq> merch001Tranrq, Errors errors)
@@ -134,9 +140,17 @@ public class MerchController extends BaseController {
     }
 
     @PostMapping(value = "/sellers/edit")
-    public Res<MERCH010Tranrs> editSeller(@Valid @RequestBody Req<MERCH010Tranrq> merch010Tranrq, Errors errors)
-            throws UpdateFailException, InvalidInputException, DataNotFoundException {
+    public Res<MERCH010Tranrs> editSeller(@AuthenticationPrincipal AccountPrincipal authInfo,
+                                          @Valid @RequestBody Req<MERCH010Tranrq> merch010Tranrq, Errors errors)
+            throws UpdateFailException, JsonMappingException, InvalidInputException, DataNotFoundException {
         handleValidForDto(errors);
-        return merch010Svc.editSeller(merch010Tranrq);
+        return merch010Svc.editSeller(authInfo.getAccountId(), merch010Tranrq);
+    }
+
+    @PostMapping(value = "/sellers/get")
+    public Res<MERCH011Tranrs> getSellerInfo(@AuthenticationPrincipal AccountPrincipal authInfo)
+            throws DataNotFoundException {
+        return merch011Svc.getSellerInfo(authInfo.getAccountId());
     }
 }
+

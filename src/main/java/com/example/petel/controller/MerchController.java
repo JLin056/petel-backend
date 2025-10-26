@@ -5,6 +5,7 @@ import com.example.petel.dto.*;
 import com.example.petel.exception.*;
 import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.service.*;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -134,9 +135,10 @@ public class MerchController extends BaseController {
     }
 
     @PostMapping(value = "/sellers/edit")
-    public Res<MERCH010Tranrs> editSeller(@Valid @RequestBody Req<MERCH010Tranrq> merch010Tranrq, Errors errors)
-            throws UpdateFailException, InvalidInputException, DataNotFoundException {
+    public Res<MERCH010Tranrs> editSeller(@AuthenticationPrincipal AccountPrincipal authInfo,
+                                          @Valid @RequestBody Req<MERCH010Tranrq> merch010Tranrq, Errors errors)
+            throws UpdateFailException, JsonMappingException, InvalidInputException, DataNotFoundException {
         handleValidForDto(errors);
-        return merch010Svc.editSeller(merch010Tranrq);
+        return merch010Svc.editSeller(authInfo.getAccountId(),merch010Tranrq);
     }
 }

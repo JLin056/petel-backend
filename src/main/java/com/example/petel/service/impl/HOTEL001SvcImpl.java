@@ -1,11 +1,15 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
+import com.example.petel.entity.MediaBase64Entity;
+import com.example.petel.entity.PropertyImageEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
+import com.example.petel.repository.MediaBase64Repository;
+import com.example.petel.repository.PropertyImageRepository;
 import com.example.petel.service.HOTEL001Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +27,8 @@ public class HOTEL001SvcImpl implements HOTEL001Svc {
 
     private final SqlUtils sqlUtils;
     private final SqlAction sqlAction;
+    private final PropertyImageRepository propertyImageRepository;
+    private final MediaBase64Repository mediaBase64Repository;
 
     /**
      * 查詢旅館列表
@@ -191,7 +197,7 @@ public class HOTEL001SvcImpl implements HOTEL001Svc {
     }
 
     /**
-     * 批量查詢旅館圖片
+     * 批量查詢旅館封面照（sortOrder = 1）- 使用 JPA Repository
      */
     private void loadHotelImages(List<HOTEL001TranrsHotel> hotels) {
         try {
@@ -200,34 +206,77 @@ public class HOTEL001SvcImpl implements HOTEL001Svc {
                     .map(HOTEL001TranrsHotel::getPropertyId)
                     .collect(Collectors.toList());
 
-            // 建立參數 Map
-            Map<String, Object> imageParamMap = new HashMap<>();
-            imageParamMap.put("propertyIds", propertyIds);
+            log.info("[HOTEL-001] 開始查詢 {} 間旅館的封面照", propertyIds.size());
 
-            // 查詢圖片
-            String imageSql = sqlUtils.getDynamicQuerySQL("HOTEL001_IMAGES.sql", imageParamMap);
-            log.info("[HOTEL-001] 執行查詢圖片 SQL: {}", imageSql);
-
-            List<Map<String, Object>> imageResults = sqlAction.queryForList(imageSql, imageParamMap);
-
-            // 將圖片按 propertyId 分組
-            Map<String, List<String>> imageMap = new HashMap<>();
-            for (Map<String, Object> row : imageResults) {
-                String propertyId = (String) row.get("PROPERTY_ID");
-                String mediaId = (String) row.get("MEDIA_ID");
-
-                imageMap.computeIfAbsent(propertyId, k -> new ArrayList<>()).add(mediaId);
+            // 步驟 1: 查詢所有旅館的圖片關聯記錄（PETEL_PROPERTY_IMAGE）
+            List<PropertyImageEntity> coverImages = new ArrayList<>();
+            for (String propertyId : propertyIds) {
+                List<PropertyImageEntity> images = propertyImageRepository.findByPropertyId(propertyId);
+                // 只取 sortOrder = 1 的封面照
+                images.stream()
+                        .filter(img -> img.getSortOrder() != null && img.getSortOrder() == 1)
+                        .findFirst()
+                        .ifPresent(coverImages::add);
             }
 
-            // 將圖片設定到對應的 hotel
+            if (coverImages.isEmpty()) {
+                log.info("[HOTEL-001] 沒有找到任何封面照");
+                hotels.forEach(hotel -> hotel.setImages(new ArrayList<>()));
+                return;
+            }
+
+            log.info("[HOTEL-001] 找到 {} 個封面照", coverImages.size());
+
+            // 步驟 2: 收集所有封面照的 mediaId
+            List<String> mediaIds = coverImages.stream()
+                    .map(PropertyImageEntity::getMediaId)
+                    .collect(Collectors.toList());
+
+            // 步驟 3: 批量查詢 PETEL_MEDIA_BASE64（JPA 會自動處理 CLOB 轉換）
+            List<MediaBase64Entity> mediaEntities = mediaBase64Repository.findAllById(mediaIds);
+
+            // 建立 mediaId -> MediaBase64Entity 的 Map
+            Map<String, MediaBase64Entity> mediaMap = mediaEntities.stream()
+                    .collect(Collectors.toMap(MediaBase64Entity::getId, entity -> entity));
+
+            log.info("[HOTEL-001] 查詢到 {} 筆封面照資料", mediaEntities.size());
+
+            // 步驟 4: 組裝封面照資訊（按 propertyId 分組）
+            Map<String, HOTEL001TranrsHotelImage> coverImageMap = new HashMap<>();
+
+            for (PropertyImageEntity propertyImage : coverImages) {
+                String propertyId = propertyImage.getPropertyId();
+                String mediaId = propertyImage.getMediaId();
+                MediaBase64Entity mediaEntity = mediaMap.get(mediaId);
+
+                if (mediaEntity != null) {
+                    HOTEL001TranrsHotelImage imageInfo = new HOTEL001TranrsHotelImage();
+                    imageInfo.setMediaId(mediaId);
+                    imageInfo.setBase64Data(mediaEntity.getBase64Data());
+                    imageInfo.setFileName(mediaEntity.getFileName());
+                    imageInfo.setMimeType(mediaEntity.getMimeType());
+                    imageInfo.setSortOrder(propertyImage.getSortOrder());
+
+                    coverImageMap.put(propertyId, imageInfo);
+                } else {
+                    log.warn("[HOTEL-001] MediaID={} 在 PETEL_MEDIA_BASE64 中不存在", mediaId);
+                }
+            }
+
+            // 步驟 5: 將封面照設定到對應的 hotel
             for (HOTEL001TranrsHotel hotel : hotels) {
-                List<String> images = imageMap.getOrDefault(hotel.getPropertyId(), new ArrayList<>());
-                hotel.setImages(images);
+                HOTEL001TranrsHotelImage coverImage = coverImageMap.get(hotel.getPropertyId());
+                if (coverImage != null) {
+                    hotel.setImages(Collections.singletonList(coverImage));
+                } else {
+                    hotel.setImages(new ArrayList<>());
+                }
             }
 
-            log.info("[HOTEL-001] 成功載入 {} 間旅館的圖片", hotels.size());
-        } catch (IOException e) {
-            log.error("[HOTEL-001] 查詢圖片失敗，使用空列表", e);
+            log.info("[HOTEL-001] 成功載入 {} 間旅館的封面照", hotels.size());
+
+        } catch (Exception e) {
+            log.error("[HOTEL-001] 查詢封面照失敗，使用空列表", e);
             // 查詢圖片失敗不影響主流程，設定空列表即可
             hotels.forEach(hotel -> hotel.setImages(new ArrayList<>()));
         }

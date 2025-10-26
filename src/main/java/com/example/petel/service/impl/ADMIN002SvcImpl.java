@@ -38,22 +38,21 @@ public class ADMIN002SvcImpl implements ADMIN002Svc {
         // 建立查詢參數 Map
         Map<String, Object> paramMap = new HashMap<>();
 
-        // 動態組裝 SQL 參數
+        // 動態組裝 SQL 參數（全部使用模糊查詢）
         if (StringUtils.isNotBlank(tranrq.getSellerId())) {
-            paramMap.put("sellerId", tranrq.getSellerId());
+            paramMap.put("sellerId", "%" + tranrq.getSellerId() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getAccountId())) {
-            paramMap.put("accountId", tranrq.getAccountId());
+            paramMap.put("accountId", "%" + tranrq.getAccountId() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getEmail())) {
-            paramMap.put("email", tranrq.getEmail());
+            paramMap.put("email", "%" + tranrq.getEmail() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getName())) {
-            // 模糊查詢：加上 %
             paramMap.put("name", "%" + tranrq.getName() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getPhone())) {
-            paramMap.put("phone", tranrq.getPhone());
+            paramMap.put("phone", "%" + tranrq.getPhone() + "%");
         }
 
         // 查詢總筆數 (使用相同的條件參數)

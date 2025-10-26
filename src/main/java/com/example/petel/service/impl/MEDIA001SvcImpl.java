@@ -2,9 +2,13 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.entity.MediaBase64Entity;
+import com.example.petel.entity.PropertyImageEntity;
+import com.example.petel.entity.RoomImageEntity;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.MediaBase64Repository;
+import com.example.petel.repository.PropertyImageRepository;
+import com.example.petel.repository.RoomImageRepository;
 import com.example.petel.service.MEDIA001Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,8 @@ import java.util.List;
 public class MEDIA001SvcImpl implements MEDIA001Svc {
 
     private final MediaBase64Repository mediaBase64Repository;
+    private final PropertyImageRepository propertyImageRepository;
+    private final RoomImageRepository roomImageRepository;
 
     /**
      * 上傳 Base64 圖片並儲存到資料庫 (支援批量)
@@ -78,7 +84,10 @@ public class MEDIA001SvcImpl implements MEDIA001Svc {
                 MediaBase64Entity savedMedia = mediaBase64Repository.save(mediaBase64Entity);
                 log.info("[MEDIA-001] PETEL_MEDIA_BASE64 記錄建立成功，ID={}", savedMedia.getId());
 
-                // 5. 添加成功結果
+                // 5. 根據 category 儲存到關聯表
+                saveToAssociationTable(tranrq.getCategory(), tranrq.getReferenceId(), savedMedia.getId(), mediaInfo.getSortOrder());
+
+                // 6. 添加成功結果
                 MEDIA001TranrsMediaResult result = new MEDIA001TranrsMediaResult();
                 result.setMediaId(savedMedia.getId());
                 result.setBucket(savedMedia.getBucket());
@@ -113,7 +122,7 @@ public class MEDIA001SvcImpl implements MEDIA001Svc {
 
         log.info("[MEDIA-001] 批量上傳完成，成功：{}，失敗：{}", successCount, failedCount);
 
-        // 6. 建立回應
+        // 7. 建立回應
         MEDIA001Tranrs tranrs = new MEDIA001Tranrs(
             tranrq.getCategory(),
             tranrq.getReferenceId(),
@@ -126,6 +135,77 @@ public class MEDIA001SvcImpl implements MEDIA001Svc {
             new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
             tranrs
         );
+    }
+
+    /**
+     * 儲存到關聯表 (PETEL_PROPERTY_IMAGE 或 PETEL_ROOM_IMAGE)
+     * @param category 檔案分類
+     * @param referenceId 關聯ID (propertyId 或 roomId)
+     * @param mediaId 媒體ID
+     * @param frontendSortOrder 前端指定的排序順序（選填）
+     */
+    private void saveToAssociationTable(String category, String referenceId, String mediaId, Integer frontendSortOrder) {
+        // 如果沒有 referenceId，則不儲存關聯
+        if (referenceId == null || referenceId.trim().isEmpty()) {
+            log.info("[MEDIA-001] 無 referenceId，跳過關聯表儲存");
+            return;
+        }
+
+        try {
+            if ("Property_Image".equalsIgnoreCase(category)) {
+                // 儲存到 PETEL_PROPERTY_IMAGE
+                Integer sortOrder;
+                if (frontendSortOrder != null && frontendSortOrder > 0) {
+                    // 優先使用前端指定的 sortOrder
+                    sortOrder = frontendSortOrder;
+                    log.info("[MEDIA-001] 使用前端指定的 sortOrder: {}", sortOrder);
+                } else {
+                    // 自動計算 sortOrder
+                    Integer maxSortOrder = propertyImageRepository.findMaxSortOrderByPropertyId(referenceId);
+                    sortOrder = (maxSortOrder != null ? maxSortOrder : 0) + 1;
+                    log.info("[MEDIA-001] 自動計算 sortOrder: {}", sortOrder);
+                }
+
+                PropertyImageEntity propertyImage = new PropertyImageEntity();
+                propertyImage.setPropertyId(referenceId);
+                propertyImage.setMediaId(mediaId);
+                propertyImage.setSortOrder(sortOrder);
+
+                propertyImageRepository.save(propertyImage);
+                log.info("[MEDIA-001] PETEL_PROPERTY_IMAGE 記錄建立成功，PropertyID={}, MediaID={}, SortOrder={}",
+                        referenceId, mediaId, sortOrder);
+
+            } else if ("Room_Image".equalsIgnoreCase(category)) {
+                // 儲存到 PETEL_ROOM_IMAGE
+                Integer sortOrder;
+                if (frontendSortOrder != null && frontendSortOrder > 0) {
+                    // 優先使用前端指定的 sortOrder
+                    sortOrder = frontendSortOrder;
+                    log.info("[MEDIA-001] 使用前端指定的 sortOrder: {}", sortOrder);
+                } else {
+                    // 自動計算 sortOrder
+                    Integer maxSortOrder = roomImageRepository.findMaxSortOrderByRoomId(referenceId);
+                    sortOrder = (maxSortOrder != null ? maxSortOrder : 0) + 1;
+                    log.info("[MEDIA-001] 自動計算 sortOrder: {}", sortOrder);
+                }
+
+                RoomImageEntity roomImage = new RoomImageEntity();
+                roomImage.setRoomId(referenceId);
+                roomImage.setMediaId(mediaId);
+                roomImage.setSortOrder(sortOrder);
+
+                roomImageRepository.save(roomImage);
+                log.info("[MEDIA-001] PETEL_ROOM_IMAGE 記錄建立成功，RoomID={}, MediaID={}, SortOrder={}",
+                        referenceId, mediaId, sortOrder);
+
+            } else {
+                log.info("[MEDIA-001] Category={} 不需要儲存到關聯表", category);
+            }
+        } catch (Exception e) {
+            log.error("[MEDIA-001] 儲存關聯表失敗：{}", e.getMessage(), e);
+            // 這裡不拋出異常，因為主要的媒體資料已經儲存成功
+            // 可以根據業務需求決定是否要拋出異常
+        }
     }
 
     /**

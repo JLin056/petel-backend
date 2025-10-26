@@ -56,4 +56,10 @@ public class MEDIA002TranrqMediaInfo implements Serializable {
      */
     @JsonProperty("sizeBytes")
     private Long sizeBytes;
+
+    /**
+     * 排序順序 (選填，如果要更新關聯表中的順序)
+     */
+    @JsonProperty("sortOrder")
+    private Integer sortOrder;
 }

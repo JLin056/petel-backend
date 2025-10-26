@@ -3,7 +3,7 @@ SELECT
     a.ID AS ACCOUNT_ID,
     a.EMAIL,
     s.NAME,
-    s.BUSINESS_CODE,
+    s.PHONE,
     a.ROLE,
     a.STATUS
  FROM
@@ -11,11 +11,11 @@ SELECT
  LEFT JOIN
     PETEL_ACCOUNTS a ON s.ACCOUNT_ID = a.ID
  WHERE
-    a.ROLE = 'SELLER'
+    (a.ROLE = 'SELLER' or a.ROLE = 'seller')
     [AND s.ID = :sellerId]
     [AND a.ID = :accountId]
     [AND a.EMAIL = :email]
     [AND s.NAME LIKE :name]
-    [AND s.BUSINESS_CODE = :businessCode]
+    [AND s.PHONE = :phone]
  ORDER BY s.ID
  [OFFSET :offset ROWS FETCH NEXT :pageSize ROWS ONLY]

@@ -31,10 +31,10 @@ public class SellersEntity {
     private String name;
 
     /**
-     * 營業編號
+     * 商家電話
      */
-    @Column(name = "BUSINESS_CODE")
-    private String businessCode;
+    @Column(name = "PHONE")
+    private String phone;
 
     /**
      * 大頭照圖片ID

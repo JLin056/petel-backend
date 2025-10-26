@@ -52,7 +52,6 @@ public class MERCH010SvcImpl implements MERCH010Svc {
             existingSeller.setId(merch010Tranrq.getId());
             existingSeller.setAccountId(merch010Tranrq.getAccountId());
             existingSeller.setName(merch010Tranrq.getName());
-            existingSeller.setBusinessCode(merch010Tranrq.getBusinessCode());
             existingSeller.setMediaId(merch010Tranrq.getMediaId());
             sellersRepository.save(existingSeller);
             log.info("[MERCH-010] 更新成功，sellerId={}，更新欄位：{}", sellerId, merch010Tranrq);

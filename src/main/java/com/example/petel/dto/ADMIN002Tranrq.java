@@ -41,10 +41,10 @@ public class ADMIN002Tranrq implements Serializable {
     private String name;
 
     /**
-     * 統編
+     * 商家電話
      */
-    @JsonProperty("Business_Code")
-    private String businessCode;
+    @JsonProperty("Phone")
+    private String phone;
 
     /**
      * 分頁資訊

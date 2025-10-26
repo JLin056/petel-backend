@@ -44,7 +44,6 @@ public class MERCH009SvcImpl implements MERCH009Svc {
             sellersEntity.setId(newSellerId);
             sellersEntity.setAccountId(merch009Tranrq.getAccountId());
             sellersEntity.setName(merch009Tranrq.getName());
-            sellersEntity.setBusinessCode(merch009Tranrq.getBusinessCode());
             sellersEntity.setMediaId(merch009Tranrq.getMediaId());
             sellersRepository.save(sellersEntity);
             log.info("[MERCH-009] 新增成功，新增欄位：{}", merch009Tranrq);

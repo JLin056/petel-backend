@@ -41,10 +41,10 @@ public class ADMIN002TranrsTranrs implements Serializable {
     private String name;
 
     /**
-     * 統編
+     * 商家電話
      */
-    @JsonProperty("BUSINESS_CODE")
-    private String businessCode;
+    @JsonProperty("PHONE")
+    private String phone;
 
     /**
      * 角色

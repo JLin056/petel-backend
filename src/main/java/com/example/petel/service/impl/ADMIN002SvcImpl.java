@@ -52,8 +52,8 @@ public class ADMIN002SvcImpl implements ADMIN002Svc {
             // 模糊查詢：加上 %
             paramMap.put("name", "%" + tranrq.getName() + "%");
         }
-        if (StringUtils.isNotBlank(tranrq.getBusinessCode())) {
-            paramMap.put("businessCode", tranrq.getBusinessCode());
+        if (StringUtils.isNotBlank(tranrq.getPhone())) {
+            paramMap.put("phone", tranrq.getPhone());
         }
 
         // 查詢總筆數 (使用相同的條件參數)

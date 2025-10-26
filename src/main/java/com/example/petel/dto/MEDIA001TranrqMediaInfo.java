@@ -60,5 +60,11 @@ public class MEDIA001TranrqMediaInfo implements Serializable {
      */
     @JsonProperty("visibility")
     private String visibility;
+
+    /**
+     * 排序順序 (選填，若前端有排序功能可指定)
+     */
+    @JsonProperty("sortOrder")
+    private Integer sortOrder;
 }
 

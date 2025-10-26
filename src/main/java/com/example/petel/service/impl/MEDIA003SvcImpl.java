@@ -2,8 +2,12 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.entity.MediaBase64Entity;
+import com.example.petel.entity.PropertyImageEntity;
+import com.example.petel.entity.RoomImageEntity;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.MediaBase64Repository;
+import com.example.petel.repository.PropertyImageRepository;
+import com.example.petel.repository.RoomImageRepository;
 import com.example.petel.service.MEDIA003Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,8 @@ import java.util.Optional;
 public class MEDIA003SvcImpl implements MEDIA003Svc {
 
     private final MediaBase64Repository mediaBase64Repository;
+    private final PropertyImageRepository propertyImageRepository;
+    private final RoomImageRepository roomImageRepository;
 
     /**
      * 刪除 Base64 圖片資料 (支援批量)
@@ -61,11 +67,14 @@ public class MEDIA003SvcImpl implements MEDIA003Svc {
                 MediaBase64Entity existingMedia = mediaOptional.get();
                 log.info("[MEDIA-003] 找到媒體記錄：{}", existingMedia.getFileName());
 
-                // 3. 執行刪除
+                // 3. 先刪除關聯表記錄
+                deleteFromAssociationTables(mediaId);
+
+                // 4. 刪除主表記錄
                 mediaBase64Repository.delete(existingMedia);
                 log.info("[MEDIA-003] 媒體刪除成功，ID={}", mediaId);
 
-                // 4. 添加成功結果
+                // 5. 添加成功結果
                 MEDIA003TranrsMediaResult result = new MEDIA003TranrsMediaResult();
                 result.setMediaId(mediaId);
                 result.setStatus("SUCCESS");
@@ -90,7 +99,7 @@ public class MEDIA003SvcImpl implements MEDIA003Svc {
 
         log.info("[MEDIA-003] 批量刪除完成，成功：{}，失敗：{}", successCount, failedCount);
 
-        // 5. 建立回應
+        // 6. 建立回應
         MEDIA003Tranrs tranrs = new MEDIA003Tranrs(
                 successCount,
                 failedCount,
@@ -101,5 +110,38 @@ public class MEDIA003SvcImpl implements MEDIA003Svc {
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
                 tranrs
         );
+    }
+
+    /**
+     * 從關聯表中刪除記錄 (PETEL_PROPERTY_IMAGE 和 PETEL_ROOM_IMAGE)
+     * @param mediaId 媒體ID
+     */
+    private void deleteFromAssociationTables(String mediaId) {
+        log.info("[MEDIA-003] 開始刪除關聯表記錄，MediaID={}", mediaId);
+
+        try {
+            // 1. 刪除 PETEL_PROPERTY_IMAGE 的記錄
+            List<PropertyImageEntity> propertyImages = propertyImageRepository.findByMediaId(mediaId);
+            if (!propertyImages.isEmpty()) {
+                propertyImageRepository.deleteAll(propertyImages);
+                log.info("[MEDIA-003] 從 PETEL_PROPERTY_IMAGE 刪除 {} 筆記錄", propertyImages.size());
+            }
+
+            // 2. 刪除 PETEL_ROOM_IMAGE 的記錄
+            List<RoomImageEntity> roomImages = roomImageRepository.findByMediaId(mediaId);
+            if (!roomImages.isEmpty()) {
+                roomImageRepository.deleteAll(roomImages);
+                log.info("[MEDIA-003] 從 PETEL_ROOM_IMAGE 刪除 {} 筆記錄", roomImages.size());
+            }
+
+            // 3. 如果都沒有找到關聯記錄
+            if (propertyImages.isEmpty() && roomImages.isEmpty()) {
+                log.info("[MEDIA-003] MediaID={} 沒有關聯表記錄", mediaId);
+            }
+
+        } catch (Exception e) {
+            log.error("[MEDIA-003] 刪除關聯表記錄失敗：{}", e.getMessage(), e);
+            throw new RuntimeException("刪除關聯表記錄失敗：" + e.getMessage(), e);
+        }
     }
 }

@@ -54,11 +54,11 @@ public class HOTEL001TranrsHotel implements Serializable {
     private BigDecimal minPrice;
 
     /**
-     * 旅館圖片列表（Media ID）
+     * 旅館圖片列表
      */
     @JsonProperty("images")
     @JsonAlias({"IMAGES"})
-    private List<String> images;
+    private List<HOTEL001TranrsHotelImage> images;
 
     /**
      * 城市

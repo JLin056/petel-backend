@@ -2,8 +2,12 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.entity.MediaBase64Entity;
+import com.example.petel.entity.PropertyImageEntity;
+import com.example.petel.entity.RoomImageEntity;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.MediaBase64Repository;
+import com.example.petel.repository.PropertyImageRepository;
+import com.example.petel.repository.RoomImageRepository;
 import com.example.petel.service.MEDIA002Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,8 @@ import java.util.Optional;
 public class MEDIA002SvcImpl implements MEDIA002Svc {
 
     private final MediaBase64Repository mediaBase64Repository;
+    private final PropertyImageRepository propertyImageRepository;
+    private final RoomImageRepository roomImageRepository;
 
     /**
      * 更新 Base64 圖片資料 (支援批量)
@@ -99,6 +105,12 @@ public class MEDIA002SvcImpl implements MEDIA002Svc {
                     log.info("[MEDIA-002] 更新檔案大小：{} bytes", mediaInfo.getSizeBytes());
                 }
 
+                // 2.1 更新關聯表中的 sortOrder
+                if (mediaInfo.getSortOrder() != null) {
+                    updateSortOrderInAssociationTable(mediaInfo.getMediaId(), mediaInfo.getSortOrder());
+                    isUpdated = true;
+                }
+
                 if (!isUpdated) {
                     throw new IllegalArgumentException("未提供任何要更新的欄位");
                 }
@@ -151,6 +163,48 @@ public class MEDIA002SvcImpl implements MEDIA002Svc {
             new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
             tranrs
         );
+    }
+
+    /**
+     * 更新關聯表中的 sortOrder
+     * @param mediaId 媒體ID
+     * @param newSortOrder 新的排序順序
+     */
+    private void updateSortOrderInAssociationTable(String mediaId, Integer newSortOrder) {
+        log.info("[MEDIA-002] 開始更新 sortOrder，MediaID={}，NewSortOrder={}", mediaId, newSortOrder);
+
+        try {
+            // 1. 先查詢 PETEL_PROPERTY_IMAGE
+            List<PropertyImageEntity> propertyImages = propertyImageRepository.findByMediaId(mediaId);
+            if (!propertyImages.isEmpty()) {
+                for (PropertyImageEntity propertyImage : propertyImages) {
+                    propertyImage.setSortOrder(newSortOrder);
+                    propertyImageRepository.save(propertyImage);
+                    log.info("[MEDIA-002] PETEL_PROPERTY_IMAGE sortOrder 更新成功，PropertyID={}, MediaID={}, SortOrder={}",
+                            propertyImage.getPropertyId(), mediaId, newSortOrder);
+                }
+                return;
+            }
+
+            // 2. 如果沒找到，查詢 PETEL_ROOM_IMAGE
+            List<RoomImageEntity> roomImages = roomImageRepository.findByMediaId(mediaId);
+            if (!roomImages.isEmpty()) {
+                for (RoomImageEntity roomImage : roomImages) {
+                    roomImage.setSortOrder(newSortOrder);
+                    roomImageRepository.save(roomImage);
+                    log.info("[MEDIA-002] PETEL_ROOM_IMAGE sortOrder 更新成功，RoomID={}, MediaID={}, SortOrder={}",
+                            roomImage.getRoomId(), mediaId, newSortOrder);
+                }
+                return;
+            }
+
+            // 3. 如果都沒找到，記錄警告
+            log.warn("[MEDIA-002] 未找到 MediaID={} 的關聯記錄，無法更新 sortOrder", mediaId);
+
+        } catch (Exception e) {
+            log.error("[MEDIA-002] 更新 sortOrder 失敗：{}", e.getMessage(), e);
+            // 不拋出異常，允許其他欄位的更新繼續進行
+        }
     }
 
     /**

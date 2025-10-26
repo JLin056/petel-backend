@@ -31,6 +31,7 @@ public class SellersEntity {
     private String name;
 
     /**
+     * 
      * 商家電話
      */
     @Column(name = "PHONE")

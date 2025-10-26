@@ -70,11 +70,6 @@ public class MerchController extends BaseController {
      */
     private final MERCH010Svc merch010Svc;
 
-    /**
-     * MERCH011 Service
-     */
-    private final MERCH011Svc merch011Svc;
-
     @PostMapping(value = "/bookings/list")
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(@Valid @RequestBody Req<MERCH001Tranrq> merch001Tranrq, Errors errors)
             throws DataNotFoundException, InvalidInputException, IOException {
@@ -145,11 +140,5 @@ public class MerchController extends BaseController {
             throws UpdateFailException, JsonMappingException, InvalidInputException, DataNotFoundException {
         handleValidForDto(errors);
         return merch010Svc.editSeller(authInfo.getAccountId(),merch010Tranrq);
-    }
-
-    @PostMapping(value = "/sellers/get")
-    public Res<MERCH011Tranrs> getSellerInfo(@AuthenticationPrincipal AccountPrincipal authInfo)
-            throws DataNotFoundException {
-        return merch011Svc.getSellerInfo(authInfo.getAccountId());
     }
 }

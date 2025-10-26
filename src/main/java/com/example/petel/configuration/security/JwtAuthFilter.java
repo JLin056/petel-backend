@@ -43,6 +43,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         log.info("---- JWTAuthFilter ----");
 
+        String uri = request.getRequestURI();
+
+        if (uri.startsWith("/ws")) {
+            filterChain.doFilter(request, response); // 放行到下一個 filter / servlet
+            return;
+        }
+
         // CORS
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);

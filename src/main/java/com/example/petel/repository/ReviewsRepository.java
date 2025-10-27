@@ -4,6 +4,8 @@ import com.example.petel.entity.ReviewsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface ReviewsRepository extends JpaRepository<ReviewsEntity, String> {
 
     /**
@@ -19,4 +21,11 @@ public interface ReviewsRepository extends JpaRepository<ReviewsEntity, String> 
      * @return
      */
     boolean existsByOrderId(String orderId);
+
+    /**
+     * 根據 propertyId 查詢所有評價
+     * @param propertyId
+     * @return
+     */
+    List<ReviewsEntity> findByPropertyId(String propertyId);
 }

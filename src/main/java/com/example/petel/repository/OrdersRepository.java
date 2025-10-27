@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -48,5 +49,21 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, String> {
         ORDER BY CREATED_AT DESC
     """, nativeQuery = true)
     List<OrdersEntity> findByUserIdOrderByCreatedAtDesc(@Param("userId") String userId);
+
+    /**
+     * 刪除建立訂單後超時未付款的訂單
+     *
+     * @param expiredAt
+     * @return
+     */
+    @Query(value = """
+        select *
+        from PETEL_ORDERS
+        where STATUS = '未付款'
+        and CREATED_AT <= :expiredAt
+        and PAYMENT_ID = 'Y000000002'
+        order by CREATED_AT desc
+    """, nativeQuery = true) // 僅適用於信用卡付款
+    List<OrdersEntity> findByStatusAndCreatedAt(@Param("expiredAt") LocalDateTime expiredAt);
 
 }

@@ -56,8 +56,8 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
         // Step 3: 查詢旅館圖片
         List<HOTEL005TranrsImage> propertyImages = loadPropertyImages(propertyId);
 
-        // Step 4: 查詢房型資訊（根據 petType 過濾）
-        List<HOTEL005TranrsRoom> rooms = loadRooms(propertyId, petTypeList);
+        // Step 4: 查詢房型資訊（根據 petType 過濾，並處理庫存）
+        List<HOTEL005TranrsRoom> rooms = loadRooms(propertyId, petTypeList, tranrq.getCheckIn(), tranrq.getCheckOut());
 
         // Step 5: 查詢評價
         List<HOTEL005TranrsReview> reviews = loadReviews(propertyId);
@@ -153,34 +153,60 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
     }
 
     /**
-     * 載入房型資訊（根據 petType 過濾）
+     * 載入房型資訊（根據 petType 過濾，並處理庫存）
      */
-    private List<HOTEL005TranrsRoom> loadRooms(String propertyId, List<String> petTypeList) {
+    private List<HOTEL005TranrsRoom> loadRooms(String propertyId, List<String> petTypeList, String checkIn, String checkOut) {
         try {
-            // 查詢所有房型
-            List<RoomsEntity> allRooms = roomsRepository.findByPropertyId(propertyId);
+            // 準備查詢參數
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("propertyId", propertyId);
+            paramMap.put("petTypeList", petTypeList);
 
-            // 根據 petTypeList 過濾
-            List<RoomsEntity> filteredRooms = allRooms.stream()
-                    .filter(room -> petTypeList.contains(room.getPetTypeId()))
-                    .collect(Collectors.toList());
+            // 判斷是否有提供日期，選擇對應的 SQL 檔案
+            boolean hasDateRange = StringUtils.isNotBlank(checkIn) && StringUtils.isNotBlank(checkOut);
+            String sqlFile;
 
-            if (filteredRooms.isEmpty()) {
+            if (hasDateRange) {
+                // 有日期：查詢 inventory
+                sqlFile = "HOTEL005_QUERY_ROOMS_WITH_INVENTORY.sql";
+                paramMap.put("checkIn", checkIn);
+                paramMap.put("checkOut", checkOut);
+                log.info("[HOTEL-005] 有提供日期 {} ~ {}，使用 inventory 查詢", checkIn, checkOut);
+            } else {
+                // 無日期：直接使用 TOTAL_UNITS
+                sqlFile = "HOTEL005_QUERY_ROOMS_WITHOUT_INVENTORY.sql";
+                log.info("[HOTEL-005] 未提供日期，直接使用 TOTAL_UNITS");
+            }
+
+            // 執行 SQL 查詢
+            String sql = sqlUtils.getDynamicQuerySQL(sqlFile, paramMap);
+            log.info("[HOTEL-005] 執行房型查詢 SQL: {}", sql);
+
+            List<Map<String, Object>> queryResult = sqlAction.queryForList(sql, paramMap);
+
+            if (queryResult.isEmpty()) {
                 log.warn("[HOTEL-005] propertyId={} 無符合 petType 的房型", propertyId);
                 return new ArrayList<>();
             }
 
             // 組裝房型資訊
             List<HOTEL005TranrsRoom> rooms = new ArrayList<>();
-            for (RoomsEntity roomEntity : filteredRooms) {
+            for (Map<String, Object> row : queryResult) {
                 HOTEL005TranrsRoom room = new HOTEL005TranrsRoom();
-                room.setName(roomEntity.getName());
-                room.setInfo(roomEntity.getInfo());
-                room.setBasePrice(roomEntity.getBasePrice());
-                room.setTotalUnits(roomEntity.getTotalUnits());
+                room.setName((String) row.get("ROOM_NAME"));
+                room.setInfo((String) row.get("ROOM_INFO"));
+
+                // 處理價格
+                Object priceObj = row.get("PRICE");
+                room.setBasePrice(priceObj != null ? ((Number) priceObj).intValue() : 0);
+
+                // 處理庫存數量
+                Object qtyObj = row.get("AVAILABLE_QTY");
+                room.setTotalUnits(qtyObj != null ? ((Number) qtyObj).intValue() : 0);
 
                 // 載入房型圖片
-                List<HOTEL005TranrsImage> roomImages = loadRoomImages(roomEntity.getId());
+                String roomId = (String) row.get("ROOM_ID");
+                List<HOTEL005TranrsImage> roomImages = loadRoomImages(roomId);
                 room.setRoomImages(roomImages);
 
                 rooms.add(room);

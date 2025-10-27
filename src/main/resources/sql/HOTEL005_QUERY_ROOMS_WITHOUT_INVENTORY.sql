@@ -1,0 +1,11 @@
+SELECT
+    rm.ID as ROOM_ID,
+    rm.NAME as ROOM_NAME,
+    rm.INFO as ROOM_INFO,
+    rm.ROOM_SIZE as ROOM_SIZE,
+    rm.TOTAL_UNITS as AVAILABLE_QTY,
+    rm.BASE_PRICE as PRICE
+FROM PETEL_ROOMS rm
+WHERE rm.PROPERTY_ID = :propertyId
+  AND rm.PET_TYPE_ID IN (:petTypeList)
+ORDER BY rm.ID

@@ -1,10 +1,7 @@
 package com.example.petel.entity;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +22,7 @@ public class ChatMessagesEntity {
      */
     @Id
     @Column(name = "ID")
-    @JsonAlias("Id")
+    @JsonAlias("id")
     private String id;
 
     /**
@@ -52,6 +49,7 @@ public class ChatMessagesEntity {
     /**
      * content
      */
+    @Lob
     @Column(name = "CONTENT")
     @JsonAlias("content")
     private String content;
@@ -59,7 +57,7 @@ public class ChatMessagesEntity {
     /**
      * createAt
      */
-    @Column(name = "CREATE_AT")
-    @JsonAlias("createAt")
-    private LocalDateTime createAt;
+    @Column(name = "CREATED_AT")
+    @JsonAlias("createdAt")
+    private LocalDateTime createdAt;
 }

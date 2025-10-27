@@ -27,12 +27,12 @@ SELECT DISTINCT
  GROUP BY o.ID, o.GUEST, o.GUEST_NAME, o.GUEST_PHONE, o.CHECK_IN, o.CHECK_OUT,
          o.HOTEL_CHARGES, u.NAME, u.PHONE, p.NAME, p.TEL, r.name, o.STATUS, o.NOTE,
          TO_CHAR(o.CREATED_AT, 'YYYY-MM-DD'), TO_CHAR(o.UPDATED_AT, 'YYYY-MM-DD')
- [AND o.ID = :orderId ]
- [AND oi.ARRIVAL_DATE = :checkIn ]
+ [AND o.ID LIKE :orderId ]
+ [AND oi.ARRIVAL_DATE LIKE :checkIn ]
  [AND ( o.GUEST_NAME LIKE :userName OR u.NAME LIKE :userName ) ]
- [AND ( o.GUEST_PHONE = :userPhone OR u.PHONE = :userPhone ) ]
+ [AND ( o.GUEST_PHONE LIKE :userPhone OR u.PHONE LIKE :userPhone ) ]
  [AND p.NAME LIKE :propertyName ]
- [AND p.TEL = :propertyPhone ]
+ [AND p.TEL LIKE :propertyPhone ]
  ORDER BY o.ID DESC
  OFFSET :offset ROWS FETCH NEXT :pageNumber ROWS ONLY
 

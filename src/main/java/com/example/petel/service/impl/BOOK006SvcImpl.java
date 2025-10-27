@@ -41,11 +41,16 @@ public class BOOK006SvcImpl implements BOOK006Svc {
     /** RETURN_URL */
     @Value("${ecpay.credit.returnUrl}")
     private String RETURN_URL;
+    /** CLIENT_BACK_URL */
+    @Value("${ecpay.credit.clientBackUrl}")
+    private String CLIENT_BACK_URL;
     /** ITEM_NAME */
     private static final String ITEM_NAME = "PETEL room(s)";
 
     @Override
     public Res<BOOK006Tranrs> book006(Req<BOOK006Tranrq> requestBody) throws Exception {
+
+        log.info("-------- [BOOK-006] 組合付款參數 (線上刷卡) API 啟動 --------");
 
         String orderId = requestBody.getTranrq().getOrderId();
 
@@ -70,9 +75,11 @@ public class BOOK006SvcImpl implements BOOK006Svc {
         ecPayParams.put("ReturnURL", RETURN_URL);
         ecPayParams.put("ChoosePayment", "Credit");
         ecPayParams.put("EncryptType", 1);
+        ecPayParams.put("ClientBackURL", CLIENT_BACK_URL);
         ecPayParams.put("CheckMacValue", CodeUtil.generateCheckMacValue(ecPayParams, HASH_KEY, HASH_IV));
 
         log.info("[BOOK-006] 訂單編號為 {} 的訂單，付款參數組合完成", orderId);
+
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK006Tranrs(ecPayParams));
     }
 }

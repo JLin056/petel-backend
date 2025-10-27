@@ -61,6 +61,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+                                .requestMatchers("/ws-native/**").permitAll()
                                 .anyRequest().permitAll() // 開發階段先把所有都打開
 //                        .requestMatchers(HttpMethod.POST,
 //                            "/auth/register", "/auth/login",
@@ -90,14 +91,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:4200")); // 前端 Origin
-        cfg.setAllowedMethods(List.of("POST", "PUT")); // 目前只有 這兩個方法，所以只開這兩個
+        cfg.setAllowedOrigins(List.of("http://localhost:4200"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
         cfg.setAllowCredentials(true); // Cookie 帶 JWT
         cfg.setMaxAge(3600L);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
         return source;
     }
-
 }

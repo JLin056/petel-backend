@@ -50,6 +50,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (uri.startsWith("/ws")) {
+            filterChain.doFilter(request, response); // 放行到下一個 filter / servlet
+            return;
+        }
+
         // CORS
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
@@ -78,8 +83,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         response,
                         HttpServletResponse.SC_UNAUTHORIZED,
                         ReturnCodeAndDescEnum.JWT_INVALID,
-                        "JWT 缺少必要欄位"
-                );
+                        "JWT 缺少必要欄位");
                 return;
             }
 
@@ -91,8 +95,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         response,
                         HttpServletResponse.SC_UNAUTHORIZED,
                         ReturnCodeAndDescEnum.JWT_INVALID,
-                        "不支援的角色"
-                );
+                        "不支援的角色");
                 return;
             }
 
@@ -107,19 +110,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         response,
                         HttpServletResponse.SC_UNAUTHORIZED,
                         ReturnCodeAndDescEnum.TOKEN_VERSION_MISMATCH,
-                        "Token version 不正確，請重新登入"
-                );
+                        "Token version 不正確，請重新登入");
                 return;
             }
 
             // 建立 Authentication 存入 SecurityContext
             AccountPrincipal principal = new AccountPrincipal(accountId, roleLower, tokenVersion);
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            principal,
-                            null,
-                            List.of(new SimpleGrantedAuthority("ROLE_" + roleLower.toUpperCase()))
-                    );
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    principal,
+                    null,
+                    List.of(new SimpleGrantedAuthority("ROLE_" + roleLower.toUpperCase())));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
@@ -130,20 +130,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     response,
                     HttpServletResponse.SC_UNAUTHORIZED,
                     ReturnCodeAndDescEnum.JWT_EXPIRED,
-                    "JWT 已過期"
-            );
+                    "JWT 已過期");
         } catch (JwtProcessingException
-                 | io.jsonwebtoken.security.SignatureException
-                 | io.jsonwebtoken.MalformedJwtException
-                 | io.jsonwebtoken.UnsupportedJwtException
-                 | IllegalArgumentException e) {
+                | io.jsonwebtoken.security.SignatureException
+                | io.jsonwebtoken.MalformedJwtException
+                | io.jsonwebtoken.UnsupportedJwtException
+                | IllegalArgumentException e) {
             SecurityContextHolder.clearContext();
             SecurityErrorResponseWriter.writeError(
                     response,
                     HttpServletResponse.SC_UNAUTHORIZED,
                     ReturnCodeAndDescEnum.JWT_INVALID,
-                    "JWT 驗證失敗"
-            );
+                    "JWT 驗證失敗");
         } catch (Exception e) {
             log.error("[JWTAuthFilter] 未預期錯誤：", e);
             SecurityContextHolder.clearContext();
@@ -151,14 +149,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     response,
                     HttpServletResponse.SC_UNAUTHORIZED,
                     ReturnCodeAndDescEnum.UNAUTHORIZED,
-                    "未授權"
-            );
+                    "未授權");
         }
     }
 
-
     /**
      * 解析 JWT Token
+     * 
      * @param req
      * @return
      */

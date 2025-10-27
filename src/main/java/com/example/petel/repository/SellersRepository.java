@@ -30,6 +30,15 @@ public interface SellersRepository extends JpaRepository<SellersEntity, String> 
     String findByAccountBySellerId(@Param("sellerId") String sellerId);
 
     /**
+     * 用 accountId 查整個 SellersEntity
+     * 由於 accountId 在 SellersEntity 中是唯一的，可以直接返回 Optional<SellersEntity>
+     *
+     * @param accountId 帳號 ID
+     * @return 包含 SellersEntity 的 Optional
+     */
+    Optional<SellersEntity> findByAccountId(String accountId);
+
+    /**
      * 檢查 accountID 是否存在
      *
      * @param accountId

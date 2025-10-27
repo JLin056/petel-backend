@@ -4,9 +4,9 @@ FROM
 LEFT JOIN
     PETEL_ACCOUNTS a ON s.ACCOUNT_ID = a.ID
 WHERE
-    a.ROLE = 'SELLER'
-    [AND s.ID = :sellerId]
-    [AND a.ID = :accountId]
-    [AND a.EMAIL = :email]
+    (a.ROLE = 'SELLER' or a.ROLE = 'seller')
+    [AND s.ID LIKE :sellerId]
+    [AND a.ID LIKE :accountId]
+    [AND a.EMAIL LIKE :email]
     [AND s.NAME LIKE :name]
-    [AND s.BUSINESS_CODE = :businessCode]
+    [AND s.PHONE LIKE :phone]

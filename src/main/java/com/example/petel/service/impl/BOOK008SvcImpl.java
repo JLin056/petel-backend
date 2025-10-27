@@ -51,6 +51,8 @@ public class BOOK008SvcImpl implements BOOK008Svc {
     @Transactional(rollbackOn = Exception.class)
     public String book008(BOOK008Tranrq requestBody) throws Exception {
 
+        log.info("-------- [BOOK-008] 綠界通知付款回應 (現場付款) API 啟動 --------");
+
         synchronized (PAYING_LOCK) {
 
             JSONObject jsonObject = new JSONObject(CodeUtil.dataDecrypt(requestBody.getData(), HASH_KEY, HASH_IV));
@@ -71,18 +73,18 @@ public class BOOK008SvcImpl implements BOOK008Svc {
                 transactionsEntity.setCreatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
             }
 
-            if ((jsonObject.getInt("RtnCode") != SUCCESS_RTN_CODE) || (!"1".equals(orderInfoJsonObject.getString("TradeStatus")))) {
-                transactionsEntity.setStatus("付款失敗");
+            if (jsonObject.getInt("RtnCode") != SUCCESS_RTN_CODE) {
+                transactionsEntity.setStatus("授權失敗");
                 transactionsRepository.save(transactionsEntity);
                 OrdersEntity ordersEntity = ordersRepository.findById(orderId).get();
                 ordersEntity.setStatus("未付款");
                 ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
                 ordersRepository.save(ordersEntity);
-                log.warn("[BOOK-008] 付款失敗");
+                log.warn("[BOOK-008] 授權失敗");
                 return "1|OK";
             }
 
-            transactionsEntity.setStatus("付款成功");
+            transactionsEntity.setStatus("授權成功");
             transactionsEntity.setIdempotencyKey(UUID.randomUUID().toString());
             if (orderInfoJsonObject.get("ChargeFee") == null) {
                 transactionsEntity.setTransactionFee(0);
@@ -92,11 +94,13 @@ public class BOOK008SvcImpl implements BOOK008Svc {
             transactionsEntity.setPayTime(TimeUtil.parseMerchantTradeDate(orderInfoJsonObject.getString("TradeDate")));
             transactionsRepository.save(transactionsEntity);
             OrdersEntity ordersEntity = ordersRepository.findById(orderId).get();
-            ordersEntity.setStatus("已付款");
+            ordersEntity.setStatus("已授權");
             ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
             ordersRepository.save(ordersEntity);
         }
-        log.info("[BOOK-008] 付款成功");
+
+        log.info("[BOOK-008] 綠界通知付款回應 (現場付款) API 運行成功");
+
         return "1|OK";
     }
 }

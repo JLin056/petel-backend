@@ -3,7 +3,7 @@ WITH RoomAvailability AS (
         rm.PROPERTY_ID as PROPERTY_ID,
         rm.BASE_PRICE as MIN_PRICE
     FROM PETEL_ROOMS rm
-    WHERE rm.PET_TYPE_ID = :petType
+    WHERE rm.PET_TYPE_ID IN (:petTypeList)
       AND rm.TOTAL_UNITS >= :petCount
 ),
 FilteredProperties AS (

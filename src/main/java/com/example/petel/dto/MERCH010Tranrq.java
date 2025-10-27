@@ -40,3 +40,4 @@ public class MERCH010Tranrq implements Serializable {
     @JsonProperty("mediaId")
     private String mediaId;
 }
+

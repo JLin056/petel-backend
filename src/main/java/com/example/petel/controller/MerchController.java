@@ -34,6 +34,7 @@ import com.example.petel.dto.MERCH009Tranrq;
 import com.example.petel.dto.MERCH009Tranrs;
 import com.example.petel.dto.MERCH010Tranrq;
 import com.example.petel.dto.MERCH010Tranrs;
+import com.example.petel.dto.MERCH011Tranrs;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
@@ -52,6 +53,7 @@ import com.example.petel.service.MERCH007Svc;
 import com.example.petel.service.MERCH008Svc;
 import com.example.petel.service.MERCH009Svc;
 import com.example.petel.service.MERCH010Svc;
+import com.example.petel.service.MERCH011Svc;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import jakarta.validation.Valid;
@@ -112,6 +114,11 @@ public class MerchController extends BaseController {
      * MERCH010 Service
      */
     private final MERCH010Svc merch010Svc;
+
+    /**
+     * MERCH011 Service
+     */
+    private final MERCH011Svc merch011Svc;
 
     @PostMapping(value = "/bookings/list")
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(@Valid @RequestBody Req<MERCH001Tranrq> merch001Tranrq, Errors errors)
@@ -182,6 +189,13 @@ public class MerchController extends BaseController {
                                           @Valid @RequestBody Req<MERCH010Tranrq> merch010Tranrq, Errors errors)
             throws UpdateFailException, JsonMappingException, InvalidInputException, DataNotFoundException {
         handleValidForDto(errors);
-        return merch010Svc.editSeller(authInfo.getAccountId(),merch010Tranrq);
+        return merch010Svc.editSeller(authInfo.getAccountId(), merch010Tranrq);
+    }
+
+    @PostMapping(value = "/sellers/get")
+    public Res<MERCH011Tranrs> getSellerInfo(@AuthenticationPrincipal AccountPrincipal authInfo)
+            throws DataNotFoundException {
+        return merch011Svc.getSellerInfo(authInfo.getAccountId());
     }
 }
+

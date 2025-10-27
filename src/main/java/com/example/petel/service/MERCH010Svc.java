@@ -11,3 +11,4 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public interface MERCH010Svc {
     Res<MERCH010Tranrs> editSeller(String accountId, Req<MERCH010Tranrq> merch010Tranrq) throws DataNotFoundException, UpdateFailException, JsonMappingException;
 }
+

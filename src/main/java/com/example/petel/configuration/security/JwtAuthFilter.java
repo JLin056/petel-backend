@@ -1,6 +1,5 @@
 package com.example.petel.configuration.security;
 
-import com.example.petel.entity.AccountsEntity;
 import com.example.petel.exception.JwtProcessingException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.jwt.AccountPrincipal;
@@ -9,10 +8,8 @@ import com.example.petel.repository.AccountsRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +21,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -43,6 +39,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         log.info("---- JWTAuthFilter ----");
 
+        String uri = request.getRequestURI();
+        if (uri.startsWith("/auth/login")
+                || uri.startsWith("/auth/register")
+                || uri.startsWith("/auth/refresh")
+                || uri.startsWith("/auth/forgot")
+                || uri.startsWith("/auth/reset")
+                || uri.startsWith("/auth/verify")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // CORS
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
@@ -57,13 +64,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         try {
-            Claims claims = jwtUtil.getClaims(token);
+            Claims claims = jwtUtil.parseAccessToken(token);
+
             String accountId = claims.getSubject();
-            String role = claims.get("role", String.class);
-            Integer tokenVersion = claims.get("token_version", Integer.class);
+            String role = claims.get(JwtUtil.CLAIM_ROLE, String.class);
+            Integer tokenVersion = jwtUtil.getTokenVersionFromClaims(claims);
 
             // 檢查必要欄位
-            if (accountId == null || role == null || role.isBlank() || tokenVersion == null) {
+            if (accountId == null || role == null || role.isBlank()) {
                 log.warn("[JWTAuthFilter] JWT 缺少 sub/role/version");
                 SecurityContextHolder.clearContext();
                 SecurityErrorResponseWriter.writeError(
@@ -90,7 +98,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // 驗證 token_version
             Integer tokenVersionDb = accountsRepository.findTokenVersionById(accountId);
-            if (tokenVersionDb == null || !tokenVersionDb.equals(tokenVersion)) {
+            if (tokenVersionDb == null || !jwtUtil.matchTokenVersion(claims, tokenVersionDb)) {
                 log.warn("[JWTAuthFilter] token_version 不一致, accountId={}, tokenVersion={}, dbVersion={}",
                         accountId, tokenVersion, tokenVersionDb);
 
@@ -104,17 +112,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
 
-            AccountPrincipal principal = new AccountPrincipal(accountId, roleLower, tokenVersion);
-
             // 建立 Authentication 存入 SecurityContext
-            List<SimpleGrantedAuthority> authorities =
-                    List.of(new SimpleGrantedAuthority("ROLE_" + roleLower.toUpperCase()));
+            AccountPrincipal principal = new AccountPrincipal(accountId, roleLower, tokenVersion);
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(principal, null, authorities);
+                    new UsernamePasswordAuthenticationToken(
+                            principal,
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_" + roleLower.toUpperCase()))
+                    );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
-            return;
 
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             SecurityContextHolder.clearContext();
@@ -124,8 +132,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     ReturnCodeAndDescEnum.JWT_EXPIRED,
                     "JWT 已過期"
             );
-            return;
-        } catch (io.jsonwebtoken.security.SignatureException
+        } catch (JwtProcessingException
+                 | io.jsonwebtoken.security.SignatureException
                  | io.jsonwebtoken.MalformedJwtException
                  | io.jsonwebtoken.UnsupportedJwtException
                  | IllegalArgumentException e) {
@@ -136,7 +144,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     ReturnCodeAndDescEnum.JWT_INVALID,
                     "JWT 驗證失敗"
             );
-            return;
         } catch (Exception e) {
             log.error("[JWTAuthFilter] 未預期錯誤：", e);
             SecurityContextHolder.clearContext();
@@ -146,7 +153,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     ReturnCodeAndDescEnum.UNAUTHORIZED,
                     "未授權"
             );
-            return;
         }
     }
 
@@ -169,23 +175,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         }
-
-        // Cookie: access_token
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (Cookie c : cookies) {
-                if ("access_token".equals(c.getName())) {
-                    String value = c.getValue();
-                    if (value != null && !value.isBlank()) {
-                        String candidate = value.trim();
-                        if (!candidate.isBlank()) {
-                            return candidate;
-                        }
-                    }
-                }
-            }
-        }
-
         return null;
     }
 }

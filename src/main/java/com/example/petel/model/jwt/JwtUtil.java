@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -29,6 +31,11 @@ public class JwtUtil {
     @Value("${jwt.refresh.expiration}")
     private long refreshTokenExpiration;
 
+    public static final String CLAIM_TYP = "typ";
+    public static final String CLAIM_ROLE = "role";
+    public static final String CLAIM_EMAIL = "email";
+    public static final String CLAIM_TV = "tv"; // token_version
+
     /**
      * 產生 Access Token
      * @param accountId 帳號ID
@@ -40,13 +47,15 @@ public class JwtUtil {
             throws JwtProcessingException {
         log.info("---- [JWT] generateAccessToken ----");
         try {
+            Instant now = Instant.now();
             String token = Jwts.builder()
                     .setSubject(accountId)
-                    .claim("email", email)
-                    .claim("role", role)
-                    .claim("token_version", tokenVersion)
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
+                    .claim(CLAIM_TYP, "access")
+                    .claim(CLAIM_EMAIL, email)
+                    .claim(CLAIM_ROLE, role)
+                    .claim(CLAIM_TV, tokenVersion)
+                    .setIssuedAt(Date.from(now))
+                    .setExpiration(Date.from(now.plusMillis(accessTokenExpiration)))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                     .compact();
             log.info("[JWT] AccessToken 建立成功 accountId={} role={}", accountId, role);
@@ -66,12 +75,13 @@ public class JwtUtil {
     public String generateRefreshToken(String accountId, Integer tokenVersion) throws JwtProcessingException {
         log.info("---- [JWT] generateRefreshToken ----");
         try {
+            Instant now = Instant.now();
             String token = Jwts.builder()
                     .setSubject(accountId)
-                    .claim("type", "refresh")
-                    .claim("token_version", tokenVersion)
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                    .claim(CLAIM_TYP, "refresh")
+                    .claim(CLAIM_TV, tokenVersion)
+                    .setIssuedAt(Date.from(now))
+                    .setExpiration(Date.from(now.plusMillis(refreshTokenExpiration)))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                     .compact();
             log.info("[JWT] RefreshToken 建立成功 accountId = {}", accountId);
@@ -102,6 +112,58 @@ public class JwtUtil {
             log.error("[JWT] getClaims 解析失敗：{}", e.getMessage(), e);
             throw new JwtProcessingException("JWT 解析失敗");
         }
+    }
+
+    /**
+     * 解析並確定是 Access Token
+     * @param token
+     * @return
+     * @throws JwtProcessingException
+     */
+    public Claims parseAccessToken(String token) throws JwtProcessingException {
+        Claims claims = getClaims(token);
+        String typ = claims.get(CLAIM_TYP, String.class);
+        if (!"access".equals(typ)) {
+            throw new JwtProcessingException("Token 類型錯誤，需為 access");
+        }
+        return claims;
+    }
+
+
+    /**
+     * 解析並確定是 Refresh Token
+     * @param token
+     * @return
+     * @throws JwtProcessingException
+     */
+    public Claims parseRefreshToken(String token) throws JwtProcessingException {
+        Claims claims = getClaims(token);
+        String typ = claims.get(CLAIM_TYP, String.class);
+        if (!"refresh".equals(typ)) {
+            throw new JwtProcessingException("Token 類型錯誤，需為 refresh");
+        }
+        return claims;
+    }
+
+    /**
+     * 從 Claims 取出 token_version
+     * @param claims
+     * @return
+     */
+    public int getTokenVersionFromClaims(Claims claims) {
+        Integer tokenVersion = claims.get(CLAIM_TV, Integer.class);
+        return tokenVersion == null ? 0 : tokenVersion;
+    }
+
+    /**
+     * claims 是否與 DB 的 token_version 一致
+     * @param claims
+     * @param tokenVersionInDb
+     * @return
+     */
+    public boolean matchTokenVersion(Claims claims, int tokenVersionInDb) {
+        Integer tv = claims.get(CLAIM_TV, Integer.class);
+        return Objects.equals(tv, tokenVersionInDb);
     }
 
     /**

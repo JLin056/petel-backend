@@ -98,32 +98,27 @@ public class AUTH002SvcImpl implements AUTH002Svc {
 
 
         log.debug("[AUTH-002] 設定 HttpOnly Cookie...");
-        ResponseCookie access = ResponseCookie.from("access_token", accessToken)
+        ResponseCookie refresh = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .secure(false)             // HTTP
                 .sameSite("Lax")
                 .path("/")
-                .maxAge(Duration.ofMillis(jwtUtil.getAccessTokenExpiration()))
-                .build();
-
-        ResponseCookie refresh = ResponseCookie.from("refresh_token", refreshToken)
-                .httpOnly(true)
-                .secure(false)             // HTTP
-                .sameSite("Strict")
-                .path("/auth")
                 .maxAge(Duration.ofMillis(jwtUtil.getRefreshTokenExpiration()))
                 .build();
 
-        resp.addHeader(HttpHeaders.SET_COOKIE, access.toString());
         resp.addHeader(HttpHeaders.SET_COOKIE, refresh.toString());
-        log.info("[AUTH-002] Cookie 寫入完成");
+        log.info("[AUTH-002] Refresh Token Cookie 寫入完成");
 
         log.info("[AUTH-002] 登入成功 accountId={}, role={}, email={}",
                 accountsEntity.getId(), dbRole, accountsEntity.getEmail());
 
         return new Res<AUTH002Tranrs>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                new AUTH002Tranrs(accountsEntity.getId(), accountsEntity.getEmail(), dbRole)
+                new AUTH002Tranrs(
+                        accountsEntity.getId(),
+                        accountsEntity.getEmail(),
+                        dbRole,
+                        accessToken)
         );
     }
 }

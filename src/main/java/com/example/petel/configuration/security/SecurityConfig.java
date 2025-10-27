@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +31,7 @@ public class SecurityConfig {
             throws Exception {
         http
                 // 做 JWT，關閉 CSRF
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
 
                 .sessionManagement(sm -> sm.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))
@@ -65,7 +66,8 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.POST,
 //                            "/auth/register", "/auth/login",
 //                            "/auth/forgot-password", "/auth/reset-password",
-//                            "/auth/verify", "/auth/check").permitAll()
+//                            "/auth/verify", "/auth/check", "/auth/profile/check",
+//                            "/auth/refresh").permitAll()
 //                        .requestMatchers("/auth/me").authenticated()
 //                        .requestMatchers("/hotels/**").permitAll()
 //                        .anyRequest()
@@ -76,7 +78,6 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable());
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -91,8 +92,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(List.of("http://localhost:4200")); // 前端 Origin
-        cfg.setAllowedMethods(List.of("POST", "PUT")); // 目前只有 這兩個方法，所以只開這兩個
-        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
         cfg.setAllowCredentials(true); // Cookie 帶 JWT
         cfg.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

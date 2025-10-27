@@ -16,7 +16,7 @@ WITH RoomAvailability AS (
         ON rm.ID = ri.ROOM_ID
         AND ri.STAY_DATE >= :checkIn
         AND ri.STAY_DATE < :checkOut
-    WHERE rm.PET_TYPE_ID = :petType
+    WHERE rm.PET_TYPE_ID IN (:petTypeList)
     GROUP BY rm.ID, rm.PROPERTY_ID, rm.TOTAL_UNITS, rm.BASE_PRICE
     HAVING CASE
             WHEN COUNT(ri.ROOM_ID) > 0 THEN MIN(ri.AVAILABLE_QTY)

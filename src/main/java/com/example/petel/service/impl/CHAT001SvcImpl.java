@@ -45,7 +45,7 @@ public class CHAT001SvcImpl implements CHAT001Svc {
      * @throws InsertFailException
      */
     @Override
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public Res<CHAT001Tranrs> GetOrCreateByOrder(Req<CHAT001Tranrq> req,
                                                  AccountPrincipal auth)
             throws DataNotFoundException, InvalidInputException, InsertFailException {

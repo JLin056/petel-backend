@@ -5,9 +5,9 @@ SELECT COUNT(DISTINCT o.ID) AS TOTAL_COUNT
  LEFT JOIN PETEL_PROPERTY p ON o.PROPERTY_ID = p.ID
  LEFT JOIN PETEL_ROOMS r ON oi.ROOM_ID = r.ID
  WHERE 1=1
- [AND o.ID = :orderId ]
- [AND oi.ARRIVAL_DATE = :checkIn ]
+ [AND o.ID LIKE :orderId ]
+ [AND oi.ARRIVAL_DATE LIKE :checkIn ]
  [AND ( o.GUEST_NAME LIKE :userName OR u.NAME LIKE :userName ) ]
- [AND ( o.GUEST_PHONE = :userPhone OR u.PHONE = :userPhone ) ]
+ [AND ( o.GUEST_PHONE LIKE :userPhone OR u.PHONE LIKE :userPhone ) ]
  [AND p.NAME LIKE :propertyName ]
- [AND p.TEL = :propertyPhone ]
+ [AND p.TEL LIKE :propertyPhone ]

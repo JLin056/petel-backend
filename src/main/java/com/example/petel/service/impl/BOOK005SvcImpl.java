@@ -64,6 +64,8 @@ public class BOOK005SvcImpl implements BOOK005Svc {
     @Override
     public Res<BOOK005Tranrs> book005(Req<BOOK005Tranrq> requestBody) throws Exception {
 
+        log.info("-------- [BOOK-005] 組合付款參數 (現場付款) API 啟動 --------");
+
         String orderId = requestBody.getTranrq().getOrderId();
 
         OrdersEntity ordersEntity = ordersRepository.findById(orderId).orElseThrow(() -> {
@@ -120,6 +122,8 @@ public class BOOK005SvcImpl implements BOOK005Svc {
                 "https://ecpayment-stage.ecpay.com.tw/1.0.0/Cashier/BackAuth",
                 request,
                 String.class);
+
+        log.info("[BOOK-005] 訂單編號為 {} 的訂單，信用卡幕後授權 API 執行完成", orderId);
 
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK005Tranrs(response.getBody()));
     }

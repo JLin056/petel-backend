@@ -79,4 +79,10 @@ public class PropertyEntity {
      */
     @Column(name = "PROPERTY_NOTICE")
     private String propertyNotice;
+
+    /**
+     * 營業編號
+     */
+    @Column(name = "BUSINESS_CODE")
+    private String businessCode;
 }

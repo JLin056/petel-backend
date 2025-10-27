@@ -39,6 +39,8 @@ public class AuthController extends BaseController{
     private final AUTH004Svc auth004Svc;
     /** AUTH005Svc Service */
     private final AUTH005Svc auth005Svc;
+    /** AUTH010Svc Service */
+    private final AUTH010Svc auth010Svc;
 
     /**
      * 註冊
@@ -137,4 +139,20 @@ public class AuthController extends BaseController{
         handleValidForDto(errors);
         return auth005Svc.resetPassword(req);
     }
+
+    /**
+     * 重整 Refresh Token
+     * @param refreshToken
+     * @param resp
+     * @return
+     * @throws JwtProcessingException
+     */
+    @PostMapping("/refresh")
+    public Res<AUTH010Tranrs> refresh(
+            @CookieValue(name="refresh_token", required = false) String refreshToken,
+            HttpServletResponse resp)
+        throws JwtProcessingException {
+        return auth010Svc.refresh(refreshToken, resp);
+    }
+
 }

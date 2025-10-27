@@ -58,45 +58,46 @@ public class AUTH005SvcImpl implements AUTH005Svc {
         String newPassword = tranrq.getNewPassword();
 
         String key = RP_PREFIX + token;
-        String accountId = redis.opsForValue().get(key);
+        String accountId = null;
 
-        if (accountId == null) {
-            log.warn("[AUTH-005] token 不存在 或 已過期");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "連結已失效或已被使用");
-        }
+        try {
+            accountId = redis.opsForValue().get(key);
 
-        if (NO_USER.equals(accountId)) {
-            redis.delete(key);
-            log.info("[AUTH-005] token 對應 NO_USER 已處理");
+            if (accountId == null) {
+                log.warn("[AUTH-005] token 不存在 或 已過期");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "連結已失效或已被使用");
+            }
+
+            if (NO_USER.equals(accountId)) {
+                log.info("[AUTH-005] token 對應 NO_USER 已處理");
+                return new Res<>(
+                        new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
+                        null
+                );
+            }
+
+            String encode = passwordEncoder.encode(newPassword);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("id", accountId);
+            map.put("pwd", encode);
+
+            String sql = sqlUtil.getDynamicQuerySQL(SQL_FILE, map);
+            int updated = sqlAction.update(sql, map);
+            if (updated != 1) {
+                log.error("[AUTH-005] 重設密碼失敗，accountId={}", accountId);
+                throw new UpdateFailException("重設密碼失敗");
+            }
+
+            log.info("[AUTH-005] 重設密碼成功");
             return new Res<>(
                     new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
                     null
             );
-        }
-
-        String encode = passwordEncoder.encode(newPassword);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("id", accountId);
-        map.put("pwd", encode);
-        String sql = sqlUtil.getDynamicQuerySQL(SQL_FILE, map);
-
-        try {
-            int updated = sqlAction.update(sql, map);
-            if (updated != 1) {
-                log.error("[AUTH-005] 重設密碼失敗，accountId={}", accountId);
-                redis.delete(key);
-                throw new UpdateFailException("重設密碼失敗");
-            }
         } catch (Exception e) {
-            redis.delete(key);
+            log.error("[AUTH-005] 重設密碼失敗");
             throw new UpdateFailException("重設密碼失敗");
+        } finally {
+            redis.delete(key);
         }
-
-        redis.delete(key);
-        log.info("[AUTH-005] 重設密碼成功");
-        return new Res<>(
-                new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                null
-        );
     }
 }

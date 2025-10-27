@@ -24,15 +24,16 @@ SELECT DISTINCT
          LEFT JOIN PETEL_PROPERTY p ON o.PROPERTY_ID = p.ID
          LEFT JOIN PETEL_ROOMS r ON oi.ROOM_ID = r.ID
  WHERE 1=1
+
+  [AND o.ID LIKE :orderId ]
+  [AND oi.ARRIVAL_DATE = :checkIn ]
+  [AND ( o.GUEST_NAME LIKE :userName OR u.NAME LIKE :userName ) ]
+  [AND ( o.GUEST_PHONE = :userPhone OR u.PHONE = :userPhone ) ]
+  [AND p.NAME LIKE :propertyName ]
+  [AND p.TEL = :propertyPhone ]
  GROUP BY o.ID, o.GUEST, o.GUEST_NAME, o.GUEST_PHONE, o.CHECK_IN, o.CHECK_OUT,
-         o.HOTEL_CHARGES, u.NAME, u.PHONE, p.NAME, p.TEL, r.name, o.STATUS, o.NOTE,
-         TO_CHAR(o.CREATED_AT, 'YYYY-MM-DD'), TO_CHAR(o.UPDATED_AT, 'YYYY-MM-DD')
- [AND o.ID = :orderId ]
- [AND oi.ARRIVAL_DATE = :checkIn ]
- [AND ( o.GUEST_NAME LIKE :userName OR u.NAME LIKE :userName ) ]
- [AND ( o.GUEST_PHONE = :userPhone OR u.PHONE = :userPhone ) ]
- [AND p.NAME LIKE :propertyName ]
- [AND p.TEL = :propertyPhone ]
- ORDER BY o.ID DESC
- OFFSET :offset ROWS FETCH NEXT :pageNumber ROWS ONLY
+    o.HOTEL_CHARGES, u.NAME, u.PHONE, p.NAME, p.TEL, r.name, o.STATUS, o.NOTE,
+    TO_CHAR(o.CREATED_AT, 'YYYY-MM-DD'), TO_CHAR(o.UPDATED_AT, 'YYYY-MM-DD')
+  ORDER BY o.ID DESC
+  OFFSET :offset ROWS FETCH NEXT :pageNumber ROWS ONLY
 

@@ -6,13 +6,14 @@ SELECT
     p.ADDRESS,
     p.BANK_ACCOUNT AS BANK_ACCOUNT,
     s.NAME AS SELLER_NAME,
-    s.BUSINESS_CODE
+    p.BUSINESS_CODE
 FROM
     PETEL_PROPERTY p
 LEFT JOIN
     PETEL_SELLERS s ON p.SELLER_ID = s.ID
 WHERE
     1=1
+    [AND p.ID LIKE :propertyId]
     [AND p.NAME LIKE :propertyName]
     [AND p.TEL LIKE :tel]
     [AND p.POSTAL_CODE LIKE :postalCode]

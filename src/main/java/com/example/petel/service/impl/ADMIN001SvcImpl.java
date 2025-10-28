@@ -38,6 +38,9 @@ public class ADMIN001SvcImpl implements ADMIN001Svc {
         Map<String, Object> paramMap = new HashMap<>();
 
         // 動態組裝 SQL 參數 (所有欄位都支援模糊查詢)
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(tranrq.getPropertyId())) {
+            paramMap.put("propertyId", "%" + tranrq.getPropertyId() + "%");
+        }
         if (org.apache.commons.lang3.StringUtils.isNotBlank(tranrq.getPropertyName())) {
             paramMap.put("propertyName", "%" + tranrq.getPropertyName() + "%");
         }

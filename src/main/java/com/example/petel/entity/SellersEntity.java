@@ -31,8 +31,7 @@ public class SellersEntity {
     private String name;
 
     /**
-     * 
-     * 商家電話
+     * 商家會員電話
      */
     @Column(name = "PHONE")
     private String phone;

@@ -112,7 +112,7 @@ public class AUTH002SvcImpl implements AUTH002Svc {
                 .httpOnly(true)
                 .secure(false)             // HTTP
                 .sameSite("Lax")
-                .path("/")
+                .path("/auth")
                 .maxAge(Duration.ofMillis(jwtUtil.getRefreshTokenExpiration()))
                 .build();
 

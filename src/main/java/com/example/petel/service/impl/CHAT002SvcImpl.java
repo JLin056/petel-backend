@@ -114,6 +114,7 @@ public class CHAT002SvcImpl implements CHAT002Svc {
             Object threadIdObj = row.get("THREAD_ID");
             Object orderIdObj = row.get("ORDER_ID");
             Object displayNameObj = row.get("DISPLAY_NAME");
+            Object orderStatusObj = row.get("ORDER_STATUS");
 
             if (threadIdObj == null || orderIdObj == null || displayNameObj == null) {
                 log.warn("[CHAT-002] 資料不完整，跳過此筆: threadId={}, orderId={}, displayName={}",
@@ -124,6 +125,7 @@ public class CHAT002SvcImpl implements CHAT002Svc {
             String threadId = threadIdObj.toString();
             String orderId = orderIdObj.toString();
             String displayName = displayNameObj.toString();
+            String orderStatus = orderStatusObj.toString();
 
             String lastMessage = null;
             LocalDateTime lastMessageTime = null;
@@ -145,6 +147,7 @@ public class CHAT002SvcImpl implements CHAT002Svc {
                     threadId,
                     orderId,
                     displayName,
+                    orderStatus,
                     lastMessage,
                     lastMessageTime
             ));

@@ -33,6 +33,12 @@ public class CHAT002TranrsChats implements Serializable {
     private String orderId;
 
     /**
+     * orderStatus
+     */
+    @JsonProperty("orderStatus")
+    private String orderStatus;
+
+    /**
      * 顯示名稱（買家：旅館名稱、賣家：使用者名稱）
      */
     @JsonProperty("displayName")

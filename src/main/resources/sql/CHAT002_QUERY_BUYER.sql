@@ -1,6 +1,7 @@
 SELECT
   t.id        AS thread_id,
   t.order_id  AS order_id,
+  o.status    AS order_status,
   p.name      AS display_name
 FROM PETEL_CHAT_THREADS t
 LEFT JOIN PETEL_ORDERS   o ON o.id = t.order_id

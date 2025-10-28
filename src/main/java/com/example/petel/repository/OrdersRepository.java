@@ -49,4 +49,11 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, String> {
     """, nativeQuery = true)
     List<OrdersEntity> findByUserIdOrderByCreatedAtDesc(@Param("userId") String userId);
 
+    /**
+     * 用 ID 查 訂單狀態
+     * @param orderId
+     * @return
+     */
+    @Query("select o.status from OrdersEntity o where o.id = :orderId")
+    String findStatusById(@Param("orderId") String orderId);
 }

@@ -51,4 +51,12 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
      * @return
      */
     Optional<UsersEntity> findByAccountId(String accountId);
+
+    /**
+     * 用 account ID 找名字
+     * @param accountId
+     * @return
+     */
+    @Query(value = "SELECT u.name FROM UsersEntity u WHERE u.accountId = :accountId")
+    String findNameByAccountId(@Param("accountId") String accountId);
 }

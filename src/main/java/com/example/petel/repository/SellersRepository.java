@@ -51,6 +51,6 @@ public interface SellersRepository extends JpaRepository<SellersEntity, String> 
      * @param accountId
      * @return
      */
-    @Query(value = "SELECT e.name FROM SellersEntity e WHERE e.accountId = :accountId")
+    @Query("SELECT e.name FROM SellersEntity e WHERE e.accountId = :accountId")
     String findNameByAccountId(@Param("accountId") String accountId);
 }

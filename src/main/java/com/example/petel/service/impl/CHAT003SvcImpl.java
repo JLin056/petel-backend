@@ -14,9 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -50,6 +49,7 @@ public class CHAT003SvcImpl implements CHAT003Svc {
         log.info("[CHAT-003] role={}, accountId={}, pageNumber={}, pageSize={}",
                 auth.getRole(), accountId, pageNumber, pageSize);
 
+        // 查 聊天室資料
         String threadId = tranrq.getThreadId();
         log.debug("[CHAT-003] 查詢聊天室資料，threadId={}", threadId);
         ChatThreadEntity chatThreadEntity = chatThreadRepo.findById(threadId)
@@ -61,10 +61,10 @@ public class CHAT003SvcImpl implements CHAT003Svc {
         log.debug("[CHAT-003] 訂單狀態: {}", orderStatus);
         String name;
         if (isBuyer) {
-            name = sellersRepo.findNameByAccountId(accountId);
+            name = sellersRepo.findNameByAccountId(chatThreadEntity.getSellerId());
             log.debug("[CHAT-003] 登入者為用戶，對方商家名稱={}", name);
         } else {
-            name = usersRepo.findNameByAccountId(accountId);
+            name = usersRepo.findNameByAccountId(chatThreadEntity.getUserId());
             log.debug("[CHAT-003] 登入者為商家，對方用戶名稱={}", name);
         }
 
@@ -82,9 +82,45 @@ public class CHAT003SvcImpl implements CHAT003Svc {
         param.put("offset", offset);
         param.put("limit", pageSize);
 
+        // 查訊息列表
         String querySQL = sqlUtils.getDynamicQuerySQL("CHAT003_QUERY.sql", param);
-        List<CHAT003TranrsMessages> messagesList = sqlAction
-                .queryForListVO(querySQL, param, CHAT003TranrsMessages.class, true);
+        List<Map<String, Object>> rows = sqlAction.queryForList(querySQL, param);
+        List<CHAT003TranrsMessages> messagesList = new ArrayList<>();
+        for (Map<String, Object> row: rows) {
+            CHAT003TranrsMessages messages = new CHAT003TranrsMessages();
+
+            // messageId
+            Object msgIdObj = row.get("MESSAGE_ID");
+            if (msgIdObj != null) {
+                messages.setMessageId(msgIdObj.toString());
+            }
+
+            // senderId
+            Object senderIdObj = row.get("SENDER_ID");
+            if (senderIdObj != null) {
+                messages.setSenderId(senderIdObj.toString());
+            }
+
+            // type
+            Object typeObj = row.get("TYPE");
+            if (typeObj != null) {
+                messages.setType(typeObj.toString());
+            }
+
+            // content
+            Object contentObj = row.get("CONTENT");
+            if (contentObj != null) {
+                messages.setContent(contentObj.toString());
+            }
+
+            Object createdAtObj = row.get("CREATED_AT");
+            if (createdAtObj instanceof Timestamp ts) {
+                messages.setCreatedAt(ts.toLocalDateTime());
+            }
+
+            messagesList.add(messages);
+         }
+
         log.info("[CHAT-003] 訊息查詢完成，共取得 {} 筆", messagesList.size());
         CHAT003Tranrs chat003Tranrs = new CHAT003Tranrs(tranrsRoom, messagesList);
 

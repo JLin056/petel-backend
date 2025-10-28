@@ -57,6 +57,6 @@ public interface UsersRepository extends JpaRepository<UsersEntity, String> {
      * @param accountId
      * @return
      */
-    @Query(value = "SELECT u.name FROM UsersEntity u WHERE u.accountId = :accountId")
+    @Query("SELECT u.name FROM UsersEntity u WHERE u.accountId = :accountId")
     String findNameByAccountId(@Param("accountId") String accountId);
 }

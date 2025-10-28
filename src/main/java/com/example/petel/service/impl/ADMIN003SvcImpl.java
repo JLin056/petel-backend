@@ -176,7 +176,7 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
             order.setNote(result.getNote());
             order.setCreatedAt(result.getCreatedAt());
             order.setUpdatedAt(result.getUpdatedAt());
-
+            order.setPaymentMethod(result.getPaymentMethod());
             orders.add(order);
         }
 

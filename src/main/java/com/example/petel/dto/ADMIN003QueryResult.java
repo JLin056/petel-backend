@@ -75,4 +75,7 @@ public class ADMIN003QueryResult implements Serializable {
 
     @JsonProperty("UPDATED_AT")
     private String updatedAt;
+
+    @JsonProperty("PAYMENT_METHOD")
+    private String paymentMethod;
 }

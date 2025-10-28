@@ -34,12 +34,21 @@ public class AUTH003SvcImpl implements AUTH003Svc {
     public Res<Object> logout(HttpServletRequest request, HttpServletResponse resp) {
         log.info("---- [AUTH-003] 登出 ----");
 
+        ResponseCookie clearAccess = ResponseCookie.from("access_token", "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(0)
+                .build();
+        resp.addHeader(HttpHeaders.SET_COOKIE, clearAccess.toString());
+
         // 清除 Refresh Token
         ResponseCookie clearRefresh = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
                 .secure(false)
                 .sameSite("Lax")
-                .path("/")
+                .path("/auth")
                 .maxAge(0)
                 .build();
 

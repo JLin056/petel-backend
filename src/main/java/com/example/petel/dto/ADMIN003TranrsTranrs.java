@@ -123,4 +123,7 @@ public class ADMIN003TranrsTranrs implements Serializable {
      */
     @JsonProperty("UPDATED_AT")
     private String updatedAt;
+
+    @JsonProperty("PAYMENT_METHOD")
+    private String paymentMethod;
 }

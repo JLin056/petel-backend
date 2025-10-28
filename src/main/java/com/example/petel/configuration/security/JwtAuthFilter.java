@@ -172,6 +172,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         }
+
+        // 查 Cookie （for 純打 API）
+        if (req.getCookies() != null) {
+            for (var c : req.getCookies()) {
+                if ("access_token".equals(c.getName())) {
+                    String v = c.getValue();
+                    if (v != null && !v.isBlank()) return v.trim();
+                }
+            }
+        }
         return null;
     }
 }

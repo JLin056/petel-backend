@@ -17,6 +17,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 
 @Slf4j
@@ -28,6 +29,8 @@ public class ChatMessageSvcImpl implements ChatMessageSvc {
     private final ChatMessagesRepository chatMessagesRepo;
     /** SimpMessagingTemplate */
     private final SimpMessagingTemplate messagingTemplate;
+    /** ZoneId TPE */
+    private static final ZoneId TPE = ZoneId.of("Asia/Taipei");
 
     /**
      * 處理訊息並存進 DB
@@ -65,7 +68,7 @@ public class ChatMessageSvcImpl implements ChatMessageSvc {
         entity.setSenderId(msg.getSenderAccountId());
         entity.setMessageType(msg.getType());
         entity.setContent(msg.getContent());
-        entity.setCreatedAt(LocalDateTime.now());
+        entity.setCreatedAt(LocalDateTime.now(TPE));
 
         chatMessagesRepo.save(entity);
 

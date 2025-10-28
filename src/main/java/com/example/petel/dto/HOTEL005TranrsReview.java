@@ -17,6 +17,24 @@ public class HOTEL005TranrsReview implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 用戶 ID
+     */
+    @JsonProperty("userId")
+    private String userId;
+
+    /**
+     * 用戶名稱
+     */
+    @JsonProperty("userName")
+    private String userName;
+
+    /**
+     * 用戶頭像
+     */
+    @JsonProperty("userAvatar")
+    private HOTEL005TranrsImage userAvatar;
+
+    /**
      * 價格評分
      */
     @JsonProperty("priceScore")

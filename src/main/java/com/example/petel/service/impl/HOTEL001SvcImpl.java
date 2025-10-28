@@ -120,8 +120,22 @@ public class HOTEL001SvcImpl implements HOTEL001Svc {
     private Map<String, Object> buildParamMap(HOTEL001Tranrq tranrq) {
         Map<String, Object> paramMap = new HashMap<>();
 
-        // 必填參數
-        paramMap.put("petType", tranrq.getPetType());
+        // 處理 petType 參數：CAT 或 DOG
+        String petType = tranrq.getPetType();
+        List<String> petTypeList;
+
+        if ("CAT".equalsIgnoreCase(petType)) {
+            // 貓：只查詢 W001
+            petTypeList = Collections.singletonList("W001");
+        } else if ("DOG".equalsIgnoreCase(petType)) {
+            // 狗：查詢所有狗房型 W002, W003, W004, W005, W006
+            petTypeList = Arrays.asList("W002", "W003", "W004", "W005", "W006");
+        } else {
+            // 如果直接傳入 W001, W002 等，則使用單一類型查詢
+            petTypeList = Collections.singletonList(petType);
+        }
+
+        paramMap.put("petTypeList", petTypeList);
 
         // petCount 預設為 1
         int petCount = (tranrq.getPetCount() != null && tranrq.getPetCount() > 0) ?

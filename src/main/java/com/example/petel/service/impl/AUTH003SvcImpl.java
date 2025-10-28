@@ -24,13 +24,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AUTH003SvcImpl implements AUTH003Svc {
 
-    /** AccountsRepository */
-    private final AccountsRepository accountsRepo;
-    /** PasswordEncoder */
-    private final PasswordEncoder passwordEncoder;
-    /** JwtUtil */
-    private final JwtUtil jwtUtil;
-
     /**
      * 登出
      * @param request HttpServletRequest
@@ -41,8 +34,8 @@ public class AUTH003SvcImpl implements AUTH003Svc {
     public Res<Object> logout(HttpServletRequest request, HttpServletResponse resp) {
         log.info("---- [AUTH-003] 登出 ----");
 
-        // 清除 access Token
-        ResponseCookie clearAccess = ResponseCookie.from("access_token", "")
+        // 清除 Refresh Token
+        ResponseCookie clearRefresh = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
                 .secure(false)
                 .sameSite("Lax")
@@ -50,16 +43,6 @@ public class AUTH003SvcImpl implements AUTH003Svc {
                 .maxAge(0)
                 .build();
 
-        // 清除 Refresh Token
-        ResponseCookie clearRefresh = ResponseCookie.from("refresh_token", "")
-                .httpOnly(true)
-                .secure(false)
-                .sameSite("Strict")
-                .path("/auth")
-                .maxAge(0)
-                .build();
-
-        resp.addHeader(HttpHeaders.SET_COOKIE, clearAccess.toString());
         resp.addHeader(HttpHeaders.SET_COOKIE, clearRefresh.toString());
 
         log.info("[AUTH-003] 登出成功，Cookie 已清除");

@@ -52,24 +52,24 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
 
 
 
-        // 動態參數（SqlUtils 會根據參數是否存在來決定是否包含 [] 中的條件）
+        // 動態參數（全部使用模糊查詢）
         if (StringUtils.isNotBlank(tranrq.getOrderId())) {
             paramMap.put("orderId", "%" +tranrq.getOrderId()+ "%");
         }
         if (StringUtils.isNotBlank(tranrq.getCheckIn())) {
-            paramMap.put("checkIn", tranrq.getCheckIn());
+            paramMap.put("checkIn", "%" + tranrq.getCheckIn() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getUserName())) {
             paramMap.put("userName", "%" + tranrq.getUserName() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getUserPhone())) {
-            paramMap.put("userPhone", tranrq.getUserPhone());
+            paramMap.put("userPhone", "%" + tranrq.getUserPhone() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getPropertyName())) {
             paramMap.put("propertyName", "%" + tranrq.getPropertyName() + "%");
         }
         if (StringUtils.isNotBlank(tranrq.getPropertyPhone())) {
-            paramMap.put("propertyPhone", tranrq.getPropertyPhone());
+            paramMap.put("propertyPhone", "%" + tranrq.getPropertyPhone() + "%");
         }
 
 

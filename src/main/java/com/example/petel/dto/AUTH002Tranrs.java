@@ -33,4 +33,10 @@ public class AUTH002Tranrs implements Serializable {
      */
     @JsonProperty("Role")
     private String role;
+
+    /**
+     * accessToken
+     */
+    @JsonProperty("accessToken")
+    private String accessToken;
 }

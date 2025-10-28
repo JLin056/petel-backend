@@ -1,0 +1,5 @@
+SELECT
+    po.CITY as CITY,
+    po.DISTRICT as DISTRICT
+FROM PETEL_POSTALS po
+WHERE po.ID = :postalCode

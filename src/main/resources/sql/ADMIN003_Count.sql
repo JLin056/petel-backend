@@ -9,6 +9,6 @@ SELECT COUNT(DISTINCT o.ID) AS TOTAL_COUNT
  [AND o.ID LIKE :orderId ]
  [AND oi.ARRIVAL_DATE = :checkIn ]
  [AND ( o.GUEST_NAME LIKE :userName OR u.NAME LIKE :userName ) ]
- [AND ( o.GUEST_PHONE = :userPhone OR u.PHONE = :userPhone ) ]
+ [AND ( o.GUEST_PHONE LIKE :userPhone OR u.PHONE LIKE :userPhone ) ]
  [AND p.NAME LIKE :propertyName ]
- [AND p.TEL = :propertyPhone ]
+ [AND p.TEL LIKE :propertyPhone ]

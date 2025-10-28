@@ -49,6 +49,8 @@ public class BOOK009SvcImpl implements BOOK009Svc {
     @Transactional(rollbackOn = Exception.class)
     public String book009(Map<String, Object> requestParam) throws Exception {
 
+        log.info("-------- [BOOK-009] 綠界通知付款回應 (線上刷卡) API 啟動 --------");
+
         synchronized (PAYING_LOCK) {
 
             TransactionsEntity transactionsEntity = new TransactionsEntity();
@@ -102,6 +104,8 @@ public class BOOK009SvcImpl implements BOOK009Svc {
             ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
             ordersRepository.save(ordersEntity);
         }
+
+        log.info("[BOOK-009] 綠界通知付款回應 (線上刷卡) API 運行成功");
 
         return "1|OK";
     }

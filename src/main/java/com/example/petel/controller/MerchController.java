@@ -1,17 +1,28 @@
 package com.example.petel.controller;
 
-import com.example.petel.controller.advice.BaseController;
+import java.io.IOException;
+
 import com.example.petel.dto.*;
-import com.example.petel.exception.*;
-import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.service.*;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
+import com.example.petel.controller.advice.BaseController;
+import com.example.petel.exception.DataNotFoundException;
+import com.example.petel.exception.DeleteFailException;
+import com.example.petel.exception.InsertFailException;
+import com.example.petel.exception.InvalidInputException;
+import com.example.petel.exception.UpdateFailException;
+import com.example.petel.model.jwt.AccountPrincipal;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,6 +79,16 @@ public class MerchController extends BaseController {
      * MERCH010 Service
      */
     private final MERCH010Svc merch010Svc;
+
+    /**
+     * MERCH011 Service
+     */
+    private final MERCH011Svc merch011Svc;
+
+    /**
+     * MERCH012 Service
+     */
+    private final MERCH012Svc merch012Svc;
 
     @PostMapping(value = "/bookings/list")
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(@Valid @RequestBody Req<MERCH001Tranrq> merch001Tranrq, Errors errors)
@@ -134,9 +155,24 @@ public class MerchController extends BaseController {
     }
 
     @PostMapping(value = "/sellers/edit")
-    public Res<MERCH010Tranrs> editSeller(@Valid @RequestBody Req<MERCH010Tranrq> merch010Tranrq, Errors errors)
-            throws UpdateFailException, InvalidInputException, DataNotFoundException {
+    public Res<MERCH010Tranrs> editSeller(@AuthenticationPrincipal AccountPrincipal authInfo,
+                                          @Valid @RequestBody Req<MERCH010Tranrq> merch010Tranrq, Errors errors)
+            throws UpdateFailException, JsonMappingException, InvalidInputException, DataNotFoundException {
         handleValidForDto(errors);
-        return merch010Svc.editSeller(merch010Tranrq);
+        return merch010Svc.editSeller(authInfo.getAccountId(), merch010Tranrq);
+    }
+
+    @PostMapping(value = "/sellers/get")
+    public Res<MERCH011Tranrs> getSellerInfo(@AuthenticationPrincipal AccountPrincipal authInfo)
+            throws DataNotFoundException {
+        return merch011Svc.getSellerInfo(authInfo.getAccountId());
+    }
+
+    @PostMapping(value = "/rooms/get")
+    public Res<MERCH012Tranrs> getRoomInfo(@Valid @RequestBody Req<MERCH012Tranrq> merch012Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException {
+        handleValidForDto(errors);
+        return merch012Svc.getRoomInfo(merch012Tranrq);
     }
 }
+

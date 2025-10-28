@@ -98,6 +98,16 @@ public class AUTH002SvcImpl implements AUTH002Svc {
 
 
         log.debug("[AUTH-002] 設定 HttpOnly Cookie...");
+        // for 後端純打 API
+        ResponseCookie access = ResponseCookie.from("access_token", accessToken)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(Duration.ofMillis(jwtUtil.getAccessTokenExpiration()))
+                .build();
+        resp.addHeader(HttpHeaders.SET_COOKIE, access.toString());
+
         ResponseCookie refresh = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .secure(false)             // HTTP
@@ -107,7 +117,7 @@ public class AUTH002SvcImpl implements AUTH002Svc {
                 .build();
 
         resp.addHeader(HttpHeaders.SET_COOKIE, refresh.toString());
-        log.info("[AUTH-002] Refresh Token Cookie 寫入完成");
+        log.info("[AUTH-002] Cookie 寫入完成");
 
         log.info("[AUTH-002] 登入成功 accountId={}, role={}, email={}",
                 accountsEntity.getId(), dbRole, accountsEntity.getEmail());

@@ -30,6 +30,12 @@ public class HOTEL005TranrsRoom implements Serializable {
     private String info;
 
     /**
+     * 房型面積
+     */
+    @JsonProperty("roomSize")
+    private String roomSize;
+
+    /**
      * 基本價格
      */
     @JsonProperty("basePrice")

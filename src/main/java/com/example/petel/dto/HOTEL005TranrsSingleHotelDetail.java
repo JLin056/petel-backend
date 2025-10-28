@@ -82,4 +82,10 @@ public class HOTEL005TranrsSingleHotelDetail implements Serializable {
      */
     @JsonProperty("reviews")
     private List<HOTEL005TranrsReview> reviews;
+
+    /**
+     * 設施列表
+     */
+    @JsonProperty("facilities")
+    private List<HOTEL005TranrsFacility> facilities;
 }

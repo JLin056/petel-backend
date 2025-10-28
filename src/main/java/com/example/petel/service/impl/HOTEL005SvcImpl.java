@@ -77,6 +77,9 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
         detail.setName(property.getName());
         detail.setAddress(property.getAddress());
         detail.setInfo(property.getInfo());
+        detail.setCheckNotice(property.getCheckNotice());
+        detail.setPetNotice(property.getPetNotice());
+        detail.setPropertyNotice(property.getPropertyNotice());
         detail.setAvgRating(avgRating);
         detail.setReviewCount(reviews.size());
         detail.setRoomCount(rooms.size());

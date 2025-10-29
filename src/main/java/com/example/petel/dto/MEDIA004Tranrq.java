@@ -27,7 +27,25 @@ public class MEDIA004Tranrq implements Serializable {
     private List<String> mediaIds;
 
     /**
-     * 依 Bucket 查詢 (選填，當 mediaIds 為空時使用)
+     * 旅館ID (選填)
+     */
+    @JsonProperty("propertyId")
+    private String propertyId;
+
+    /**
+     * 房型ID (選填)
+     */
+    @JsonProperty("roomId")
+    private String roomId;
+
+    /**
+     * 帳號ID (選填)
+     */
+    @JsonProperty("accountId")
+    private String accountId;
+
+    /**
+     * 依 Bucket 查詢 (選填，當其他參數為空時使用)
      */
     @JsonProperty("bucket")
     private String bucket;

@@ -36,6 +36,12 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
         StompCommand command = accessor.getCommand();
 
+        if (command == StompCommand.SUBSCRIBE || command == StompCommand.SEND) {
+            if (accessor.getUser() instanceof AccountPrincipal) {
+                return message;
+            }
+        }
+
         if (command == StompCommand.CONNECT || command == StompCommand.SUBSCRIBE || command == StompCommand.SEND){
             String authorization = nativeHeader(accessor, "Authorization");
             if (authorization == null || !authorization.startsWith("Bearer ")) {
@@ -48,7 +54,7 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
                 Claims claims = jwtUtil.getClaims(token);
                 String accountId = claims.getSubject();
                 String role = claims.get("role", String.class);
-                Integer tokenVersion = claims.get("token_version", Integer.class);
+                Integer tokenVersion = claims.get("tv", Integer.class);
 
                 if (accountId == null || role == null || tokenVersion == null) {
                     log.warn("[WS] JWT 欄位不完整，拒絕：command={}", command);

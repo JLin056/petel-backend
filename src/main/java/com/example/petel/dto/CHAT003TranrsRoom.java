@@ -41,6 +41,12 @@ public class CHAT003TranrsRoom implements Serializable {
     private String sellerAccountId;
 
     /**
+     * propertyId
+     */
+    @JsonProperty("propertyId")
+    private String propertyId;
+
+    /**
      * displayName
      */
     @JsonProperty("displayName")

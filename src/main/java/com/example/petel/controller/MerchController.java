@@ -1,28 +1,18 @@
 package com.example.petel.controller;
 
-import java.io.IOException;
-
-import com.example.petel.dto.*;
-import com.example.petel.service.*;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.petel.controller.advice.BaseController;
-import com.example.petel.exception.DataNotFoundException;
-import com.example.petel.exception.DeleteFailException;
-import com.example.petel.exception.InsertFailException;
-import com.example.petel.exception.InvalidInputException;
-import com.example.petel.exception.UpdateFailException;
+import com.example.petel.dto.*;
+import com.example.petel.exception.*;
 import com.example.petel.model.jwt.AccountPrincipal;
+import com.example.petel.service.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -94,6 +84,11 @@ public class MerchController extends BaseController {
      * MERCH013 Service
      */
     private final MERCH013Svc merch013Svc;
+
+    /**
+     * MERCH014 Service
+     */
+    private final MERCH014Svc merch014Svc;
 
     @PostMapping(value = "/bookings/list")
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(@Valid @RequestBody Req<MERCH001Tranrq> merch001Tranrq, Errors errors)
@@ -185,6 +180,13 @@ public class MerchController extends BaseController {
             throws DataNotFoundException, InvalidInputException {
         handleValidForDto(errors);
         return merch013Svc.getProperties(merch013Tranrq);
+    }
+
+    @PostMapping("/bookings/updateStatus")
+    public Res<MERCH014Tranrs> updateOrderStatus(@Valid @RequestBody Req<MERCH014Tranrq> rq, Errors errors)
+            throws DataNotFoundException, UpdateFailException, InvalidInputException {
+        handleValidForDto(errors);
+        return merch014Svc.updateStatus(rq);
     }
 }
 

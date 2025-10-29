@@ -45,4 +45,12 @@ public interface SellersRepository extends JpaRepository<SellersEntity, String> 
      * @return
      */
     boolean existsByAccountId(String accountId);
+
+    /**
+     * 用 account ID 找名字
+     * @param accountId
+     * @return
+     */
+    @Query("SELECT e.name FROM SellersEntity e WHERE e.accountId = :accountId")
+    String findNameByAccountId(@Param("accountId") String accountId);
 }

@@ -53,4 +53,12 @@ public interface SellersRepository extends JpaRepository<SellersEntity, String> 
      */
     @Query("SELECT e.name FROM SellersEntity e WHERE e.accountId = :accountId")
     String findNameByAccountId(@Param("accountId") String accountId);
+
+    /**
+     * 用 account ID 找 mediaId
+     * @param accountId
+     * @return
+     */
+    @Query("SELECT e.mediaId FROM SellersEntity e WHERE e.accountId = :accountId")
+    String findMediaIdByAccountId(@Param("accountId") String accountId);
 }

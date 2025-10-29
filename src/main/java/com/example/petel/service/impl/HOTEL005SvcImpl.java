@@ -201,6 +201,10 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
             List<HOTEL005TranrsRoom> rooms = new ArrayList<>();
             for (Map<String, Object> row : queryResult) {
                 HOTEL005TranrsRoom room = new HOTEL005TranrsRoom();
+
+                // 取得 roomId
+                String roomId = (String) row.get("ROOM_ID");
+                room.setRoomId(roomId);
                 room.setName((String) row.get("ROOM_NAME"));
                 room.setInfo((String) row.get("ROOM_INFO"));
                 room.setRoomSize((String) row.get("ROOM_SIZE"));
@@ -214,7 +218,6 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
                 room.setTotalUnits(qtyObj != null ? ((Number) qtyObj).intValue() : 0);
 
                 // 載入房型圖片
-                String roomId = (String) row.get("ROOM_ID");
                 List<HOTEL005TranrsImage> roomImages = loadRoomImages(roomId);
                 room.setRoomImages(roomImages);
 

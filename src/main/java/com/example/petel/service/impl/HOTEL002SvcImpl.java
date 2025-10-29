@@ -49,6 +49,8 @@ public class HOTEL002SvcImpl implements HOTEL002Svc {
         HOTEL002TranrsHotel hotel = new HOTEL002TranrsHotel();
         hotel.setName(propertyEntity.getName());
         hotel.setTel(propertyEntity.getTel());
+        hotel.setBusinessCode(propertyEntity.getBusinessCode());
+        hotel.setBankAccount(propertyEntity.getBankAccount());
         hotel.setPostalCode(propertyEntity.getPostalCode());
         hotel.setAddress(propertyEntity.getAddress());
         hotel.setInfo(propertyEntity.getInfo());

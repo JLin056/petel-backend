@@ -17,7 +17,13 @@ public class ADMIN001Tranrq implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 物業名稱 (模糊搜尋)
+     * 旅館ID (模糊搜尋)
+     */
+    @JsonProperty("propertyId")
+    private String propertyId;
+
+    /**
+     * 旅館名稱 (模糊搜尋)
      */
     @JsonProperty("propertyName")
     private String propertyName;

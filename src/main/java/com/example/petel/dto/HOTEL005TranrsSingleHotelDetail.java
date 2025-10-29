@@ -36,6 +36,24 @@ public class HOTEL005TranrsSingleHotelDetail implements Serializable {
     private String info;
 
     /**
+     * 入住須知
+     */
+    @JsonProperty("checkNotice")
+    private String checkNotice;
+
+    /**
+     * 寵物入住注意事項
+     */
+    @JsonProperty("petNotice")
+    private String petNotice;
+
+    /**
+     * 旅館注意事項
+     */
+    @JsonProperty("propertyNotice")
+    private String propertyNotice;
+
+    /**
      * 平均評分
      */
     @JsonProperty("avgRating")
@@ -82,4 +100,10 @@ public class HOTEL005TranrsSingleHotelDetail implements Serializable {
      */
     @JsonProperty("reviews")
     private List<HOTEL005TranrsReview> reviews;
+
+    /**
+     * 設施列表
+     */
+    @JsonProperty("facilities")
+    private List<HOTEL005TranrsFacility> facilities;
 }

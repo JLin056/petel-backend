@@ -54,7 +54,7 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
 
         // 動態參數（全部使用模糊查詢）
         if (StringUtils.isNotBlank(tranrq.getOrderId())) {
-            paramMap.put("orderId", "%" + tranrq.getOrderId() + "%");
+            paramMap.put("orderId", "%" +tranrq.getOrderId()+ "%");
         }
         if (StringUtils.isNotBlank(tranrq.getCheckIn())) {
             paramMap.put("checkIn", "%" + tranrq.getCheckIn() + "%");
@@ -176,7 +176,7 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
             order.setNote(result.getNote());
             order.setCreatedAt(result.getCreatedAt());
             order.setUpdatedAt(result.getUpdatedAt());
-
+            order.setPaymentMethod(result.getPaymentMethod());
             orders.add(order);
         }
 

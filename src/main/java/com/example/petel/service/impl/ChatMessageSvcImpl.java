@@ -1,6 +1,7 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.ChatMessage;
+import com.example.petel.dto.ThreadUpdated;
 import com.example.petel.entity.ChatMessagesEntity;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.JwtProcessingException;
@@ -92,6 +93,14 @@ public class ChatMessageSvcImpl implements ChatMessageSvc {
                 .createdAt(entity.getCreatedAt())
                 .build();
 
+        String preview = content.length() > 100 ? content.substring(0, 100) : content;
+        ThreadUpdated threadEvent = new ThreadUpdated(
+                threadId,
+                preview,
+                entity.getCreatedAt(),
+                sender.getAccountId()
+        );
+
         // 存進 DB 後，再廣播
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
@@ -111,6 +120,9 @@ public class ChatMessageSvcImpl implements ChatMessageSvc {
                 java.util.List<String> targets = java.util.List.of(sender.getAccountId(), peerId);
                 for (String uid : targets) {
                     messagingTemplate.convertAndSendToUser(uid, "/queue/chat", saved);
+                }
+                for (String uid : targets) {
+                    messagingTemplate.convertAndSendToUser(uid, "/queue/thread-updates", threadEvent);
                 }
                 log.info("[Chat] 已儲存並推送訊息 threadId={}, msgId={}, to={}", threadId, saved.getId(), targets);
             }

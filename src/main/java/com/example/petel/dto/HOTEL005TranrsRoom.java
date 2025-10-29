@@ -18,6 +18,12 @@ public class HOTEL005TranrsRoom implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * roomId
+     */
+    @JsonProperty("roomId")
+    private String roomId;
+
+    /**
      * 房型名稱
      */
     @JsonProperty("name")

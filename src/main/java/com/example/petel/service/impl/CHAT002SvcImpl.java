@@ -146,8 +146,8 @@ public class CHAT002SvcImpl implements CHAT002Svc {
             chats.add(new CHAT002TranrsChats(
                     threadId,
                     orderId,
-                    displayName,
                     orderStatus,
+                    displayName,
                     lastMessage,
                     lastMessageTime
             ));

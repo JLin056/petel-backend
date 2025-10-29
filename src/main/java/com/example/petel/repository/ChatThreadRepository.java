@@ -31,7 +31,7 @@ public interface ChatThreadRepository extends JpaRepository<ChatThreadEntity, St
      * @param accountId
      * @return
      */
-    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM ChatThreadsEntity t WHERE t.id = :threadId AND (t.userId = :accountId OR t.sellerId = :accountId)")
+    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM ChatThreadEntity t WHERE t.id = :threadId AND (t.userId = :accountId OR t.sellerId = :accountId)")
     boolean existsMember(@Param("threadId") String threadId, @Param("accountId") String accountId);
 
     /**
@@ -41,7 +41,7 @@ public interface ChatThreadRepository extends JpaRepository<ChatThreadEntity, St
      * @return
      */
     @Query("SELECT CASE WHEN t.userId = :accountId THEN t.sellerId ELSE t.userId END " +
-            "FROM ChatThreadsEntity t WHERE t.id = :threadId")
+            "FROM ChatThreadEntity t WHERE t.id = :threadId")
     Optional<String> findPeerAccountId(@Param("threadId") String threadId, @Param("accountId") String accountId);
 
     /**

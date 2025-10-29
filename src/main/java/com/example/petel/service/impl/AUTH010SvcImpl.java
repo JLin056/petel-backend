@@ -66,7 +66,7 @@ public class AUTH010SvcImpl implements AUTH010Svc {
                     .httpOnly(true)
                     .secure(false)
                     .sameSite("Lax")
-                    .path("/")
+                    .path("/auth")
                     .maxAge(Duration.ofMillis(jwtUtil.getRefreshTokenExpiration()))
                     .build();
             resp.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

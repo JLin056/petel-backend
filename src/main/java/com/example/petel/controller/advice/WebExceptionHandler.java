@@ -91,6 +91,16 @@ public class WebExceptionHandler {
     }
 
     /**
+     * 未授權異常 (未登入)
+     */
+    @ResponseBody
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Res<Object> handleUnauthorizedException(UnauthorizedException ex) {
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.UNAUTHORIZED), null);
+    }
+
+    /**
      * JWT 異常
      */
     @ResponseBody

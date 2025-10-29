@@ -24,6 +24,18 @@ public class HOTEL002TranrsHotel implements Serializable {
     private String tel;
 
     /**
+     * business code
+     */
+    @JsonProperty("businessCode")
+    private String businessCode;
+
+    /**
+     * bank account
+     */
+    @JsonProperty("bankAccount")
+    private String bankAccount;
+
+    /**
      * postal code
      */
     @JsonProperty("postalCode")

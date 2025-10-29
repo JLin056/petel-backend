@@ -3,6 +3,7 @@ package com.example.petel.controller;
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.InvalidInputException;
+import com.example.petel.exception.UnauthorizedException;
 import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.service.*;
 import jakarta.validation.Valid;
@@ -49,7 +50,10 @@ public class NotificationController extends BaseController {
     public Res<NOTIFY001Tranrs> notify001(
             @AuthenticationPrincipal AccountPrincipal authInfo,
             @Valid @RequestBody Req<NOTIFY001Tranrq> requestBody,
-            Errors errors) throws InvalidInputException {
+            Errors errors) throws InvalidInputException, UnauthorizedException {
+        if (authInfo == null) {
+            throw new UnauthorizedException("USER_NOT_LOGIN");
+        }
         handleValidForDto(errors);
         return notify001Svc.notify001(authInfo.getAccountId(), requestBody);
     }
@@ -59,7 +63,10 @@ public class NotificationController extends BaseController {
      * GET /notifications/list
      */
     @GetMapping(value = "/list")
-    public Res<NOTIFY002Tranrs> notify002(@AuthenticationPrincipal AccountPrincipal authInfo) {
+    public Res<NOTIFY002Tranrs> notify002(@AuthenticationPrincipal AccountPrincipal authInfo) throws UnauthorizedException {
+        if (authInfo == null) {
+            throw new UnauthorizedException("USER_NOT_LOGIN");
+        }
         return notify002Svc.notify002(authInfo.getAccountId());
     }
 
@@ -71,7 +78,10 @@ public class NotificationController extends BaseController {
     public Res<NOTIFY003Tranrs> notify003(
             @AuthenticationPrincipal AccountPrincipal authInfo,
             @Valid @RequestBody Req<NOTIFY003Tranrq> requestBody,
-            Errors errors) throws InvalidInputException {
+            Errors errors) throws InvalidInputException, UnauthorizedException {
+        if (authInfo == null) {
+            throw new UnauthorizedException("USER_NOT_LOGIN");
+        }
         handleValidForDto(errors);
         return notify003Svc.notify003(authInfo.getAccountId(), requestBody);
     }
@@ -81,7 +91,10 @@ public class NotificationController extends BaseController {
      * GET /notifications/unread-count
      */
     @GetMapping(value = "/unread-count")
-    public Res<NOTIFY004Tranrs> notify004(@AuthenticationPrincipal AccountPrincipal authInfo) {
+    public Res<NOTIFY004Tranrs> notify004(@AuthenticationPrincipal AccountPrincipal authInfo) throws UnauthorizedException {
+        if (authInfo == null) {
+            throw new UnauthorizedException("USER_NOT_LOGIN");
+        }
         return notify004Svc.notify004(authInfo.getAccountId());
     }
 
@@ -91,7 +104,10 @@ public class NotificationController extends BaseController {
      * 使用 Server-Sent Events (SSE) 進行即時推播
      */
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter notify005(@AuthenticationPrincipal AccountPrincipal authInfo) {
+    public SseEmitter notify005(@AuthenticationPrincipal AccountPrincipal authInfo) throws UnauthorizedException {
+        if (authInfo == null) {
+            throw new UnauthorizedException("USER_NOT_LOGIN");
+        }
         return notify005Svc.notify005(authInfo.getAccountId());
     }
 
@@ -104,7 +120,10 @@ public class NotificationController extends BaseController {
     public Res<NOTIFY006Tranrs> notify006(
             @AuthenticationPrincipal AccountPrincipal authInfo,
             @Valid @RequestBody Req<NOTIFY006Tranrq> requestBody,
-            Errors errors) throws InvalidInputException {
+            Errors errors) throws InvalidInputException, UnauthorizedException {
+        if (authInfo == null) {
+            throw new UnauthorizedException("USER_NOT_LOGIN");
+        }
         handleValidForDto(errors);
         return notify006Svc.notify006(authInfo.getAccountId(), requestBody);
     }

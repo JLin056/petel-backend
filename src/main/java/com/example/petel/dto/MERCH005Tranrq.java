@@ -1,6 +1,7 @@
 package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -66,4 +68,11 @@ public class MERCH005Tranrq implements Serializable {
     @JsonProperty("roomSize")
     @NotBlank(message = "roomSize不得為空")
     private String roomSize;
+
+    /**
+     * 房型圖片列表
+     */
+    @JsonProperty("roomImages")
+    @Valid
+    private List<MERCH004TranrqRoomImage> roomImages;
 }

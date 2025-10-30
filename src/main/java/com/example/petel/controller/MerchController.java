@@ -195,7 +195,7 @@ public class MerchController extends BaseController {
         return merch014Svc.updateStatus(rq);
     }
 
-    @PostMapping("/cities/list")
+    @GetMapping("/cities/list")
     public List<MERCH015Tranrs> getCityDistricts() {
         return merch015Svc.getCityDistricts();
     }

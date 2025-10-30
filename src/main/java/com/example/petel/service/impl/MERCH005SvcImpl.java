@@ -1,10 +1,12 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
+import com.example.petel.entity.RoomImageEntity;
 import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.UpdateFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
+import com.example.petel.repository.RoomImageRepository;
 import com.example.petel.repository.RoomsRepository;
 import com.example.petel.service.MERCH005Svc;
 import jakarta.transaction.Transactional;
@@ -23,6 +25,11 @@ public class MERCH005SvcImpl implements MERCH005Svc {
      * RoomsRepository
      */
     private final RoomsRepository roomsRepository;
+
+    /**
+     * RoomImageRepository
+     */
+    private final RoomImageRepository roomImageRepository;
 
     /**
      * 修改房型資訊
@@ -58,6 +65,22 @@ public class MERCH005SvcImpl implements MERCH005Svc {
 
             roomsRepository.save(existingRoom);
             log.info("[MERCH-005] 更新成功，roomId={}，更新欄位：{}", roomId, merch005Tranrq);
+
+            if (merch005Tranrq.getRoomImages() != null && !merch005Tranrq.getRoomImages().isEmpty()) {
+                for (MERCH004TranrqRoomImage roomImage : merch005Tranrq.getRoomImages()) {
+                    RoomImageEntity roomImageEntity = new RoomImageEntity();
+                    roomImageEntity.setRoomId(roomId);
+                    roomImageEntity.setMediaId(roomImage.getMediaId());
+                    roomImageEntity.setSortOrder(roomImage.getSortOrder());
+
+                    roomImageRepository.save(roomImageEntity);
+                    log.info("[MERCH-005] 修改房型圖片關聯：roomId={}, mediaId={}, sortOrder={}",
+                            roomId, roomImage.getMediaId(), roomImage.getSortOrder());
+                }
+                log.info("[MERCH-005] 共修改 {} 張房型圖片", merch005Tranrq.getRoomImages().size());
+            } else {
+                log.info("[MERCH-005] 未提供房型圖片");
+            }
 
         } catch (Exception e) {
             log.error("[MERCH-005] 更新房型失敗", e);

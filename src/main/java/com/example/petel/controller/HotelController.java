@@ -24,6 +24,8 @@ import com.example.petel.dto.HOTEL004Tranrs;
 import com.example.petel.dto.HOTEL004TranrsFacility;
 import com.example.petel.dto.HOTEL005Tranrq;
 import com.example.petel.dto.HOTEL005Tranrs;
+import com.example.petel.dto.HOTEL006Tranrq;
+import com.example.petel.dto.HOTEL006Tranrs;
 import com.example.petel.dto.Req;
 import com.example.petel.dto.Res;
 import com.example.petel.exception.DataNotFoundException;
@@ -34,6 +36,7 @@ import com.example.petel.service.HOTEL002Svc;
 import com.example.petel.service.HOTEL003Svc;
 import com.example.petel.service.HOTEL004Svc;
 import com.example.petel.service.HOTEL005Svc;
+import com.example.petel.service.HOTEL006Svc;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +71,11 @@ public class HotelController extends BaseController {
      * HOTEL005 Service
      */
     private final HOTEL005Svc hotel005Svc;
+
+    /**
+     * HOTEL006 Service
+     */
+    private final HOTEL006Svc hotel006Svc;
 
     @PostMapping(value = "/query")
     public Res<HOTEL001Tranrs<HOTEL001TranrsHotel>> query(@Valid @RequestBody Req<HOTEL001Tranrq> hotel001Tranrq, Errors errors)
@@ -104,5 +112,13 @@ public class HotelController extends BaseController {
             throws DataNotFoundException, InvalidInputException {
         handleValidForDto(errors);
         return hotel005Svc.singleHotelDetail(hotel005Tranrq);
+    }
+
+    @PostMapping(value = "/singleHotelDetail/forSeller")
+    public Res<HOTEL006Tranrs> singleHotelDetailForSeller(@Valid
+            @RequestBody Req<HOTEL006Tranrq> hotel006Tranrq, Errors errors)
+            throws DataNotFoundException, InvalidInputException {
+        handleValidForDto(errors);
+        return hotel006Svc.singleHotelDetail(hotel006Tranrq);
     }
 }

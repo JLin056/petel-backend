@@ -44,6 +44,9 @@ public class BookController extends BaseController {
     /** BOOK009Svc */
     private final BOOK009Svc book009Svc;
 
+    /** BOOK013Svc */
+    private final BOOK013Svc book013Svc;
+
     @PostMapping(value = "/create")
     public Res<BOOK001Tranrs> book001(@AuthenticationPrincipal AccountPrincipal authInfo,
             @Valid @RequestBody Req<BOOK001Tranrq> requestBody, Errors errors) throws InsertFailException, InvalidInputException {
@@ -89,5 +92,10 @@ public class BookController extends BaseController {
     @PostMapping(value = "/credit/notify")
     public String book009(@RequestParam Map<String, Object> requestParam) throws Exception {
         return book009Svc.book009(requestParam);
+    }
+
+    @PostMapping(value = "/simulate/notify")
+    public Res<Object> book013(@Valid @RequestBody Req<BOOK013Tranrq> requestBody, Errors errors) throws Exception {
+        return book013Svc.book013(requestBody);
     }
 }

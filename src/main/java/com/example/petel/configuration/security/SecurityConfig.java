@@ -59,7 +59,7 @@ public class SecurityConfig {
                                                 }))
 
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/ws-native/**").permitAll()
+                                                .requestMatchers("/ws-native/**", "/ws/**").permitAll()
                                                 .anyRequest().permitAll() // 開發階段先把所有都打開
                                 // .requestMatchers(HttpMethod.POST,
                                 // "/auth/register", "/auth/login",

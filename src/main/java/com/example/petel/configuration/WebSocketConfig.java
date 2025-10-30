@@ -14,19 +14,16 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final WebSocketAuthInterceptor webSocketAuthInterceptor;
-    private final WebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 前端
         registry.addEndpoint("/ws-native")
-                .addInterceptors(webSocketHandshakeInterceptor)
-                .setAllowedOriginPatterns("*");
+                .setAllowedOriginPatterns("http://localhost:4200");
 
-//        registry.addEndpoint("/ws")
-//                .addInterceptors(webSocketHandshakeInterceptor)
-//                .setAllowedOriginPatterns("*")
-//                .withSockJS();
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("http://localhost:4200")
+                .withSockJS();
     }
 
     @Override

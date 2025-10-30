@@ -1,17 +1,25 @@
 package com.example.petel.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * 修改旅館資訊請求 DTO
+ */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL) // 不送欄位就不覆蓋
 public class MERCH007Tranrq implements Serializable {
 
     @Serial
-    private static final long SerialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * propertyId
@@ -20,10 +28,16 @@ public class MERCH007Tranrq implements Serializable {
     private String id;
 
     /**
-     * name
+     * name（前端顯示，但不更新）
      */
     @JsonProperty("name")
     private String name;
+
+    /**
+     * 營業編號（前端顯示，但不更新）
+     */
+    @JsonProperty("businessCode")
+    private String businessCode;
 
     /**
      * tel

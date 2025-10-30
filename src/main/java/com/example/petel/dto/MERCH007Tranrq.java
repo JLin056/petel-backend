@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
-/**
- * 修改旅館資訊請求 DTO
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,13 +26,13 @@ public class MERCH007Tranrq implements Serializable {
     private String id;
 
     /**
-     * name（前端顯示，但不更新）
+     * name
      */
     @JsonProperty("name")
     private String name;
 
     /**
-     * 營業編號（前端顯示，但不更新）
+     * 營業編號
      */
     @JsonProperty("businessCode")
     private String businessCode;
@@ -46,16 +44,22 @@ public class MERCH007Tranrq implements Serializable {
     private String tel;
 
     /**
-     * postal code
+     * city
      */
-    @JsonProperty("postalCode")
-    private String postalCode;
+    @JsonProperty("city")
+    private String city;
 
     /**
-     * address
+     * district
      */
-    @JsonProperty("address")
-    private String address;
+    @JsonProperty("district")
+    private String district;
+
+    /**
+     * addressDetail
+     */
+    @JsonProperty("addressDetail")
+    private String addressDetail;
 
     /**
      * bank account
@@ -86,4 +90,10 @@ public class MERCH007Tranrq implements Serializable {
      */
     @JsonProperty("propertyNotice")
     private String propertyNotice;
+
+    /**
+     * facilities
+     */
+    @JsonProperty("facilities")
+    private List<String> facilities;
 }

@@ -8,6 +8,7 @@ import com.example.petel.service.ChatMessageSvc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
@@ -32,11 +33,42 @@ public class ChatWsController {
                             @Payload ChatMessage message,
                             Principal principal)
             throws InvalidInputException, JwtProcessingException {
-        if (!(principal instanceof AccountPrincipal auth)) {
-            log.warn("[WS] 未登入用戶傳送訊息");
-            return;
-        }
 
+        AccountPrincipal auth = (AccountPrincipal) principal;
         chatMessageSvc.handleIncomingMessage(threadId, message, auth);
+    }
+
+    /**
+     * 標記已讀到 目前聊天室的最新一則訊息
+     * @param threadId
+     * @param principal
+     * @throws InvalidInputException
+     * @throws JwtProcessingException
+     */
+    @MessageMapping("/rooms/{threadId}/read")
+    public void markReadLatest(@DestinationVariable String threadId,
+                               Principal principal)
+            throws InvalidInputException, JwtProcessingException {
+
+        AccountPrincipal auth = (AccountPrincipal) principal;
+        chatMessageSvc.handleReadEvent(threadId, null, auth);
+    }
+
+    /**
+     * 標記已讀到指定訊息 ID
+     * @param threadId
+     * @param messageId
+     * @param principal
+     * @throws InvalidInputException
+     * @throws JwtProcessingException
+     */
+    @MessageMapping("/rooms/{threadId}/read/{messageId}")
+    public void markReadUpTo(@DestinationVariable String threadId,
+                             @DestinationVariable String messageId,
+                             Principal principal)
+            throws InvalidInputException, JwtProcessingException {
+
+        AccountPrincipal auth = (AccountPrincipal) principal;
+        chatMessageSvc.handleReadEvent(threadId, messageId, auth);
     }
 }

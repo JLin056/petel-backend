@@ -20,6 +20,6 @@ public class AccountPrincipal  implements Serializable, Principal {
 
     @Override
     public String getName() {
-        return accountId;
+        return this.accountId;
     }
 }

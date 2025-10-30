@@ -123,7 +123,7 @@ public class MERCH008SvcImpl implements MERCH008Svc {
         rs.setName(rq.getName());
         rs.setBusinessCode(inputCode);
         rs.setTel(rq.getTel());
-        rs.setPostalCode(postalId);
+//        rs.setPostalCode(postalId);
         rs.setAddress(fullAddress);
         rs.setBankAccount(rq.getBankAccount());
         rs.setInfo(rq.getInfo());

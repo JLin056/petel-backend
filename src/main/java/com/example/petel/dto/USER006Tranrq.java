@@ -46,4 +46,11 @@ public class USER006Tranrq implements Serializable {
     @JsonProperty("pageSize")
     private Integer pageSize;
 
+    /**
+     * sortMode
+     */
+    @JsonProperty("sortMode")
+    private String sortMode;
+
+
 }

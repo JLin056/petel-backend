@@ -70,7 +70,7 @@ public class USER002SvcImpl implements USER002Svc {
                 log.warn("[USER-004] 找不到媒體檔案 ID: {}", mediaId);
             }
         }
-        
+
         tranrs.setMediaBase64(avatarDataUrl);
 
         return new Res<USER002Tranrs>(

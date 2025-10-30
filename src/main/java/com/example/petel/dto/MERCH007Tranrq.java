@@ -87,7 +87,7 @@ public class MERCH007Tranrq implements Serializable {
     private List<String> facilities;
 
     /**
-     * 房型圖片列表
+     * 旅館圖片列表
      */
     @JsonProperty("propertyImages")
     @Valid

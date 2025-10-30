@@ -1,12 +1,10 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
-import com.example.petel.entity.PropertyEntity;
 import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
-import com.example.petel.repository.PropertyRepository;
 import com.example.petel.repository.RoomsRepository;
 import com.example.petel.service.MERCH004Svc;
 import jakarta.transaction.Transactional;

@@ -41,6 +41,13 @@ public class MERCH008Tranrq implements Serializable {
     private String tel;
 
     /**
+     * business code
+     */
+    @JsonProperty("businessCode")
+    @NotBlank(message = "businessCode不得為空")
+    private String businessCode;
+
+    /**
      * postal code
      */
     @JsonProperty("postalCode")

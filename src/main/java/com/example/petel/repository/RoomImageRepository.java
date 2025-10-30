@@ -34,4 +34,6 @@ public interface RoomImageRepository extends JpaRepository<RoomImageEntity, Room
      */
     @Query("SELECT COALESCE(MAX(r.sortOrder), 0) FROM RoomImageEntity r WHERE r.roomId = :roomId")
     Integer findMaxSortOrderByRoomId(String roomId);
+
+    void deleteByRoomId(String roomId);
 }

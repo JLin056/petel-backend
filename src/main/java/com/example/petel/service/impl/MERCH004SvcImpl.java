@@ -1,12 +1,12 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
-import com.example.petel.entity.PropertyEntity;
+import com.example.petel.entity.RoomImageEntity;
 import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
-import com.example.petel.repository.PropertyRepository;
+import com.example.petel.repository.RoomImageRepository;
 import com.example.petel.repository.RoomsRepository;
 import com.example.petel.service.MERCH004Svc;
 import jakarta.transaction.Transactional;
@@ -23,6 +23,11 @@ public class MERCH004SvcImpl implements MERCH004Svc {
      * RoomsRepository
      */
     private final RoomsRepository roomsRepository;
+
+    /**
+     * RoomImageRepository
+     */
+    private final RoomImageRepository roomImageRepository;
 
     /**
      * 新增房型資訊
@@ -42,6 +47,7 @@ public class MERCH004SvcImpl implements MERCH004Svc {
         log.info("[MERCH-004] 生成房型ID:{}", newRoomId);
 
         try {
+            // 1. 新增房型資料到 PETEL_ROOMS
             RoomsEntity roomsEntity = new RoomsEntity();
             roomsEntity.setId(newRoomId);
             roomsEntity.setPropertyId(merch004Tranrq.getPropertyId());
@@ -53,7 +59,24 @@ public class MERCH004SvcImpl implements MERCH004Svc {
             roomsEntity.setRoomSize(merch004Tranrq.getRoomSize());
 
             roomsRepository.save(roomsEntity);
-            log.info("[MERCH-004] 新增成功，新增欄位：{}", merch004Tranrq);
+            log.info("[MERCH-004] 新增房型成功，roomId={}", newRoomId);
+
+            // 2. 新增房型圖片關聯資料到 PETEL_ROOM_IMAGE
+            if (merch004Tranrq.getRoomImages() != null && !merch004Tranrq.getRoomImages().isEmpty()) {
+                for (MERCH004TranrqRoomImage roomImage : merch004Tranrq.getRoomImages()) {
+                    RoomImageEntity roomImageEntity = new RoomImageEntity();
+                    roomImageEntity.setRoomId(newRoomId);
+                    roomImageEntity.setMediaId(roomImage.getMediaId());
+                    roomImageEntity.setSortOrder(roomImage.getSortOrder());
+
+                    roomImageRepository.save(roomImageEntity);
+                    log.info("[MERCH-004] 新增房型圖片關聯：roomId={}, mediaId={}, sortOrder={}",
+                            newRoomId, roomImage.getMediaId(), roomImage.getSortOrder());
+                }
+                log.info("[MERCH-004] 共新增 {} 張房型圖片", merch004Tranrq.getRoomImages().size());
+            } else {
+                log.info("[MERCH-004] 未提供房型圖片");
+            }
 
         } catch (Exception e) {
             log.error("[MERCH-004] 新增房型失敗", e);

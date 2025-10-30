@@ -14,12 +14,6 @@ public class MERCH008Tranrq implements Serializable {
     private static final long SerialVersionUID = 1L;
 
     /**
-     * property id
-     */
-    @JsonProperty("id")
-    private String id;
-
-    /**
      * seller id
      */
     @JsonProperty("sellerId")
@@ -48,18 +42,25 @@ public class MERCH008Tranrq implements Serializable {
     private String businessCode;
 
     /**
-     * postal code
+     * city (縣市)
      */
-    @JsonProperty("postalCode")
-    @NotBlank(message = "postalCode不得為空")
-    private String postalCode;
+    @JsonProperty("city")
+    @NotBlank(message = "city不得為空")
+    private String city;
 
     /**
-     * address
+     * district (區域)
      */
-    @JsonProperty("address")
-    @NotBlank(message = "address不得為空")
-    private String address;
+    @JsonProperty("district")
+    @NotBlank(message = "district不得為空")
+    private String district;
+
+    /**
+     * addressDetail (詳細地址)
+     */
+    @JsonProperty("addressDetail")
+    @NotBlank(message = "addressDetail不得為空")
+    private String addressDetail;
 
     /**
      * bank account

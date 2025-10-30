@@ -7,6 +7,7 @@ import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.LicenseRepository;
+import com.example.petel.repository.PostalRepository;
 import com.example.petel.repository.PropertyRepository;
 import com.example.petel.service.MERCH008Svc;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ public class MERCH008SvcImpl implements MERCH008Svc {
 
     private final PropertyRepository propertyRepository;
     private final LicenseRepository licenseRepository;
+    private final PostalRepository postalRepository;
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -48,6 +50,16 @@ public class MERCH008SvcImpl implements MERCH008Svc {
             throw new InsertFailException("此旅館或特寵業編號已存在，無法重複新增。");
         }
 
+        // 根據縣市和區域查詢郵遞區號ID
+        var postalOpt = postalRepository.findByCityAndDistrict(rq.getCity(), rq.getDistrict());
+        if (postalOpt.isEmpty()) {
+            log.warn("[MERCH-008] 查無此縣市區域組合: {} {}", rq.getCity(), rq.getDistrict());
+            throw new DataNotFoundException("查無此縣市區域組合，無法新增旅館。");
+        }
+        String postalId = postalOpt.get().getId();
+        String fullAddress = rq.getCity() + rq.getDistrict() + rq.getAddressDetail();
+        log.info("[MERCH-008] 查詢到郵遞區號ID: {}, 完整地址: {}", postalId, fullAddress);
+
         String newPropertyId = IdUtil.generateTableId("P", propertyRepository.findMaxId());
         log.info("[MERCH-008] 生成旅館ID: {}", newPropertyId);
 
@@ -58,8 +70,8 @@ public class MERCH008SvcImpl implements MERCH008Svc {
             property.setName(rq.getName());
             property.setBusinessCode(inputCode);
             property.setTel(rq.getTel());
-            property.setPostalCode(rq.getPostalCode());
-            property.setAddress(rq.getAddress());
+            property.setPostalCode(postalId);
+            property.setAddress(fullAddress);
             property.setBankAccount(rq.getBankAccount());
             property.setInfo(rq.getInfo());
             property.setCheckNotice(rq.getCheckNotice());
@@ -78,8 +90,8 @@ public class MERCH008SvcImpl implements MERCH008Svc {
         rs.setName(rq.getName());
         rs.setBusinessCode(rq.getBusinessCode());
         rs.setTel(rq.getTel());
-        rs.setPostalCode(rq.getPostalCode());
-        rs.setAddress(rq.getAddress());
+        rs.setPostalCode(postalId);
+        rs.setAddress(fullAddress);
         rs.setBankAccount(rq.getBankAccount());
         rs.setInfo(rq.getInfo());
         rs.setCheckNotice(rq.getCheckNotice());

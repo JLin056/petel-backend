@@ -2,9 +2,7 @@ package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -42,22 +40,10 @@ public class MERCH007Tranrs implements Serializable {
     private String tel;
 
     /**
-     * city
+     * 完整地址（包含縣市+地區+詳細地址）
      */
-    @JsonProperty("city")
-    private String city;
-
-    /**
-     * district
-     */
-    @JsonProperty("district")
-    private String district;
-
-    /**
-     * addressDetail
-     */
-    @JsonProperty("addressDetail")
-    private String addressDetail;
+    @JsonProperty("address")
+    private String address;
 
     /**
      * bank account

@@ -26,18 +26,6 @@ public class MERCH007Tranrq implements Serializable {
     private String id;
 
     /**
-     * name
-     */
-    @JsonProperty("name")
-    private String name;
-
-    /**
-     * 營業編號
-     */
-    @JsonProperty("businessCode")
-    private String businessCode;
-
-    /**
      * tel
      */
     @JsonProperty("tel")

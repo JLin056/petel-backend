@@ -27,13 +27,6 @@ public class MERCH007SvcImpl implements MERCH007Svc {
     private final PostalsRepository postalsRepository;
     private final PropertyFacilitiesRepository propertyFacilitiesRepository;
 
-    /**
-     * 修改旅館資訊
-     *
-     * @param requestBody Req<MERCH007Tranrq> （propertyId)
-     * @return Res<MERCH007Tranrs>
-     * @throws DataNotFoundException,UpdateFailException
-     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public Res<MERCH007Tranrs> update(Req<MERCH007Tranrq> requestBody) throws DataNotFoundException, UpdateFailException {
@@ -104,6 +97,25 @@ public class MERCH007SvcImpl implements MERCH007Svc {
         }
 
         MERCH007Tranrs resData = new MERCH007Tranrs();
+        resData.setId(entity.getId());
+        resData.setName(entity.getName());
+        resData.setBusinessCode(entity.getBusinessCode());
+        resData.setTel(entity.getTel());
+        resData.setAddress(entity.getAddress());
+        resData.setBankAccount(entity.getBankAccount());
+        resData.setInfo(entity.getInfo());
+        resData.setCheckNotice(entity.getCheckNotice());
+        resData.setPetNotice(entity.getPetNotice());
+        resData.setPropertyNotice(entity.getPropertyNotice());
+
+        var facilityList = propertyFacilitiesRepository.findByPropertyId(propertyId)
+                .stream()
+                .map(PropertyFacilitiesEntity::getFacilityId)
+                .toList();
+        resData.setFacilities(facilityList);
+
+        log.info("[MERCH-007] 回傳設施數量={}", facilityList.size());
+
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), resData);
     }
 }

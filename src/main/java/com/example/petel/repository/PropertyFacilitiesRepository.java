@@ -31,3 +31,4 @@ public interface PropertyFacilitiesRepository extends JpaRepository<PropertyFaci
     @Query("select max(e.id) from PropertyFacilitiesEntity e")
     String findMaxId();
 }
+

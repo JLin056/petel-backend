@@ -21,7 +21,7 @@ public class PropertyFacilitiesEntity {
      * 旅館設備ID
      */
     @Id
-    @Column(name = "id")
+    @Column(name = "ID")
     private String id;
 
     /**

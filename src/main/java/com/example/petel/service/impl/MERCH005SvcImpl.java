@@ -67,19 +67,19 @@ public class MERCH005SvcImpl implements MERCH005Svc {
             log.info("[MERCH-005] 更新成功，roomId={}，更新欄位：{}", roomId, merch005Tranrq);
 
             if (merch005Tranrq.getRoomImages() != null && !merch005Tranrq.getRoomImages().isEmpty()) {
+                // 先刪除舊有圖片
+                roomImageRepository.deleteByRoomId(roomId);
+                log.info("[MERCH-005] 已刪除舊有房型圖片：roomId={}", roomId);
+
+                // 再新增新圖片
                 for (MERCH004TranrqRoomImage roomImage : merch005Tranrq.getRoomImages()) {
                     RoomImageEntity roomImageEntity = new RoomImageEntity();
                     roomImageEntity.setRoomId(roomId);
                     roomImageEntity.setMediaId(roomImage.getMediaId());
                     roomImageEntity.setSortOrder(roomImage.getSortOrder());
-
                     roomImageRepository.save(roomImageEntity);
-                    log.info("[MERCH-005] 修改房型圖片關聯：roomId={}, mediaId={}, sortOrder={}",
-                            roomId, roomImage.getMediaId(), roomImage.getSortOrder());
                 }
-                log.info("[MERCH-005] 共修改 {} 張房型圖片", merch005Tranrq.getRoomImages().size());
-            } else {
-                log.info("[MERCH-005] 未提供房型圖片");
+                log.info("[MERCH-005] 已新增 {} 張房型圖片", merch005Tranrq.getRoomImages().size());
             }
 
         } catch (Exception e) {

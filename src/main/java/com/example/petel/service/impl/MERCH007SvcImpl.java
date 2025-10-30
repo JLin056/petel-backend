@@ -36,42 +36,36 @@ public class MERCH007SvcImpl implements MERCH007Svc {
     public Res<MERCH007Tranrs> update(Req<MERCH007Tranrq> requestBody) throws DataNotFoundException, UpdateFailException {
         log.info("-------- [MERCH-007] 旅館資訊修改 ---------");
 
-        MERCH007Tranrq merch007Tranrq = requestBody.getTranrq();
-        String propertyId = merch007Tranrq.getId();
-        log.info("[MERCH-007] 查詢 propertyId = {}", propertyId);
+        MERCH007Tranrq dto = requestBody.getTranrq();
+        String propertyId = dto.getId();
 
-        Optional<PropertyEntity> optionals = propertyRepository.findById(propertyId);
-        if (optionals.isEmpty()) {
-            log.warn("[MERCH-007] 依據 propertyId 查無資料");
+        Optional<PropertyEntity> optional = propertyRepository.findById(propertyId);
+        if (optional.isEmpty()) {
+            log.warn("[MERCH-007] 查無資料 propertyId={}", propertyId);
             throw new DataNotFoundException("查無旅館資料");
         }
 
-        PropertyEntity existingProperty = optionals.get();
+        PropertyEntity entity = optional.get();
 
         try {
-            existingProperty.setName(merch007Tranrq.getName());
-            existingProperty.setTel(merch007Tranrq.getTel());
-            existingProperty.setPostalCode(merch007Tranrq.getPostalCode());
-            existingProperty.setAddress(merch007Tranrq.getAddress());
-            existingProperty.setBankAccount(merch007Tranrq.getBankAccount());
-            existingProperty.setInfo(merch007Tranrq.getInfo());
-            existingProperty.setCheckNotice(merch007Tranrq.getCheckNotice());
-            existingProperty.setPetNotice(merch007Tranrq.getPetNotice());
-            existingProperty.setPropertyNotice(merch007Tranrq.getPropertyNotice());
+            if (dto.getTel() != null) entity.setTel(dto.getTel());
+            if (dto.getPostalCode() != null) entity.setPostalCode(dto.getPostalCode());
+            if (dto.getAddress() != null) entity.setAddress(dto.getAddress());
+            if (dto.getBankAccount() != null) entity.setBankAccount(dto.getBankAccount());
+            if (dto.getInfo() != null) entity.setInfo(dto.getInfo());
+            if (dto.getCheckNotice() != null) entity.setCheckNotice(dto.getCheckNotice());
+            if (dto.getPetNotice() != null) entity.setPetNotice(dto.getPetNotice());
+            if (dto.getPropertyNotice() != null) entity.setPropertyNotice(dto.getPropertyNotice());
 
-            propertyRepository.save(existingProperty);
-            log.info("[MERCH-007] 更新成功，propertyId={}，更新欄位：{}", propertyId, merch007Tranrq);
+            propertyRepository.save(entity);
+            log.info("[MERCH-007] 更新成功 propertyId={}", propertyId);
 
         } catch (Exception e) {
             log.error("[MERCH-007] 更新旅館資訊失敗", e);
             throw new UpdateFailException("更新旅館資訊失敗");
         }
 
-        MERCH007Tranrs merch007Tranrs = new MERCH007Tranrs();
-
-        return new Res(
-                new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                merch007Tranrs
-        );
+        MERCH007Tranrs resData = new MERCH007Tranrs();
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), resData);
     }
 }

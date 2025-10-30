@@ -46,16 +46,22 @@ public class MERCH007Tranrq implements Serializable {
     private String tel;
 
     /**
-     * postal code
+     * city (縣市)
      */
-    @JsonProperty("postalCode")
-    private String postalCode;
+    @JsonProperty("city")
+    private String city;
 
     /**
-     * address
+     * district (區域)
      */
-    @JsonProperty("address")
-    private String address;
+    @JsonProperty("district")
+    private String district;
+
+    /**
+     * addressDetail (詳細地址)
+     */
+    @JsonProperty("addressDetail")
+    private String addressDetail;
 
     /**
      * bank account

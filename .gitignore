@@ -37,4 +37,5 @@ logs/
 
 ### application.properties ###
 src/main/resources/application.properties
-.env
+.envNUL
+NUL

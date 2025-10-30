@@ -46,12 +46,6 @@ public class MERCH008Tranrs implements Serializable {
     private String businessCode;
 
     /**
-     * postal code
-     */
-    @JsonProperty("postalCode")
-    private String postalCode;
-
-    /**
      * address
      */
     @JsonProperty("address")

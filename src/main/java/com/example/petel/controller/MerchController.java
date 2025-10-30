@@ -13,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -89,6 +90,11 @@ public class MerchController extends BaseController {
      * MERCH014 Service
      */
     private final MERCH014Svc merch014Svc;
+
+    /**
+     * MERCH015 Service
+     */
+    private final MERCH015Svc merch015Svc;
 
     @PostMapping(value = "/bookings/list")
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(@Valid @RequestBody Req<MERCH001Tranrq> merch001Tranrq, Errors errors)
@@ -187,6 +193,11 @@ public class MerchController extends BaseController {
             throws DataNotFoundException, UpdateFailException, InvalidInputException {
         handleValidForDto(errors);
         return merch014Svc.updateStatus(rq);
+    }
+
+    @PostMapping("/cities/list")
+    public List<MERCH015Tranrs> getCityDistricts() {
+        return merch015Svc.getCityDistricts();
     }
 }
 

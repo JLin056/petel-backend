@@ -1,10 +1,12 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
+import com.example.petel.entity.MediaBase64Entity;
 import com.example.petel.entity.UsersEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
+import com.example.petel.repository.MediaBase64Repository;
 import com.example.petel.repository.UsersRepository;
 import com.example.petel.service.USER002Svc;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -25,6 +27,8 @@ public class USER002SvcImpl implements USER002Svc {
     private final UsersRepository usersRepo;
     /** ObjectMapper */
     private final ObjectMapper objectMapper;
+    /** MediaBase64Repository */
+    private final MediaBase64Repository mediaBase64Repo;
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -49,6 +53,25 @@ public class USER002SvcImpl implements USER002Svc {
         }
 
         USER002Tranrs tranrs = objectMapper.convertValue(user, USER002Tranrs.class);
+
+        String mediaId = user.getMediaId();
+        String avatarDataUrl = null;
+
+        if (mediaId != null) {
+            Optional<MediaBase64Entity> mediaEntity = mediaBase64Repo.findById(mediaId);
+            if (mediaEntity.isPresent()){
+                MediaBase64Entity media = mediaEntity.get();
+                avatarDataUrl = String.format(
+                        "data:%s;base64,%s",
+                        media.getMimeType(),
+                        media.getBase64Data()
+                );
+            } else {
+                log.warn("[USER-004] 找不到媒體檔案 ID: {}", mediaId);
+            }
+        }
+        
+        tranrs.setMediaBase64(avatarDataUrl);
 
         return new Res<USER002Tranrs>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),

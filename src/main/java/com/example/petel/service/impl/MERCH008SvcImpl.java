@@ -2,12 +2,16 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.entity.PropertyEntity;
+import com.example.petel.entity.PropertyFacilitiesEntity;
+import com.example.petel.entity.PropertyImageEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.LicenseRepository;
-import com.example.petel.repository.PostalRepository;
+import com.example.petel.repository.PostalsRepository;
+import com.example.petel.repository.PropertyFacilitiesRepository;
+import com.example.petel.repository.PropertyImageRepository;
 import com.example.petel.repository.PropertyRepository;
 import com.example.petel.service.MERCH008Svc;
 import jakarta.transaction.Transactional;
@@ -22,7 +26,9 @@ public class MERCH008SvcImpl implements MERCH008Svc {
 
     private final PropertyRepository propertyRepository;
     private final LicenseRepository licenseRepository;
-    private final PostalRepository postalRepository;
+    private final PostalsRepository postalsRepository;
+    private final PropertyFacilitiesRepository propertyFacilitiesRepository;
+    private final PropertyImageRepository propertyImageRepository;
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -47,7 +53,7 @@ public class MERCH008SvcImpl implements MERCH008Svc {
             throw new InsertFailException("此旅館或特寵業編號已存在，無法重複新增。");
         }
 
-        var postalOpt = postalRepository.findByCityAndDistrict(rq.getCity(), rq.getDistrict());
+        var postalOpt = postalsRepository.findByCityAndDistrict(rq.getCity(), rq.getDistrict());
         if (postalOpt.isEmpty()) {
             log.warn("[MERCH-008] 查無此縣市區域組合: {} {}", rq.getCity(), rq.getDistrict());
             throw new DataNotFoundException("查無此縣市區域組合，無法新增旅館。");
@@ -55,10 +61,7 @@ public class MERCH008SvcImpl implements MERCH008Svc {
 
         String postalId = postalOpt.get().getId();
         String fullAddress = rq.getCity() + rq.getDistrict() + rq.getAddressDetail();
-        log.info("[MERCH-008] 查詢到郵遞區號ID: {}, 完整地址: {}", postalId, fullAddress);
-
         String newPropertyId = IdUtil.generateTableId("P", propertyRepository.findMaxId());
-        log.info("[MERCH-008] 生成旅館ID: {}", newPropertyId);
 
         try {
             PropertyEntity property = new PropertyEntity();
@@ -74,18 +77,51 @@ public class MERCH008SvcImpl implements MERCH008Svc {
             property.setCheckNotice(rq.getCheckNotice());
             property.setPetNotice(rq.getPetNotice());
             property.setPropertyNotice(rq.getPropertyNotice());
-
             propertyRepository.save(property);
+            log.info("[MERCH-008] 已新增旅館主檔 propertyId={}", newPropertyId);
+
+            // === 建立旅館設施 ===
+            if (rq.getFacilities() != null && !rq.getFacilities().isEmpty()) {
+                String currentMaxId = propertyFacilitiesRepository.findMaxId();
+                for (String facilityId : rq.getFacilities()) {
+                    String newId = IdUtil.generateTableId("G", currentMaxId);
+                    PropertyFacilitiesEntity pf = new PropertyFacilitiesEntity();
+                    pf.setId(newId);
+                    pf.setPropertyId(newPropertyId);
+                    pf.setFacilityId(facilityId);
+                    propertyFacilitiesRepository.save(pf);
+                    currentMaxId = newId;  // 更新為當前ID，下次遞增
+                }
+                log.info("[MERCH-008] 已新增 {} 個設備關聯", rq.getFacilities().size());
+            } else {
+                log.info("[MERCH-008] 無設施資料");
+            }
+
+            // === 建立旅館圖片 ===
+            if (rq.getPropertyImages() != null && !rq.getPropertyImages().isEmpty()) {
+                for (MERCH008TranrqPropertyImage propertyImage : rq.getPropertyImages()) {
+                    PropertyImageEntity propertyImageEntity = new PropertyImageEntity();
+                    propertyImageEntity.setPropertyId(newPropertyId);
+                    propertyImageEntity.setMediaId(propertyImage.getMediaId());
+                    propertyImageEntity.setSortOrder(propertyImage.getSortOrder());
+                    propertyImageRepository.save(propertyImageEntity);
+                }
+                log.info("[MERCH-008] 已新增 {} 張旅館圖片", rq.getPropertyImages().size());
+            } else {
+                log.info("[MERCH-008] 無圖片資料");
+            }
+
         } catch (Exception e) {
             log.error("[MERCH-008] 新增旅館失敗", e);
             throw new InsertFailException("新增旅館失敗：" + e.getMessage());
         }
 
+        // === 組回傳資料 ===
         MERCH008Tranrs rs = new MERCH008Tranrs();
         rs.setId(newPropertyId);
         rs.setSellerId(rq.getSellerId());
         rs.setName(rq.getName());
-        rs.setBusinessCode(rq.getBusinessCode());
+        rs.setBusinessCode(inputCode);
         rs.setTel(rq.getTel());
         rs.setPostalCode(postalId);
         rs.setAddress(fullAddress);
@@ -94,6 +130,7 @@ public class MERCH008SvcImpl implements MERCH008Svc {
         rs.setCheckNotice(rq.getCheckNotice());
         rs.setPetNotice(rq.getPetNotice());
         rs.setPropertyNotice(rq.getPropertyNotice());
+        rs.setFacilities(rq.getFacilities());
 
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), rs);
     }

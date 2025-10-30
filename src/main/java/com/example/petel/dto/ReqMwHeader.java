@@ -18,7 +18,7 @@ public class ReqMwHeader implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final String CODE_REGEX = "^(?:AUTH|USER|HOTEL|BOOK|REVIEW|CHAT|IMG|ADMIN|MERCH|MEDIA)-(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$";
+    private static final String CODE_REGEX = "^(?:AUTH|USER|HOTEL|BOOK|REVIEW|CHAT|IMG|ADMIN|MERCH|MEDIA|NOTIFY)-(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$";
 
     @NotBlank(message = "MSGID欄位不得為空")
     @Pattern(regexp = CODE_REGEX, message = "代碼格式錯誤")

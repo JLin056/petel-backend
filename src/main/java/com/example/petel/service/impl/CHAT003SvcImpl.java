@@ -2,6 +2,7 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.entity.ChatThreadEntity;
+import com.example.petel.entity.OrdersEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.jwt.AccountPrincipal;
@@ -57,7 +58,8 @@ public class CHAT003SvcImpl implements CHAT003Svc {
         log.debug("[CHAT-003] 查到聊天室: buyer={}, seller={}, orderId={}",
                 chatThreadEntity.getUserId(), chatThreadEntity.getSellerId(), chatThreadEntity.getOrderId());
 
-        String orderStatus = ordersRepo.findStatusById(chatThreadEntity.getOrderId());
+        Optional<OrdersEntity> ordersEntity = ordersRepo.findById(chatThreadEntity.getOrderId());
+        String orderStatus = ordersEntity.get().getStatus();
         log.debug("[CHAT-003] 訂單狀態: {}", orderStatus);
         String name;
         if (isBuyer) {
@@ -73,6 +75,7 @@ public class CHAT003SvcImpl implements CHAT003Svc {
         tranrsRoom.setRole(auth.getRole());
         tranrsRoom.setBuyerAccountId(chatThreadEntity.getUserId());
         tranrsRoom.setSellerAccountId(chatThreadEntity.getSellerId());
+        tranrsRoom.setPropertyId(ordersEntity.get().getPropertyId());
         tranrsRoom.setDisplayName(name);
         tranrsRoom.setOrderId(chatThreadEntity.getOrderId());
         tranrsRoom.setOrderStatus(orderStatus);

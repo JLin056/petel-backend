@@ -1,7 +1,10 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
+import com.example.petel.entity.ChatMessagesEntity;
 import com.example.petel.entity.ChatThreadEntity;
+import com.example.petel.entity.OrdersEntity;
+import com.example.petel.entity.PropertyEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
@@ -15,7 +18,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +43,14 @@ public class CHAT001SvcImpl implements CHAT001Svc {
     private final SellersRepository sellersRepo;
     /** ObjectMapper */
     private final ObjectMapper objectMapper;
+    /** ChatMessagesRepository */
+    private final ChatMessagesRepository chatMessagesRepo;
+    /** PropertyRepository */
+    private final PropertyRepository propertyRepo;
+    /** DateTimeFormatter */
+    final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    /** NumberFormat */
+    final NumberFormat TWD_FMT = NumberFormat.getNumberInstance(Locale.TAIWAN);
 
     /**
      * 建立聊天室
@@ -49,7 +66,7 @@ public class CHAT001SvcImpl implements CHAT001Svc {
     public Res<CHAT001Tranrs> GetOrCreateByOrder(Req<CHAT001Tranrq> req,
                                                  AccountPrincipal auth)
             throws DataNotFoundException, InvalidInputException, InsertFailException {
-        log.info("---- [CHAT-001] 建立聊天室 ----");
+        log.info("---- [CHAT-001] 建立聊天室並傳送系統訊息 ----");
         String orderId = req.getTranrq().getOrderId();
 
         // 檢查訂單，並取得 userId, sellerId
@@ -124,6 +141,47 @@ public class CHAT001SvcImpl implements CHAT001Svc {
         try {
             threadRepo.save(chatThreadEntity);
             log.info("[CHAT-001] 新增聊天室成功 threadId={}", threadId);
+
+
+            OrdersEntity ordersEntity = ordersRepo.findById(orderId)
+                    .orElseThrow(() -> new DataNotFoundException("查無訂單，orderId=" + orderId));
+            String propertyId = ordersEntity.getPropertyId();
+            PropertyEntity propertyEntity = propertyRepo.findById(propertyId)
+                    .orElseThrow(() -> new DataNotFoundException("查無旅館，propertyId=" + propertyId));
+            String checkInStr  = formatDate(ordersEntity.getCheckIn(), DATE_FMT);
+            String checkOutStr = formatDate(ordersEntity.getCheckOut(), DATE_FMT);
+            String amountStr   = "NT$ " + TWD_FMT.format(ordersEntity.getHotelCharges());
+
+            // 取得模板資訊
+            String content = """
+                感謝您訂購 %s
+                地址：%s
+                入住日期：%s
+                退房日期：%s
+                金額：%s
+
+                希望您有個美好的體驗～
+                有什麼問題都可以跟商家討論喔！
+                """.formatted(
+                    propertyEntity.getName(),
+                    propertyEntity.getAddress(),
+                    checkInStr,
+                    checkOutStr,
+                    amountStr
+            );
+
+            ChatMessagesEntity messagesEntity = new ChatMessagesEntity();
+            String messageLastId = chatMessagesRepo.findMaxId();
+            String messageId = IdUtil.generateTableId("M", messageLastId);
+            messagesEntity.setId(messageId);
+            messagesEntity.setThreadId(threadId);
+            messagesEntity.setSenderId(sellerAccountId);
+            messagesEntity.setMessageType("SYSTEM");
+            messagesEntity.setContent(content);
+            messagesEntity.setCreatedAt(LocalDateTime.now());
+
+            chatMessagesRepo.save(messagesEntity);
+            log.info("[CHAT-001] 建立訊息成功，messageId={}", messageId);
             return toSuccessRes(chatThreadEntity);
         } catch (Exception e) {
             log.error("[CHAT-001] 建立失敗，orderId={}", orderId);
@@ -140,5 +198,19 @@ public class CHAT001SvcImpl implements CHAT001Svc {
         CHAT001Tranrs dto = objectMapper.convertValue(e, CHAT001Tranrs.class);
         dto.setTopic("/topic/chat." + e.getId());
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), dto);
+    }
+
+    /**
+     * Date 格式
+     * @param value
+     * @param fmt
+     * @return
+     */
+    private String formatDate(Object value, DateTimeFormatter fmt) {
+        if (value == null) return "";
+        if (value instanceof java.sql.Timestamp ts) {
+            return ts.toLocalDateTime().toLocalDate().format(fmt);
+        }
+        return String.valueOf(value);
     }
 }

@@ -125,7 +125,7 @@ public class BOOK005SvcImpl implements BOOK005Svc {
 
         LocalDateTime now = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
 
-        ordersEntity.setStatus("已授權");
+        ordersEntity.setStatus("未付款");
         ordersEntity.setUpdatedAt(now);
 
         TransactionsEntity transactionsEntity = new TransactionsEntity();

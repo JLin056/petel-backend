@@ -2,6 +2,7 @@ package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -84,4 +85,11 @@ public class MERCH007Tranrq implements Serializable {
      */
     @JsonProperty("facilities")
     private List<String> facilities;
+
+    /**
+     * 房型圖片列表
+     */
+    @JsonProperty("propertyImages")
+    @Valid
+    private List<MERCH007TranrqPropertyImage> propertyImages;
 }

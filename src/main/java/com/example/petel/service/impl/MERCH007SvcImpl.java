@@ -3,13 +3,13 @@ package com.example.petel.service.impl;
 import com.example.petel.dto.*;
 import com.example.petel.entity.PropertyEntity;
 import com.example.petel.entity.PropertyFacilitiesEntity;
+import com.example.petel.entity.PropertyImageEntity;
+import com.example.petel.entity.RoomImageEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.UpdateFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
-import com.example.petel.repository.PostalsRepository;
-import com.example.petel.repository.PropertyFacilitiesRepository;
-import com.example.petel.repository.PropertyRepository;
+import com.example.petel.repository.*;
 import com.example.petel.service.MERCH007Svc;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ public class MERCH007SvcImpl implements MERCH007Svc {
     private final PropertyRepository propertyRepository;
     private final PostalsRepository postalsRepository;
     private final PropertyFacilitiesRepository propertyFacilitiesRepository;
+    private final PropertyImageRepository propertyImageRepository;
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -84,6 +85,22 @@ public class MERCH007SvcImpl implements MERCH007Svc {
                 } else {
                     log.info("[MERCH-007] 清空所有設備關聯");
                 }
+            }
+
+            if (tranrq.getPropertyImages() != null && !tranrq.getPropertyImages().isEmpty()) {
+                for (MERCH007TranrqPropertyImage propertyImage : tranrq.getPropertyImages()) {
+                    PropertyImageEntity propertyImageEntity = new PropertyImageEntity();
+                    propertyImageEntity.setPropertyId(propertyId);
+                    propertyImageEntity.setMediaId(propertyImage.getMediaId());
+                    propertyImageEntity.setSortOrder(propertyImage.getSortOrder());
+
+                    propertyImageRepository.save(propertyImageEntity);
+                    log.info("[MERCH-007] 新增旅館圖片關聯：propertyId={}, mediaId={}, sortOrder={}",
+                            propertyId, propertyImage.getMediaId(), propertyImage.getSortOrder());
+                }
+                log.info("[MERCH-007] 共新增 {} 張旅館圖片", tranrq.getPropertyImages().size());
+            } else {
+                log.info("[MERCH-007] 未提供旅館圖片");
             }
 
             propertyRepository.save(entity);

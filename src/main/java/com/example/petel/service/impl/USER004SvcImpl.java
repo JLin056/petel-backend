@@ -68,6 +68,7 @@ public class USER004SvcImpl implements USER004Svc {
         tranrs.setName(usersEntity.getName());
         tranrs.setPhone(usersEntity.getPhone());
         tranrs.setEmail(email);
+        tranrs.setMediaId(mediaId);
         tranrs.setMediaBase64(avatarDataUrl);
 
         return new Res<USER004Tranrs>(

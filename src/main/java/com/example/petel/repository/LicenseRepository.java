@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface LicenseRepository extends JpaRepository<LicenseEntity, String> {
 
+    // 用「名稱 + 編號」查找
     Optional<LicenseEntity> findByNameAndBusinessCode(String name, String businessCode);
 }

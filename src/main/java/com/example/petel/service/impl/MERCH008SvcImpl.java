@@ -6,6 +6,8 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
+import com.example.petel.repository.LicenseRepository;
+import com.example.petel.repository.PostalRepository;
 import com.example.petel.repository.PropertyRepository;
 import com.example.petel.service.MERCH008Svc;
 import jakarta.transaction.Transactional;
@@ -18,53 +20,81 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MERCH008SvcImpl implements MERCH008Svc {
 
-    /**
-     * PropertyRepository
-     */
     private final PropertyRepository propertyRepository;
+    private final LicenseRepository licenseRepository;
+    private final PostalRepository postalRepository;
 
-    /**
-     * 新增旅館資訊
-     *
-     * @param requestBody Req<MERCH008Tranrq> （propertyId)
-     * @return Res<MERCH008Tranrs>
-     * @throws InsertFailException
-     */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Res<MERCH008Tranrs> insert(Req<MERCH008Tranrq> requestBody) throws InsertFailException {
-
+    public Res<MERCH008Tranrs> insert(Req<MERCH008Tranrq> requestBody) throws InsertFailException, DataNotFoundException {
         log.info("-------- [MERCH-008] 新增旅館資訊 ---------");
-        MERCH008Tranrq merch008Tranrq = requestBody.getTranrq();
 
-        String newPropertyId = IdUtil.generateTableId("P", propertyRepository.findMaxId());
-        log.info("[MERCH-008] 生成旅館ID:{}", newPropertyId);
-
-        try {
-            PropertyEntity propertyEntity = new PropertyEntity();
-            propertyEntity.setId(newPropertyId);
-            propertyEntity.setSellerId(merch008Tranrq.getSellerId());
-            propertyEntity.setName(merch008Tranrq.getName());
-            propertyEntity.setTel(merch008Tranrq.getTel());
-            propertyEntity.setPostalCode(merch008Tranrq.getPostalCode());
-            propertyEntity.setAddress(merch008Tranrq.getAddress());
-            propertyEntity.setBankAccount(merch008Tranrq.getBankAccount());
-            propertyEntity.setInfo(merch008Tranrq.getInfo());
-            propertyEntity.setCheckNotice(merch008Tranrq.getCheckNotice());
-            propertyEntity.setPetNotice(merch008Tranrq.getPetNotice());
-            propertyEntity.setPropertyNotice(merch008Tranrq.getPropertyNotice());
-            propertyRepository.save(propertyEntity);
-            log.info("[MERCH-008] 新增成功，新增欄位：{}", merch008Tranrq);
-
-        } catch (Exception e) {
-            log.error("[MERCH-008] 新增旅館失敗", e);
-            throw new InsertFailException("新增旅館失敗" + e.getMessage());
+        MERCH008Tranrq rq = requestBody.getTranrq();
+        var inputCode = rq.getBusinessCode().trim();
+        if (!inputCode.startsWith("特寵業")) {
+            inputCode = "特寵業繁字第" + inputCode + "號";
         }
 
-        MERCH008Tranrs merch008Tranrs = new MERCH008Tranrs();
-        return new Res(
-                new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
-                merch008Tranrs
-        );
+        var licenseOpt = licenseRepository.findByNameAndBusinessCode(rq.getName(), inputCode);
+        if (licenseOpt.isEmpty()) {
+            log.warn("[MERCH-008] 驗證失敗：查無此業者或特寵編號不符");
+            throw new DataNotFoundException("查無此業者或特寵業編號不符，無法新增旅館。");
+        }
+
+        var existingProperty = propertyRepository.findByNameOrBusinessCode(rq.getName(), inputCode);
+        if (existingProperty.isPresent()) {
+            log.warn("[MERCH-008] 重複新增：旅館名稱或特寵編號已存在");
+            throw new InsertFailException("此旅館或特寵業編號已存在，無法重複新增。");
+        }
+
+        var postalOpt = postalRepository.findByCityAndDistrict(rq.getCity(), rq.getDistrict());
+        if (postalOpt.isEmpty()) {
+            log.warn("[MERCH-008] 查無此縣市區域組合: {} {}", rq.getCity(), rq.getDistrict());
+            throw new DataNotFoundException("查無此縣市區域組合，無法新增旅館。");
+        }
+
+        String postalId = postalOpt.get().getId();
+        String fullAddress = rq.getCity() + rq.getDistrict() + rq.getAddressDetail();
+        log.info("[MERCH-008] 查詢到郵遞區號ID: {}, 完整地址: {}", postalId, fullAddress);
+
+        String newPropertyId = IdUtil.generateTableId("P", propertyRepository.findMaxId());
+        log.info("[MERCH-008] 生成旅館ID: {}", newPropertyId);
+
+        try {
+            PropertyEntity property = new PropertyEntity();
+            property.setId(newPropertyId);
+            property.setSellerId(rq.getSellerId());
+            property.setName(rq.getName());
+            property.setBusinessCode(inputCode);
+            property.setTel(rq.getTel());
+            property.setPostalCode(postalId);
+            property.setAddress(fullAddress);
+            property.setBankAccount(rq.getBankAccount());
+            property.setInfo(rq.getInfo());
+            property.setCheckNotice(rq.getCheckNotice());
+            property.setPetNotice(rq.getPetNotice());
+            property.setPropertyNotice(rq.getPropertyNotice());
+
+            propertyRepository.save(property);
+        } catch (Exception e) {
+            log.error("[MERCH-008] 新增旅館失敗", e);
+            throw new InsertFailException("新增旅館失敗：" + e.getMessage());
+        }
+
+        MERCH008Tranrs rs = new MERCH008Tranrs();
+        rs.setId(newPropertyId);
+        rs.setSellerId(rq.getSellerId());
+        rs.setName(rq.getName());
+        rs.setBusinessCode(rq.getBusinessCode());
+        rs.setTel(rq.getTel());
+        rs.setPostalCode(postalId);
+        rs.setAddress(fullAddress);
+        rs.setBankAccount(rq.getBankAccount());
+        rs.setInfo(rq.getInfo());
+        rs.setCheckNotice(rq.getCheckNotice());
+        rs.setPetNotice(rq.getPetNotice());
+        rs.setPropertyNotice(rq.getPropertyNotice());
+
+        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), rs);
     }
 }

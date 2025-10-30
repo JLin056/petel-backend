@@ -94,7 +94,7 @@ public class BOOK008SvcImpl implements BOOK008Svc {
             transactionsEntity.setPayTime(TimeUtil.parseMerchantTradeDate(orderInfoJsonObject.getString("TradeDate")));
             transactionsRepository.save(transactionsEntity);
             OrdersEntity ordersEntity = ordersRepository.findById(orderId).get();
-            ordersEntity.setStatus("已授權");
+            ordersEntity.setStatus("未付款"); // 沒用到但還是改
             ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
             ordersRepository.save(ordersEntity);
         }

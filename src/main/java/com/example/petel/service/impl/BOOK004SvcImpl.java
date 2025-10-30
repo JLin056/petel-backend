@@ -99,7 +99,7 @@ public class BOOK004SvcImpl implements BOOK004Svc {
             throw new DeleteFailException();
         }
 
-        ordersEntity.setStatus("取消訂單");
+        ordersEntity.setStatus("已取消");
         ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
         ordersRepository.save(ordersEntity);
 

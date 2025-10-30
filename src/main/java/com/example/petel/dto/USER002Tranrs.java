@@ -45,4 +45,10 @@ public class USER002Tranrs implements Serializable {
      */
     @JsonProperty("mediaId")
     private String mediaId;
+
+    /**
+     * mediaBase64
+     */
+    @JsonProperty("mediaBase64")
+    private String mediaBase64;
 }

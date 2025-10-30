@@ -21,4 +21,12 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity, String
      * @return 物業列表
      */
     List<PropertyEntity> findBySellerId(String sellerId);
+
+    /**
+     * 根據旅館名稱及營業編號去檢查是否已存在
+     * @param name
+     * @param businessCode
+     * @return
+     */
+    Optional<PropertyEntity> findByNameOrBusinessCode(String name, String businessCode);
 }

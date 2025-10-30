@@ -4,9 +4,15 @@ import com.example.petel.component.NotificationHub;
 import com.example.petel.dto.*;
 import com.example.petel.entity.NotificationEventsEntity;
 import com.example.petel.entity.NotificationsEntity;
+import com.example.petel.entity.OrdersEntity;
+import com.example.petel.entity.PropertyEntity;
+import com.example.petel.entity.UsersEntity;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.NotificationEventsRepository;
 import com.example.petel.repository.NotificationsRepository;
+import com.example.petel.repository.OrdersRepository;
+import com.example.petel.repository.PropertyRepository;
+import com.example.petel.repository.UsersRepository;
 import com.example.petel.service.NOTIFY001Svc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +26,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -34,6 +41,9 @@ public class NOTIFY001SvcImpl implements NOTIFY001Svc {
     private final NotificationEventsRepository notificationEventsRepository;
     private final NotificationHub notificationHub;
     private final ObjectMapper objectMapper;
+    private final OrdersRepository ordersRepository;
+    private final PropertyRepository propertyRepository;
+    private final UsersRepository usersRepository;
 
     /**
      * 發送通知給指定帳號
@@ -82,6 +92,34 @@ public class NOTIFY001SvcImpl implements NOTIFY001Svc {
         if (tranrq.getOrderId() != null) payloadData.put("orderId", tranrq.getOrderId());
         if (tranrq.getPropertyId() != null) payloadData.put("propertyId", tranrq.getPropertyId());
         if (tranrq.getSellerId() != null) payloadData.put("sellerId", tranrq.getSellerId());
+
+        // 如果是 ORDER 類型且有 orderId，則查詢並加入 propertyName 和 userName
+        if ("ORDER".equals(tranrq.getType()) && tranrq.getOrderId() != null) {
+            try {
+                Optional<OrdersEntity> orderOpt = ordersRepository.findById(tranrq.getOrderId());
+                if (orderOpt.isPresent()) {
+                    OrdersEntity order = orderOpt.get();
+
+                    // 查詢並加入 Property Name
+                    if (order.getPropertyId() != null) {
+                        Optional<PropertyEntity> propertyOpt = propertyRepository.findById(order.getPropertyId());
+                        if (propertyOpt.isPresent()) {
+                            payloadData.put("propertyName", propertyOpt.get().getName());
+                        }
+                    }
+
+                    // 查詢並加入 User Name
+                    if (order.getUserId() != null) {
+                        Optional<UsersEntity> userOpt = usersRepository.findById(order.getUserId());
+                        if (userOpt.isPresent()) {
+                            payloadData.put("userName", userOpt.get().getName());
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("[NOTIFY-001] 查詢訂單相關資料失敗，訂單ID: {}", tranrq.getOrderId(), e);
+            }
+        }
 
         String payloadJson;
         try {

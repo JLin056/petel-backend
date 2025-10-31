@@ -2,14 +2,21 @@ package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
 import com.example.petel.entity.NotificationsEntity;
+import com.example.petel.entity.OrdersEntity;
+import com.example.petel.entity.PropertyEntity;
+import com.example.petel.entity.UsersEntity;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.NotificationsRepository;
+import com.example.petel.repository.OrdersRepository;
+import com.example.petel.repository.PropertyRepository;
+import com.example.petel.repository.UsersRepository;
 import com.example.petel.service.NOTIFY002Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +28,9 @@ import java.util.stream.Collectors;
 public class NOTIFY002SvcImpl implements NOTIFY002Svc {
 
     private final NotificationsRepository notificationsRepository;
+    private final OrdersRepository ordersRepository;
+    private final PropertyRepository propertyRepository;
+    private final UsersRepository usersRepository;
 
     /**
      * 查詢指定帳號的所有通知列表
@@ -60,7 +70,37 @@ public class NOTIFY002SvcImpl implements NOTIFY002Svc {
         dto.setReadAt(entity.getReadAt() != null ? entity.getReadAt().toString() : null);
         dto.setOrderId(entity.getOrderId());
         dto.setPropertyId(entity.getPropertyId());
-        dto.setSellerId(entity.getSellerId());
+
+
+        // 如果是 ORDER 類型且有 orderId，則查詢關聯的 propertyName 和 userName
+        if ("ORDER".equals(entity.getType()) && entity.getOrderId() != null) {
+            try {
+                Optional<OrdersEntity> orderOpt = ordersRepository.findById(entity.getOrderId());
+                if (orderOpt.isPresent()) {
+                    OrdersEntity order = orderOpt.get();
+                    dto.setCheckIn(order.getCheckIn());
+                    dto.setCheckOut(order.getCheckOut());
+
+                    // 查詢 Property Name
+                    if (order.getPropertyId() != null) {
+                        Optional<PropertyEntity> propertyOpt = propertyRepository.findById(order.getPropertyId());
+                        propertyOpt.ifPresent(property -> {
+                            dto.setPropertyName(property.getName());
+                            dto.setPropertyId(property.getId());
+                        });
+                    }
+
+                    // 查詢 User Name
+                    if (order.getUserId() != null) {
+                        Optional<UsersEntity> userOpt = usersRepository.findById(order.getUserId());
+                        userOpt.ifPresent(user -> dto.setUserName(user.getName()));
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("[NOTIFY-002] 查詢訂單相關資料失敗，訂單ID: {}", entity.getOrderId(), e);
+            }
+        }
+
         return dto;
     }
 }

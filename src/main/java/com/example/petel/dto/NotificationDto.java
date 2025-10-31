@@ -74,8 +74,26 @@ public class NotificationDto implements Serializable {
     private String propertyId;
 
     /**
-     * 關聯的賣家編號
+     * 入住時間
      */
-    @JsonProperty("seller_id")
-    private String sellerId;
+    @JsonProperty("check_in")
+    private String checkIn;
+
+    /**
+     * 退房時間
+     */
+    @JsonProperty("check_out")
+    private String checkOut;
+
+    /**
+     * 旅館名稱（ORDER 類型通知時提供）
+     */
+    @JsonProperty("property_name")
+    private String propertyName;
+
+    /**
+     * 用戶名稱（ORDER 類型通知時提供）
+     */
+    @JsonProperty("user_name")
+    private String userName;
 }

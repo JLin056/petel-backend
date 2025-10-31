@@ -187,7 +187,7 @@ public class BOOK005SvcImpl implements BOOK005Svc {
         String accountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
         if (accountId != null) {
             sendNotification(accountId, "訂單確認", "您的訂單已確認", "ORDER", orderId);
-//                sendNotification(accountId, "現場付款", "已授權信用卡", "PAYMENT", orderId);
+                sendNotification(accountId, "現場付款", "已授權信用卡", "PAYMENT", orderId);
         } else {
             log.warn("[BOOK-005] 無法找到 userId={} 對應的 accountId，通知發送失敗", ordersEntity.getUserId());
         }

@@ -2,16 +2,15 @@ package com.example.petel.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
-/**
- * 修改旅館資訊請求 DTO
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,34 +27,28 @@ public class MERCH007Tranrq implements Serializable {
     private String id;
 
     /**
-     * name（前端顯示，但不更新）
-     */
-    @JsonProperty("name")
-    private String name;
-
-    /**
-     * 營業編號（前端顯示，但不更新）
-     */
-    @JsonProperty("businessCode")
-    private String businessCode;
-
-    /**
      * tel
      */
     @JsonProperty("tel")
     private String tel;
 
     /**
-     * postal code
+     * city
      */
-    @JsonProperty("postalCode")
-    private String postalCode;
+    @JsonProperty("city")
+    private String city;
 
     /**
-     * address
+     * district
      */
-    @JsonProperty("address")
-    private String address;
+    @JsonProperty("district")
+    private String district;
+
+    /**
+     * addressDetail
+     */
+    @JsonProperty("addressDetail")
+    private String addressDetail;
 
     /**
      * bank account
@@ -86,4 +79,17 @@ public class MERCH007Tranrq implements Serializable {
      */
     @JsonProperty("propertyNotice")
     private String propertyNotice;
+
+    /**
+     * facilities
+     */
+    @JsonProperty("facilities")
+    private List<String> facilities;
+
+    /**
+     * 旅館圖片列表
+     */
+    @JsonProperty("propertyImages")
+    @Valid
+    private List<MERCH007TranrqPropertyImage> propertyImages;
 }

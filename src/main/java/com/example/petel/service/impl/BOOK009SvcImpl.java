@@ -7,6 +7,7 @@ import com.example.petel.model.TimeUtil;
 import com.example.petel.model.book.CodeUtil;
 import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.TransactionsRepository;
+import com.example.petel.repository.UsersRepository;
 import com.example.petel.service.BOOK009Svc;
 import com.example.petel.component.NotificationHub;
 import com.example.petel.entity.NotificationEventsEntity;
@@ -49,6 +50,8 @@ public class BOOK009SvcImpl implements BOOK009Svc {
     private final NotificationHub notificationHub;
     /** ObjectMapper */
     private final ObjectMapper objectMapper;
+    /** UsersRepository */
+    private final UsersRepository usersRepository;
     /** PAYMENT_ID */
     private static final String PAYMENT_ID = "Y000000002";
     /** SUCCESS_RTN_CODE */
@@ -121,11 +124,14 @@ public class BOOK009SvcImpl implements BOOK009Svc {
             ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
             ordersRepository.save(ordersEntity);
 
-            // 發送訂單確認通知
-            sendNotification(ordersEntity.getUserId(), "訂單確認", "您的訂單已確認", "ORDER", orderId, null);
-
-            // 發送付款成功通知
-            sendNotification(ordersEntity.getUserId(), "付款成功", "您已成功支付 " + ordersEntity.getHotelCharges(), "PAYMENT", orderId, null);
+            // 發送訂單確認通知（將 USER_ID 轉換為 ACCOUNT_ID）
+            String accountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
+            if (accountId != null) {
+                sendNotification(accountId, "訂單確認", "您的訂單已確認", "ORDER", orderId, null);
+                sendNotification(accountId, "付款成功", "您已成功支付 " + ordersEntity.getHotelCharges(), "PAYMENT", orderId, null);
+            } else {
+                log.warn("[BOOK-009] 無法找到 userId={} 對應的 accountId，通知發送失敗", ordersEntity.getUserId());
+            }
         }
 
         log.info("[BOOK-009] 綠界通知付款回應 (線上刷卡) API 運行成功");

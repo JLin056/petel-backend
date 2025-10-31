@@ -9,6 +9,7 @@ import com.example.petel.model.TimeUtil;
 import com.example.petel.model.book.CodeUtil;
 import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.TransactionsRepository;
+import com.example.petel.repository.UsersRepository;
 import com.example.petel.service.BOOK008Svc;
 import com.example.petel.component.NotificationHub;
 import com.example.petel.entity.NotificationEventsEntity;
@@ -51,6 +52,8 @@ public class BOOK008SvcImpl implements BOOK008Svc {
     private final NotificationHub notificationHub;
     /** ObjectMapper */
     private final ObjectMapper objectMapper;
+    /** UsersRepository */
+    private final UsersRepository usersRepository;
     /** PAYMENT_ID */
     private static final String PAYMENT_ID = "Y000000001";
     /** SUCCESS_RTN_CODE */
@@ -115,11 +118,14 @@ public class BOOK008SvcImpl implements BOOK008Svc {
             ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
             ordersRepository.save(ordersEntity);
 
-            // 發送訂單確認通知
-            sendNotification(ordersEntity.getUserId(), "訂單確認", "您的訂單已確認", "ORDER", orderId);
-
-            // 發送現場付款通知
-            sendNotification(ordersEntity.getUserId(), "現場付款", "已授權信用卡", "PAYMENT", orderId);
+            // 發送訂單確認通知（將 USER_ID 轉換為 ACCOUNT_ID）
+            String accountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
+            if (accountId != null) {
+                sendNotification(accountId, "訂單確認", "您的訂單已確認", "ORDER", orderId);
+                sendNotification(accountId, "待付款", "已授權信用卡", "PAYMENT", orderId);
+            } else {
+                log.warn("[BOOK-008] 無法找到 userId={} 對應的 accountId，通知發送失敗", ordersEntity.getUserId());
+            }
         }
 
         log.info("[BOOK-008] 綠界通知付款回應 (現場付款) API 運行成功");

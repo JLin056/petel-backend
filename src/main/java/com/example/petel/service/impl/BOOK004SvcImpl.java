@@ -15,6 +15,7 @@ import com.example.petel.repository.OrderItemsRepository;
 import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.RoomInventoriesRepository;
 import com.example.petel.repository.RoomsRepository;
+import com.example.petel.repository.UsersRepository;
 import com.example.petel.service.BOOK004Svc;
 import com.example.petel.component.NotificationHub;
 import com.example.petel.entity.NotificationEventsEntity;
@@ -60,6 +61,8 @@ public class BOOK004SvcImpl implements BOOK004Svc {
     private final NotificationHub notificationHub;
     /** ObjectMapper */
     private final ObjectMapper objectMapper;
+    /** UsersRepository */
+    private final UsersRepository usersRepository;
 
     /**
      * 取消該筆訂單
@@ -120,8 +123,13 @@ public class BOOK004SvcImpl implements BOOK004Svc {
         ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
         ordersRepository.save(ordersEntity);
 
-        // 發送訂單取消通知
-        sendNotification(ordersEntity.getUserId(), "訂單取消", "您的訂單已取消", "ORDER", orderId);
+        // 發送訂單取消通知（將 USER_ID 轉換為 ACCOUNT_ID）
+        String accountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
+        if (accountId != null) {
+            sendNotification(accountId, "訂單取消", "您的訂單已取消", "ORDER", orderId);
+        } else {
+            log.warn("[BOOK-004] 無法找到 userId={} 對應的 accountId，通知發送失敗", ordersEntity.getUserId());
+        }
 
         log.info("[BOOK-004] 訂單編號為 {} 的資料，取消訂單成功", orderId);
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new HashMap<>());

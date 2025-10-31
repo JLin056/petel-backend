@@ -1,13 +1,18 @@
 package com.example.petel.controller;
 
+import com.example.petel.component.NotificationHub;
 import com.example.petel.controller.advice.BaseController;
 import com.example.petel.dto.*;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.exception.UnauthorizedException;
 import com.example.petel.model.jwt.AccountPrincipal;
+import com.example.petel.model.jwt.JwtUtil;
+import com.example.petel.repository.AccountsRepository;
 import com.example.petel.service.*;
+import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
@@ -18,6 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  * Notification Controller
  * 處理通知相關的 API 請求
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("http://localhost:4200")
@@ -41,6 +47,15 @@ public class NotificationController extends BaseController {
 
     /** NOTIFY006Svc - 補發錯過的事件 */
     private final NOTIFY006Svc notify006Svc;
+
+    /** JwtUtil - JWT 工具類 */
+    private final JwtUtil jwtUtil;
+
+    /** AccountsRepository - 帳號資料庫 */
+    private final AccountsRepository accountsRepository;
+
+    /** NotificationHub - SSE 連線管理 */
+    private final NotificationHub notificationHub;
 
     /**
      * NOTIFY-001 發送通知
@@ -102,13 +117,65 @@ public class NotificationController extends BaseController {
      * NOTIFY-005 建立 SSE 連線
      * GET /notifications/subscribe
      * 使用 Server-Sent Events (SSE) 進行即時推播
+     *
+     * 支援兩種驗證方式：
+     * 1. 透過 Authorization header (標準方式)
+     * 2. 透過 query parameter token (用於 SSE，因為 EventSource 不支援自定義 headers)
      */
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter notify005(@AuthenticationPrincipal AccountPrincipal authInfo) throws UnauthorizedException {
-        if (authInfo == null) {
+    public SseEmitter notify005(
+            @AuthenticationPrincipal AccountPrincipal authInfo,
+            @RequestParam(value = "token", required = false) String token) throws UnauthorizedException {
+
+        String accountId = null;
+
+        // 方式 1: 如果已經通過正常的 JWT Filter 驗證（從 Authorization header）
+        if (authInfo != null) {
+            accountId = authInfo.getAccountId();
+            log.info("[NOTIFY-005] 使用 Authorization header 驗證，accountId={}", accountId);
+        }
+        // 方式 2: 嘗試從 query parameter 解析 token（用於 SSE EventSource）
+        else if (token != null && !token.isBlank()) {
+            try {
+                // 解析 token
+                Claims claims = jwtUtil.parseAccessToken(token);
+
+                String claimAccountId = claims.getSubject();
+                String role = claims.get(JwtUtil.CLAIM_ROLE, String.class);
+                Integer tokenVersion = jwtUtil.getTokenVersionFromClaims(claims);
+
+                // 檢查必要欄位
+                if (claimAccountId == null || role == null || role.isBlank()) {
+                    log.warn("[NOTIFY-005] Token 缺少必要欄位");
+                    throw new UnauthorizedException("TOKEN_INVALID");
+                }
+
+                // 驗證 token_version
+                Integer tokenVersionDb = accountsRepository.findTokenVersionById(claimAccountId);
+                if (tokenVersionDb == null || !jwtUtil.matchTokenVersion(claims, tokenVersionDb)) {
+                    log.warn("[NOTIFY-005] token_version 不一致, accountId={}, tokenVersion={}, dbVersion={}",
+                            claimAccountId, tokenVersion, tokenVersionDb);
+                    throw new UnauthorizedException("TOKEN_VERSION_MISMATCH");
+                }
+
+                accountId = claimAccountId;
+                log.info("[NOTIFY-005] 使用 query parameter token 驗證成功，accountId={}", accountId);
+
+            } catch (UnauthorizedException e) {
+                throw e;
+            } catch (Exception e) {
+                log.error("[NOTIFY-005] Token 驗證失敗", e);
+                throw new UnauthorizedException("TOKEN_INVALID");
+            }
+        }
+
+        // 如果兩種方式都沒有提供有效的驗證資訊
+        if (accountId == null) {
+            log.warn("[NOTIFY-005] 未提供有效的驗證資訊");
             throw new UnauthorizedException("USER_NOT_LOGIN");
         }
-        return notify005Svc.notify005(authInfo.getAccountId());
+
+        return notify005Svc.notify005(accountId);
     }
 
     /**
@@ -126,5 +193,24 @@ public class NotificationController extends BaseController {
         }
         handleValidForDto(errors);
         return notify006Svc.notify006(authInfo.getAccountId(), requestBody);
+    }
+
+    /**
+     * 清理當前帳號的所有 SSE 連線（用於測試/除錯）
+     * DELETE /notifications/connections
+     */
+    @DeleteMapping(value = "/connections")
+    public Res<Object> clearConnections(@AuthenticationPrincipal AccountPrincipal authInfo) throws UnauthorizedException {
+        if (authInfo == null) {
+            throw new UnauthorizedException("USER_NOT_LOGIN");
+        }
+        String accountId = authInfo.getAccountId();
+        int count = notificationHub.getConnectionCount(accountId);
+        notificationHub.removeAllConnections(accountId);
+        log.info("[NotificationController] 已清理帳號 {} 的 {} 個連線", accountId, count);
+
+        java.util.Map<String, Object> result = new java.util.HashMap<>();
+        result.put("clearedConnections", count);
+        return new Res<>(new com.example.petel.dto.ResMwHeader(com.example.petel.model.ReturnCodeAndDescEnum.SUCCESS), result);
     }
 }

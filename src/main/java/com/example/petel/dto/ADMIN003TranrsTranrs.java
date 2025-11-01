@@ -85,8 +85,8 @@ public class ADMIN003TranrsTranrs implements Serializable {
     /**
      * 數量
      */
-//    @JsonProperty("QUANTITY")
-//    private Integer quantity;
+    @JsonProperty("QUANTITY")
+    private Integer quantity;
 
     /**
      * 訂單總價

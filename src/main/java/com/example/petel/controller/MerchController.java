@@ -96,6 +96,11 @@ public class MerchController extends BaseController {
      */
     private final MERCH015Svc merch015Svc;
 
+    /**
+     * MERCH025 Service
+     */
+    private final MERCH025Svc merch025Svc;
+
     @PostMapping(value = "/bookings/list")
     public Res<MERCH001Tranrs<MERCH001TranrsBooking>> list(@Valid @RequestBody Req<MERCH001Tranrq> merch001Tranrq, Errors errors)
             throws DataNotFoundException, InvalidInputException, IOException {
@@ -198,6 +203,11 @@ public class MerchController extends BaseController {
     @GetMapping("/cities/list")
     public List<MERCH015Tranrs> getCityDistricts() {
         return merch015Svc.getCityDistricts();
+    }
+
+    @GetMapping("/facilities/list")
+    public List<MERCH025Tranrs> getAllFacilities() {
+        return merch025Svc.getAllFacilities();
     }
 }
 

@@ -58,8 +58,8 @@ public class ADMIN003QueryResult implements Serializable {
     @JsonProperty("ROOM")
     private String room;
 
-//    @JsonProperty("QUANTITY")
-//    private Integer quantity;
+    @JsonProperty("QUANTITY")
+    private Integer quantity;
 
 //    @JsonProperty("PRICE_EVERYNIGHT")
 //    private Integer priceEverynight;

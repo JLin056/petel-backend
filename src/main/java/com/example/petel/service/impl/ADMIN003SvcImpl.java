@@ -169,7 +169,7 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
             order.setPropertyName(result.getPropertyName());
             order.setPropertyPhone(result.getPropertyPhone());
             order.setRoom(result.getRoom());
-//            order.setQuantity(result.getQuantity());
+            order.setQuantity(result.getQuantity());
             order.setHotelCharges(result.getHotelCharges());
 //            order.setPriceEverynight(result.getPriceEverynight());
             order.setStatus(result.getStatus());

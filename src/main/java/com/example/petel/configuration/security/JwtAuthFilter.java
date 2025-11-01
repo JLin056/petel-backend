@@ -51,7 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (uri.startsWith("/ws")) {
-            filterChain.doFilter(request, response); // 放行到下一個 filter / servlet
+            filterChain.doFilter(request, response);
             return;
         }
 

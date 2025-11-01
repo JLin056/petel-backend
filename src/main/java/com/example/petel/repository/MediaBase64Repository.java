@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 媒體 Base64 資料 Repository
@@ -18,4 +19,6 @@ public interface MediaBase64Repository extends JpaRepository<MediaBase64Entity, 
      * @return 媒體列表
      */
     List<MediaBase64Entity> findByBucket(String bucket);
+
+    Optional<MediaBase64Entity> findById(String mediaId);
 }

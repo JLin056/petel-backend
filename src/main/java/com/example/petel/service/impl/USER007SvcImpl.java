@@ -80,7 +80,6 @@ public class USER007SvcImpl implements USER007Svc {
         List<USER007TranrsItems> items = itemsRows.stream()
                 .map(m -> {
                     USER007TranrsItems item = objectMapper.convertValue(m, USER007TranrsItems.class);
-                    item.setSubtotal(item.getQuantity() * item.getPrice());
                     return item;
                 })
                 .toList();

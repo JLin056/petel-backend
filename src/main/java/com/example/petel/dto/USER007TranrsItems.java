@@ -52,10 +52,4 @@ public class USER007TranrsItems implements Serializable {
      */
     @JsonProperty("price")
     private Integer price;
-
-    /**
-     * subtotal
-     */
-    @JsonProperty("subtotal")
-    private Integer subtotal;
 }

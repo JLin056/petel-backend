@@ -19,8 +19,11 @@ import com.example.petel.service.BOOK013Svc;
 import com.example.petel.component.NotificationHub;
 import com.example.petel.entity.NotificationEventsEntity;
 import com.example.petel.entity.NotificationsEntity;
+import com.example.petel.entity.PropertyEntity;
 import com.example.petel.repository.NotificationEventsRepository;
 import com.example.petel.repository.NotificationsRepository;
+import com.example.petel.repository.PropertyRepository;
+import com.example.petel.repository.SellersRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -58,6 +61,10 @@ public class BOOK013SvcImpl implements BOOK013Svc {
     private final ObjectMapper objectMapper;
     /** UsersRepository */
     private final UsersRepository usersRepository;
+    /** PropertyRepository */
+    private final PropertyRepository propertyRepository;
+    /** SellersRepository */
+    private final SellersRepository sellersRepository;
     /** PAYMENT_ID */
     private static final String PAYMENT_ID = "Y000000002";
 
@@ -123,18 +130,47 @@ public class BOOK013SvcImpl implements BOOK013Svc {
             throw new InsertFailException();
         }
 
-        // 發送訂單確認通知（將 USER_ID 轉換為 ACCOUNT_ID）
+        // 發送訂單確認通知給用戶（將 USER_ID 轉換為 ACCOUNT_ID）
         String accountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
         if (accountId != null) {
-            sendNotification(accountId, "訂單確認", "您的訂單已確認", "ORDER", orderId);
+            sendNotification(accountId, "訂單成立", "您的訂單已成立", "ORDER", orderId);
             sendNotification(accountId, "付款成功", "您已成功支付 " + ordersEntity.getHotelCharges(), "PAYMENT", orderId);
         } else {
             log.warn("[BOOK-013] 無法找到 userId={} 對應的 accountId，通知發送失敗", ordersEntity.getUserId());
         }
 
+        // 發送付款成功通知給旅館的商家
+        sendNotificationToProperty(ordersEntity.getPropertyId(), orderId, ordersEntity.getHotelCharges());
+
         log.info("[BOOK-013] 模擬更新訂單付款狀態 (線上刷卡) API 執行完成");
 
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new HashMap<>());
+    }
+
+    /**
+     * 發送通知給旅館的商家
+     *
+     * @param propertyId 旅館 ID
+     * @param orderId 訂單編號
+     * @param amount 付款金額
+     */
+    private void sendNotificationToProperty(String propertyId, String orderId, Integer amount) {
+        try {
+            PropertyEntity property = propertyRepository.findById(propertyId).orElse(null);
+            if (property != null && property.getSellerId() != null) {
+                String sellerAccountId = sellersRepository.findByAccountBySellerId(property.getSellerId());
+                if (sellerAccountId != null) {
+                    sendNotification(sellerAccountId, "訂單已付款", "訂單 " + orderId + " 已完成付款，金額 " + amount + " 元", "PAYMENT", orderId);
+                    log.info("[BOOK-013] 已發送付款成功通知給商家，旅館：{}，商家帳號：{}", property.getName(), sellerAccountId);
+                } else {
+                    log.warn("[BOOK-013] 無法找到 sellerId={} 對應的 accountId", property.getSellerId());
+                }
+            } else {
+                log.warn("[BOOK-013] 無法找到 propertyId={} 對應的旅館或商家資訊", propertyId);
+            }
+        } catch (Exception e) {
+            log.error("[BOOK-013] 發送商家通知時發生錯誤，propertyId：{}", propertyId, e);
+        }
     }
 
     /**

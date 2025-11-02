@@ -1,19 +1,21 @@
 package com.example.petel.service.impl;
 
+import com.example.petel.component.NotificationHub;
 import com.example.petel.dto.*;
-import com.example.petel.entity.OrderItemsEntity;
-import com.example.petel.entity.OrdersEntity;
-import com.example.petel.entity.RoomInventoriesEntity;
-import com.example.petel.entity.RoomsEntity;
+import com.example.petel.entity.*;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.*;
 import com.example.petel.service.BOOK001Svc;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -43,6 +45,21 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     private final UsersRepository usersRepository;
     /** BOOKING_LOCK */
     private static final Object BOOKING_LOCK = new Object();
+
+    /** NotificationsRepository */
+    private final NotificationsRepository notificationsRepository;
+
+    /** NotificationEventsRepository */
+    private final NotificationEventsRepository notificationEventsRepository;
+
+    /** NotificationHub */
+    private final NotificationHub notificationHub;
+
+    /** ObjectMapper */
+    private final ObjectMapper objectMapper;
+
+
+
 
     /**
      * 建立訂單
@@ -142,7 +159,88 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             }
 
             log.info("[BOOK-001] 建立訂單成功，訂單ID：{}", orderId);
+
+//            // 發送訂單確認通知
+//            if (accountId != null) {
+//                sendNotification(accountId, "訂單成立", "您的訂單 " + orderId + " 已成功建立", "ORDER", orderId);
+//            } else {
+//                log.warn("[BOOK-001] accountId 為空，無法發送通知");
+//            }
+
             return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK001Tranrs(orderId));
         }
     }
+    /**
+     * 發送通知
+     *
+     * @param accountId 帳號 ID
+     * @param title 通知標題
+     * @param message 通知訊息
+     * @param type 通知類型
+     * @param orderId 訂單編號
+     */
+    private void sendNotification(String accountId, String title, String message, String type, String orderId) {
+        try {
+            // 使用 UUID 產生通知 ID
+            String notificationId = "N" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 9);
+
+            // 建立並儲存通知主表
+            NotificationsEntity notification = new NotificationsEntity();
+            notification.setId(notificationId);
+            notification.setAccountId(accountId);
+            notification.setTitle(title);
+            notification.setMessage(message);
+            notification.setType(type);
+            notification.setStatus("UNREAD");
+            notification.setCreatedAt(java.time.OffsetDateTime.now());
+            notification.setOrderId(orderId);
+            notificationsRepository.save(notification);
+
+            // 使用 UUID 產生事件 ID
+            String eventId = accountId + "-" + System.currentTimeMillis() + "-" + (int)(Math.random() * 10000);
+            String eventPrimaryKey = "E" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 9);
+
+            // 建立 payload
+            java.util.Map<String, Object> payloadData = new java.util.HashMap<>();
+            payloadData.put("id", notificationId);
+            payloadData.put("title", title);
+            payloadData.put("message", message);
+            payloadData.put("type", type);
+            payloadData.put("status", "UNREAD");
+            payloadData.put("createdAt", notification.getCreatedAt().toString());
+            payloadData.put("orderId", orderId);
+
+            String payloadJson = objectMapper.writeValueAsString(payloadData);
+
+            NotificationEventsEntity event = new NotificationEventsEntity();
+            event.setId(eventPrimaryKey);
+            event.setAccountId(accountId);
+            event.setEventId(eventId);
+            event.setEventName("notification");
+            event.setPayload(payloadJson);
+            event.setSentAt(java.time.OffsetDateTime.now());
+            event.setDelivered("N");
+            event.setNotificationId(notificationId);
+            notificationEventsRepository.save(event);
+
+            // 交易提交後再推播
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    try {
+                        notificationHub.sendTo(accountId, "notification", eventId, payloadData);
+                        event.setDelivered("Y");
+                        notificationEventsRepository.save(event);
+                        log.info("[BOOK-001] 通知發送成功，通知ID：{}", notificationId);
+                    } catch (Exception e) {
+                        log.error("[BOOK-001] 推播通知失敗，帳號ID：{}", accountId, e);
+                    }
+                }
+            });
+        } catch (JsonProcessingException e) {
+            log.error("[BOOK-001] 發送通知失敗", e);
+        }
+
+    }
+
 }

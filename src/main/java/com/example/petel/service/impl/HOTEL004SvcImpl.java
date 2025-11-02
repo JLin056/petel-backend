@@ -55,21 +55,19 @@ public class HOTEL004SvcImpl implements HOTEL004Svc {
 
         String sql = sqlUtils.getQuerySql(HOTEL004_QUERY);
         List<Map<String, Object>> mapList = sqlAction.queryForList(sql, paramMap);
-        if (CollectionUtils.isEmpty(mapList)) {
-            log.warn("[HOTEL-004] 依據 propertyId 查無資料");
-            throw new DataNotFoundException("查無設施資料");
+
+        if (!CollectionUtils.isEmpty(mapList)) {
+            mapList.forEach(map -> {
+                HOTEL004TranrsFacility facility = new HOTEL004TranrsFacility();
+                facility.setName(MapUtils.getString(map, "NAME"));
+                facilityList.add(facility);
+            });
         }
-
-        mapList.forEach(map -> {
-            HOTEL004TranrsFacility facility = new HOTEL004TranrsFacility();
-            facility.setName(MapUtils.getString(map, "NAME"));
-            facilityList.add(facility);
-        });
-        log.info("[HOTEL-004] 查詢成功，propertyId={}, facilityList={}", propertyId, facilityList);
-
 
         HOTEL004Tranrs<HOTEL004TranrsFacility> hotel004Tranrs = new HOTEL004Tranrs<>();
         hotel004Tranrs.setFacilities(facilityList);
+
+        log.info("[HOTEL-004] 查詢成功，propertyId={}, facilityList={}", propertyId, facilityList);
 
         return new Res<>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),

@@ -56,4 +56,10 @@ public class CHAT002TranrsChats implements Serializable {
     @JsonProperty("lastMessageTime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Taipei")
     private LocalDateTime lastMessageTime;
+
+    /**
+     * avatarB64
+     */
+    @JsonProperty("avatarB64")
+    private String avatarB64;
 }

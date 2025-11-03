@@ -47,7 +47,14 @@ public class WebExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     @ResponseStatus(HttpStatus.OK)
     public Res<Object> handleDataNotFoundException(DataNotFoundException ex) {
-        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.DATA_NOT_FOUND), null);
+        ResMwHeader resMwHeader = new ResMwHeader();
+        String message = ex.getMessage();
+        if (message == null || message.isBlank()) {
+            message = ReturnCodeAndDescEnum.DATA_NOT_FOUND.getDesc();
+        }
+        resMwHeader.setReturnCode(ReturnCodeAndDescEnum.DATA_NOT_FOUND.getCode());
+        resMwHeader.setReturnDesc(message);
+        return new Res<>(resMwHeader, null);
     }
 
     /**

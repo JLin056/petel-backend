@@ -6,10 +6,7 @@ import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.exception.InvalidInputException;
 import com.example.petel.model.jwt.AccountPrincipal;
-import com.example.petel.service.USER001Svc;
-import com.example.petel.service.USER002Svc;
-import com.example.petel.service.USER004Svc;
-import com.example.petel.service.USER006Svc;
+import com.example.petel.service.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +30,8 @@ public class UserController extends BaseController {
     private final USER004Svc user004Svc;
     /** USER006Svc */
     private final USER006Svc user006Svc;
+    /** USER007Svc */
+    private final USER007Svc user007Svc;
 
     /**
      * 新增會員資訊
@@ -99,5 +98,23 @@ public class UserController extends BaseController {
         handleValidForDto(errors);
         return user006Svc.getBookingList(authInfo.getAccountId(), req);
     }
+
+    /**
+     * 取得訂單詳細資訊
+     * @param req
+     * @param errors
+     * @return
+     * @throws InvalidInputException
+     * @throws DataNotFoundException
+     * @throws IOException
+     */
+    @PostMapping("/bookings/details")
+    public Res<USER007Tranrs> getBookingList(@RequestBody Req<USER007Tranrq> req,
+                                             Errors errors)
+            throws InvalidInputException, DataNotFoundException, IOException {
+        handleValidForDto(errors);
+        return user007Svc.getOrderDetail(req);
+    }
+
 
 }

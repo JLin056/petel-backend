@@ -62,9 +62,16 @@ public class WebExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(InsertFailException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     public Res<Object> handleInsertFailException(InsertFailException ex) {
-        return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.INSERT_FAIL), null);
+        ResMwHeader resMwHeader = new ResMwHeader();
+        String message = ex.getMessage();
+        if (message == null || message.isBlank()) {
+            message = ReturnCodeAndDescEnum.INSERT_FAIL.getDesc();
+        }
+        resMwHeader.setReturnCode(ReturnCodeAndDescEnum.INSERT_FAIL.getCode());
+        resMwHeader.setReturnDesc(message);
+        return new Res<>(resMwHeader, null);
     }
 
     /**

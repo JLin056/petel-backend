@@ -67,4 +67,10 @@ public class MEDIA004TranrsMediaInfo implements Serializable {
      */
     @JsonProperty("updatedAt")
     private LocalDateTime updatedAt;
+
+    /**
+     * 排序順序 (僅在透過 propertyId 或 roomId 查詢時有值)
+     */
+    @JsonProperty("sortOrder")
+    private Integer sortOrder;
 }

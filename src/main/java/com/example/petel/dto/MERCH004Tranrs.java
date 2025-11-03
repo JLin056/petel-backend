@@ -38,7 +38,7 @@ public class MERCH004Tranrs implements Serializable {
     private String totalUnits;
 
     /**
-     * totalUnits
+     * basePrice
      */
     @JsonProperty("basePrice")
     private String basePrice;

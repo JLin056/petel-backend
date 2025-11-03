@@ -53,6 +53,17 @@ public class NotificationHub {
             log.error("[NotificationHub] 連線錯誤，帳號：{}，剩餘連線數：{}", accountId, getConnectionCount(accountId));
         });
 
+        // 發送連線建立成功訊息並設定自動重連間隔
+        try {
+            // 設定重連間隔為 3 秒（3000 毫秒）
+            emitter.send(SseEmitter.event()
+                    .comment("SSE connection established")
+                    .reconnectTime(3000L));
+            log.info("[NotificationHub] 已發送連線初始化訊息，重連間隔：3 秒");
+        } catch (Exception e) {
+            log.error("[NotificationHub] 發送初始化訊息失敗", e);
+        }
+
         log.info("[NotificationHub] 新連線已註冊，帳號：{}，當前連線數：{}", accountId, getConnectionCount(accountId));
 
         return emitter;

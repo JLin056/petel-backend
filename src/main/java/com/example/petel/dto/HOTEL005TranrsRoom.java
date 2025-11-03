@@ -48,6 +48,12 @@ public class HOTEL005TranrsRoom implements Serializable {
     private Integer basePrice;
 
     /**
+     * 寵物類型
+     */
+    @JsonProperty("petTypeId")
+    private String petTypeId;
+
+    /**
      * 總房數 / 可用數量
      */
     @JsonProperty("totalUnits")

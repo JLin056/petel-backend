@@ -7,7 +7,7 @@ SELECT COUNT(DISTINCT o.ID) AS TOTAL_COUNT
            LEFT JOIN PETEL_PAYMENT y ON o.PAYMENT_ID = y.ID
   WHERE 1=1
  [AND o.ID LIKE :orderId ]
- [AND oi.ARRIVAL_DATE = :checkIn ]
+ [AND o.CHECK_IN = :checkIn ]
  [AND ( o.GUEST_NAME LIKE :userName OR u.NAME LIKE :userName ) ]
  [AND ( o.GUEST_PHONE LIKE :userPhone OR u.PHONE LIKE :userPhone ) ]
  [AND p.NAME LIKE :propertyName ]

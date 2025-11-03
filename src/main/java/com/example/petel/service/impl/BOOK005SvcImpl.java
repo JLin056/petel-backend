@@ -5,6 +5,7 @@ import com.example.petel.dto.*;
 import com.example.petel.entity.NotificationEventsEntity;
 import com.example.petel.entity.NotificationsEntity;
 import com.example.petel.entity.OrdersEntity;
+import com.example.petel.entity.PropertyEntity;
 import com.example.petel.entity.TransactionsEntity;
 import com.example.petel.exception.DataNotFoundException;
 import com.example.petel.exception.InsertFailException;
@@ -57,6 +58,12 @@ public class BOOK005SvcImpl implements BOOK005Svc {
 
     /** UsersRepository */
     private final UsersRepository usersRepository;
+
+    /** PropertyRepository */
+    private final PropertyRepository propertyRepository;
+
+    /** SellersRepository */
+    private final SellersRepository sellersRepository;
 
 
 //    /** MERCHANT_ID */
@@ -183,17 +190,45 @@ public class BOOK005SvcImpl implements BOOK005Svc {
 
         log.info("[BOOK-005] 訂單編號為 {} 的訂單，信用卡幕後授權 API 執行完成", orderId);
 
-        // 發送訂單確認通知（將 USER_ID 轉換為 ACCOUNT_ID）
+        // 發送訂單確認通知給用戶（將 USER_ID 轉換為 ACCOUNT_ID）
         String accountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
         if (accountId != null) {
-            sendNotification(accountId, "訂單確認", "您的訂單已確認", "ORDER", orderId);
-                sendNotification(accountId, "現場付款", "已授權信用卡", "PAYMENT", orderId);
+            sendNotification(accountId, "訂單成立", "您的訂單已成立", "ORDER", orderId);
+            sendNotification(accountId, "現場付款", "已授權信用卡", "PAYMENT", orderId);
         } else {
             log.warn("[BOOK-005] 無法找到 userId={} 對應的 accountId，通知發送失敗", ordersEntity.getUserId());
         }
 
+        // 發送新訂單通知給旅館的商家
+        sendNotificationToProperty(ordersEntity.getPropertyId(), orderId);
+
         return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK005Tranrs("OK"));
     }
+    /**
+     * 發送通知給旅館的商家
+     *
+     * @param propertyId 旅館 ID
+     * @param orderId 訂單編號
+     */
+    private void sendNotificationToProperty(String propertyId, String orderId) {
+        try {
+            PropertyEntity property = propertyRepository.findById(propertyId).orElse(null);
+            if (property != null && property.getSellerId() != null) {
+                String sellerAccountId = sellersRepository.findByAccountBySellerId(property.getSellerId());
+                if (sellerAccountId != null) {
+                    sendNotification(sellerAccountId, "新訂單通知", "您的旅館 " + property.getName() + " 有新的訂單 " + orderId, "ORDER", orderId);
+                    log.info("[BOOK-005] 已發送新訂單通知給商家，旅館：{}，商家帳號：{}", property.getName(), sellerAccountId);
+                } else {
+                    log.warn("[BOOK-005] 無法找到 sellerId={} 對應的 accountId", property.getSellerId());
+                }
+            } else {
+                log.warn("[BOOK-005] 無法找到 propertyId={} 對應的旅館或商家資訊", propertyId);
+            }
+        } catch (Exception e) {
+            log.error("[BOOK-005] 發送商家通知時發生錯誤，propertyId：{}", propertyId, e);
+        }
+    }
+
     /**
      * 發送通知
      *

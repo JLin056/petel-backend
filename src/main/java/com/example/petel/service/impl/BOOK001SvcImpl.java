@@ -1,19 +1,21 @@
 package com.example.petel.service.impl;
 
+import com.example.petel.component.NotificationHub;
 import com.example.petel.dto.*;
-import com.example.petel.entity.OrderItemsEntity;
-import com.example.petel.entity.OrdersEntity;
-import com.example.petel.entity.RoomInventoriesEntity;
-import com.example.petel.entity.RoomsEntity;
+import com.example.petel.entity.*;
 import com.example.petel.exception.InsertFailException;
 import com.example.petel.model.IdUtil;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.repository.*;
 import com.example.petel.service.BOOK001Svc;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -43,6 +45,21 @@ public class BOOK001SvcImpl implements BOOK001Svc {
     private final UsersRepository usersRepository;
     /** BOOKING_LOCK */
     private static final Object BOOKING_LOCK = new Object();
+
+    /** NotificationsRepository */
+    private final NotificationsRepository notificationsRepository;
+
+    /** NotificationEventsRepository */
+    private final NotificationEventsRepository notificationEventsRepository;
+
+    /** NotificationHub */
+    private final NotificationHub notificationHub;
+
+    /** ObjectMapper */
+    private final ObjectMapper objectMapper;
+
+
+
 
     /**
      * 建立訂單
@@ -142,7 +159,12 @@ public class BOOK001SvcImpl implements BOOK001Svc {
             }
 
             log.info("[BOOK-001] 建立訂單成功，訂單ID：{}", orderId);
+
+
+
             return new Res<>(new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS), new BOOK001Tranrs(orderId));
         }
     }
+
+
 }

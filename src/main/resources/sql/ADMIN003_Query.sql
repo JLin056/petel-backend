@@ -28,7 +28,7 @@ SELECT
  WHERE 1=1
 
   [AND o.ID LIKE :orderId ]
-  [AND oi.ARRIVAL_DATE = :checkIn ]
+  [AND o.CHECK_IN = :checkIn ]
   [AND ( o.GUEST_NAME LIKE :userName OR u.NAME LIKE :userName ) ]
   [AND ( o.GUEST_PHONE = :userPhone OR u.PHONE = :userPhone ) ]
   [AND p.NAME LIKE :propertyName ]

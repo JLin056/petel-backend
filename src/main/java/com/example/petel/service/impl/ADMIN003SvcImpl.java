@@ -57,7 +57,7 @@ public class ADMIN003SvcImpl implements ADMIN003Svc {
             paramMap.put("orderId", "%" +tranrq.getOrderId()+ "%");
         }
         if (StringUtils.isNotBlank(tranrq.getCheckIn())) {
-            paramMap.put("checkIn", "%" + tranrq.getCheckIn() + "%");
+            paramMap.put("checkIn", tranrq.getCheckIn());
         }
         if (StringUtils.isNotBlank(tranrq.getUserName())) {
             paramMap.put("userName", "%" + tranrq.getUserName() + "%");

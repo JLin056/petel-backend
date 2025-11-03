@@ -1,10 +1,12 @@
 package com.example.petel.service.impl;
 
 import com.example.petel.dto.*;
+import com.example.petel.entity.MediaBase64Entity;
 import com.example.petel.model.ReturnCodeAndDescEnum;
 import com.example.petel.model.jwt.AccountPrincipal;
 import com.example.petel.model.sql.SqlAction;
 import com.example.petel.model.sql.SqlUtils;
+import com.example.petel.repository.MediaBase64Repository;
 import com.example.petel.service.CHAT002Svc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,8 @@ public class CHAT002SvcImpl implements CHAT002Svc {
     private final SqlAction sqlAction;
     /** SqlUtils */
     private final SqlUtils sqlUtils;
+    /** MediaBase64Repository */
+    private final MediaBase64Repository mediaBase64Repo;
     /** ZoneId TPE */
     private static final ZoneId TPE = ZoneId.of("Asia/Taipei");
 
@@ -81,13 +85,12 @@ public class CHAT002SvcImpl implements CHAT002Svc {
 
         // 取得 所有 threadId
         ArrayList<Object> threadIds = new ArrayList<>(nameList.size());
+        Set<String> mediaIds = new HashSet<>();
         for (Map<String, Object> row: nameList) {
             Object threadIdObj = row.get("THREAD_ID");
-            if (threadIdObj == null) {
-                log.warn("[CHAT-002] 發現 null THREAD_ID，跳過此筆資料");
-                continue;
-            }
-            threadIds.add(threadIdObj.toString());
+            Object mediaObj = row.get("MEDIA_ID");
+            if (threadIdObj != null) threadIds.add(threadIdObj.toString());
+            if (mediaObj != null) mediaIds.add(mediaObj.toString());
         }
         log.debug("[CHAT-002] 收集到 {} 個有效的 threadId", threadIds.size());
 
@@ -102,11 +105,28 @@ public class CHAT002SvcImpl implements CHAT002Svc {
         log.debug("[CHAT-002] 查詢到 {} 筆最後訊息", lastList != null ? lastList.size() : 0);
 
         HashMap<String, Map<String, Object>> lastMap = new HashMap<>();
-        for (Map<String, Object> row: lastList) {
-            String threadId = row.get("THREAD_ID").toString();
-            if (threadId != null) lastMap.put(threadId, row);
+        if (lastList != null){
+            for (Map<String, Object> row: lastList) {
+                Object threadIdObj = row.get("THREAD_ID");
+                if (threadIdObj != null) {
+                    String threadId = threadIdObj.toString();
+                    lastMap.put(threadId, row);
+                }
+            }
         }
 
+        // 圖片
+        Map<String, String> mediaIdToB64 = new HashMap<>();
+        if (!mediaIds.isEmpty()) {
+            List<MediaBase64Entity> medias = mediaBase64Repo.findAllById(mediaIds);
+            for (MediaBase64Entity m : medias) {
+                mediaIdToB64.put(m.getId(), String.format(
+                        "data:%s;base64,%s",
+                        m.getMimeType(),
+                        m.getBase64Data()
+                ));
+            }
+        }
 
         // Res
         List<CHAT002TranrsChats> chats = new ArrayList<>(nameList.size());
@@ -115,10 +135,11 @@ public class CHAT002SvcImpl implements CHAT002Svc {
             Object orderIdObj = row.get("ORDER_ID");
             Object displayNameObj = row.get("DISPLAY_NAME");
             Object orderStatusObj = row.get("ORDER_STATUS");
+            Object mediaIdObj = row.get("MEDIA_ID");
 
-            if (threadIdObj == null || orderIdObj == null || displayNameObj == null) {
-                log.warn("[CHAT-002] 資料不完整，跳過此筆: threadId={}, orderId={}, displayName={}",
-                        threadIdObj, orderIdObj, displayNameObj);
+            if (threadIdObj == null || orderIdObj == null || displayNameObj == null || orderStatusObj == null || mediaIdObj == null) {
+                log.warn("[CHAT-002] 資料不完整，跳過此筆: threadId={}, orderId={}, displayName={} orderStatusObj={} mediaId={}",
+                        threadIdObj, orderIdObj, displayNameObj, orderStatusObj, mediaIdObj);
                 continue;
             }
 
@@ -126,6 +147,7 @@ public class CHAT002SvcImpl implements CHAT002Svc {
             String orderId = orderIdObj.toString();
             String displayName = displayNameObj.toString();
             String orderStatus = orderStatusObj.toString();
+            String mediaId = mediaIdObj.toString();
 
             String lastMessage = null;
             LocalDateTime lastMessageTime = null;
@@ -133,15 +155,13 @@ public class CHAT002SvcImpl implements CHAT002Svc {
             Map<String, Object> lm = lastMap.get(threadId);
             if (lm != null) {
                 Object contentObj = lm.get("LAST_MSG_CONTENT");
-                if (contentObj != null) {
-                    lastMessage = contentObj.toString();
-                }
+                if (contentObj != null) lastMessage = contentObj.toString();
 
                 Object tsObj = lm.get("LAST_MSG_TIME");
-                if (tsObj instanceof Timestamp ts) {
-                    lastMessageTime = ts.toLocalDateTime();
-                }
+                if (tsObj instanceof Timestamp ts) lastMessageTime = ts.toLocalDateTime();
             }
+
+            String avatarB64 = (mediaId != null) ? mediaIdToB64.get(mediaId) : null;
 
             chats.add(new CHAT002TranrsChats(
                     threadId,
@@ -149,7 +169,8 @@ public class CHAT002SvcImpl implements CHAT002Svc {
                     orderStatus,
                     displayName,
                     lastMessage,
-                    lastMessageTime
+                    lastMessageTime,
+                    avatarB64
             ));
         }
 

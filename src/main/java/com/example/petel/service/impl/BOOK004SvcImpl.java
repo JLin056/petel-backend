@@ -6,6 +6,7 @@ import com.example.petel.dto.Res;
 import com.example.petel.dto.ResMwHeader;
 import com.example.petel.entity.OrderItemsEntity;
 import com.example.petel.entity.OrdersEntity;
+import com.example.petel.entity.PropertyEntity;
 import com.example.petel.entity.RoomInventoriesEntity;
 import com.example.petel.entity.RoomsEntity;
 import com.example.petel.exception.DataNotFoundException;
@@ -16,6 +17,8 @@ import com.example.petel.repository.OrdersRepository;
 import com.example.petel.repository.RoomInventoriesRepository;
 import com.example.petel.repository.RoomsRepository;
 import com.example.petel.repository.UsersRepository;
+import com.example.petel.repository.PropertyRepository;
+import com.example.petel.repository.SellersRepository;
 import com.example.petel.service.BOOK004Svc;
 import com.example.petel.component.NotificationHub;
 import com.example.petel.entity.NotificationEventsEntity;
@@ -63,6 +66,10 @@ public class BOOK004SvcImpl implements BOOK004Svc {
     private final ObjectMapper objectMapper;
     /** UsersRepository */
     private final UsersRepository usersRepository;
+    /** PropertyRepository */
+    private final PropertyRepository propertyRepository;
+    /** SellersRepository */
+    private final SellersRepository sellersRepository;
 
     /**
      * 取消該筆訂單
@@ -123,12 +130,26 @@ public class BOOK004SvcImpl implements BOOK004Svc {
         ordersEntity.setUpdatedAt(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
         ordersRepository.save(ordersEntity);
 
-        // 發送訂單取消通知（將 USER_ID 轉換為 ACCOUNT_ID）
-        String accountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
-        if (accountId != null) {
-            sendNotification(accountId, "訂單取消", "您的訂單已取消", "ORDER", orderId);
+        // 發送訂單取消通知給會員（將 USER_ID 轉換為 ACCOUNT_ID）
+        String userAccountId = usersRepository.findByAccountByUserId(ordersEntity.getUserId());
+        if (userAccountId != null) {
+            sendNotification(userAccountId, "訂單取消", "您的訂單已取消", "ORDER", orderId);
         } else {
-            log.warn("[BOOK-004] 無法找到 userId={} 對應的 accountId，通知發送失敗", ordersEntity.getUserId());
+            log.warn("[BOOK-004] 無法找到 userId={} 對應的 accountId，會員通知發送失敗", ordersEntity.getUserId());
+        }
+
+        // 發送訂單取消通知給商家（將 PROPERTY_ID 轉換為 SELLER_ID 再轉換為 ACCOUNT_ID）
+        PropertyEntity propertyEntity = propertyRepository.findById(ordersEntity.getPropertyId()).orElse(null);
+        if (propertyEntity != null) {
+            String sellerAccountId = sellersRepository.findByAccountBySellerId(propertyEntity.getSellerId());
+            if (sellerAccountId != null) {
+                sendNotification(sellerAccountId, "訂單取消", "訂單編號 " + orderId + " 已被取消", "ORDER", orderId);
+                log.info("[BOOK-004] 商家通知發送成功，訂單編號：{}", orderId);
+            } else {
+                log.warn("[BOOK-004] 無法找到 sellerId={} 對應的 accountId，商家通知發送失敗", propertyEntity.getSellerId());
+            }
+        } else {
+            log.warn("[BOOK-004] 無法找到 propertyId={} 對應的旅館資料，商家通知發送失敗", ordersEntity.getPropertyId());
         }
 
         log.info("[BOOK-004] 訂單編號為 {} 的資料，取消訂單成功", orderId);

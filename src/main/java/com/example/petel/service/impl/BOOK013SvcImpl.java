@@ -160,6 +160,7 @@ public class BOOK013SvcImpl implements BOOK013Svc {
             if (property != null && property.getSellerId() != null) {
                 String sellerAccountId = sellersRepository.findByAccountBySellerId(property.getSellerId());
                 if (sellerAccountId != null) {
+                    sendNotification(sellerAccountId, "新訂單通知", "您的旅館 " + property.getName() + " 有新的訂單 " + orderId, "ORDER", orderId);
                     sendNotification(sellerAccountId, "訂單已付款", "訂單 " + orderId + " 已完成付款，金額 " + amount + " 元", "PAYMENT", orderId);
                     log.info("[BOOK-013] 已發送付款成功通知給商家，旅館：{}，商家帳號：{}", property.getName(), sellerAccountId);
                 } else {

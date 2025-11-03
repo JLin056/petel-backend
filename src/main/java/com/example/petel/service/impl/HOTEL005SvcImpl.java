@@ -209,6 +209,9 @@ public class HOTEL005SvcImpl implements HOTEL005Svc {
                 room.setInfo((String) row.get("ROOM_INFO"));
                 room.setRoomSize((String) row.get("ROOM_SIZE"));
 
+                // 設定寵物類型
+                room.setPetTypeId((String) row.get("PET_TYPE_ID"));
+
                 // 處理價格
                 Object priceObj = row.get("PRICE");
                 room.setBasePrice(priceObj != null ? ((Number) priceObj).intValue() : 0);

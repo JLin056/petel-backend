@@ -88,8 +88,15 @@ public class MERCH005SvcImpl implements MERCH005Svc {
         }
 
         MERCH005Tranrs merch005Tranrs = new MERCH005Tranrs();
+        merch005Tranrs.setId(roomId);
+        merch005Tranrs.setName(merch005Tranrq.getName());
+        merch005Tranrs.setTotalUnits(String.valueOf(merch005Tranrq.getTotalUnits()));
+        merch005Tranrs.setBasePrice(String.valueOf(merch005Tranrq.getBasePrice()));
+        merch005Tranrs.setPetTypeId(merch005Tranrq.getPetTypeId());
+        merch005Tranrs.setInfo(merch005Tranrq.getInfo());
+        merch005Tranrs.setRoomSize(merch005Tranrq.getRoomSize());
 
-        return new Res(
+        return new Res<>(
                 new ResMwHeader(ReturnCodeAndDescEnum.SUCCESS),
                 merch005Tranrs
         );

@@ -73,13 +73,19 @@ public class MERCH007SvcImpl implements MERCH007Svc {
                 log.info("[MERCH-007] 已刪除舊的設備關聯");
 
                 if (!tranrq.getFacilities().isEmpty()) {
+                    // 先取得最大 ID，然後在迴圈中遞增
+                    String currentId = IdUtil.generateTableId("G", propertyFacilitiesRepository.findMaxId());
+
                     for (String facilityId : tranrq.getFacilities()) {
-                        String newId = IdUtil.generateTableId("G", propertyFacilitiesRepository.findMaxId());
                         PropertyFacilitiesEntity pf = new PropertyFacilitiesEntity();
-                        pf.setId(newId);
+                        pf.setId(currentId);
                         pf.setPropertyId(propertyId);
                         pf.setFacilityId(facilityId);
                         propertyFacilitiesRepository.save(pf);
+                        log.info("[MERCH-007] 新增設備關聯：id={}, facilityId={}", currentId, facilityId);
+
+                        // 為下一個設施遞增 ID
+                        currentId = IdUtil.tableIdIncrement(currentId);
                     }
                     log.info("[MERCH-007] 已新增 {} 個設備關聯", tranrq.getFacilities().size());
                 } else {
